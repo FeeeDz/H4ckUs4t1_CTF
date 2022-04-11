@@ -1,0 +1,56 @@
+body {
+  margin: 0px;
+}
+
+#navbar {
+  background-color: rgb(133, 187, 140);
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#navbar #navbar-logo {
+  position: absolute;
+  left: 0;
+}
+#navbar #navbar-login {
+  position: absolute;
+  right: 0;
+}
+#navbar #navbar-menu {
+  position: absolute;
+  right: 0;
+}
+
+#main {
+  background-color: rgb(11, 105, 194);
+  min-height: calc(100vh - 400px);
+}
+
+#footer {
+  background-color: rgb(93, 194, 11);
+  height: 200px;
+}
+
+@media (max-width: 767px) {
+  #navbar a {
+    display: block;
+  }
+  #navbar #navbar-nav {
+    display: none;
+  }
+  #navbar #navbar-menu {
+    display: unset;
+  }
+}
+@media (min-width: 768px) {
+  #navbar a {
+    display: inline;
+  }
+  #navbar #navbar-nav {
+    display: unset;
+  }
+  #navbar #navbar-menu {
+    display: none;
+  }
+}/*# sourceMappingURL=style.css.map */
