@@ -8,20 +8,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
 }
 #navbar #navbar-logo {
-  position: absolute;
-  left: 0;
-}
-#navbar #navbar-login {
-  position: absolute;
-  right: 0;
+  text-align: left;
 }
 #navbar #navbar-menu {
-  position: absolute;
-  right: 0;
+  width: 50%;
+  text-align: right;
 }
-
 #main {
   background-color: rgb(11, 105, 194);
   min-height: calc(100vh - 400px);
@@ -36,9 +31,6 @@ body {
   #navbar a {
     display: block;
   }
-  #navbar #navbar-nav {
-    display: none;
-  }
   #navbar #navbar-menu {
     display: unset;
   }
@@ -46,9 +38,6 @@ body {
 @media (min-width: 768px) {
   #navbar a {
     display: inline;
-  }
-  #navbar #navbar-nav {
-    display: unset;
   }
   #navbar #navbar-menu {
     display: none;

@@ -12,28 +12,29 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
 
     a{
 
     }
 
     #navbar-logo {
-        position: absolute;
-        left: 0;
+        text-align: left;
     }
 
     #navbar-nav {
-        
     }
 
     #navbar-login {
-        position: absolute;
-        right: 0;
     }
 
     #navbar-menu {
-        position: absolute;
-        right: 0;
+        width: 50%;
+        text-align: right;
+    }
+
+    #navbar-menu-button {
+        
     }
 }
 
@@ -53,10 +54,6 @@ body {
             display: block;
         }
 
-        #navbar-nav {
-            display: none;
-        }
-
         #navbar-menu {
             display: unset;
         }
@@ -67,10 +64,6 @@ body {
     #navbar{
         a{
             display: inline;
-        }
-
-        #navbar-nav {
-            display: unset;
         }
 
         #navbar-menu {

@@ -14,6 +14,11 @@
         <div id="navbar-logo">
             <img src = "img/logo.svg" alt="My Happy SVG" style="height: 100px;">
         </div>
+        <div id="navbar-menu">
+            <button id="navbar-menu-button" onclick="navbar_menu_button()">
+                Menu
+            </button>
+        </div>
         <div id="navbar-nav">
             <a href="">Home</a>
             <a href="">Classifica</a>
@@ -24,9 +29,7 @@
                 Login
             </button>
         </div>
-        <button id="navbar-menu" onclick="navbar_menu()">
-            Menu
-        </button>
+        
     </nav>
     <div id="main">
         Main
