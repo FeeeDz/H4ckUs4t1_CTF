@@ -14,7 +14,7 @@ session_start();
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="preload">
+<body>
     <nav id="navbar">
         <div id="navbar-logo">
             <img src = "img/logo.svg" alt="My Happy SVG" style="height: 100px;">
@@ -24,16 +24,16 @@ session_start();
         </div>
         <div id="navbar-nav">
             <a href="">
-                <img src="img/home.svg" width="20">
-                Home
+                <span id="navbar-nav-home" class="navbar-nav-icon"></span>
+                <span>Home</span>
             </a>
             <a href="">
-                <img src="img/scoreboard.svg" width="20">
-                Classifica
+                <span id="navbar-nav-scoreboard" class="navbar-nav-icon"></span>
+                <span>Classifica</span>
             </a>
             <a href="">
-                <img src="img/flag.svg" width="20">
-                Challenges
+                <span id="navbar-nav-flag" class="navbar-nav-icon"></span>
+                <span>Challenges</span>
             </a>
         </div>
         <div id="navbar-login-menu">

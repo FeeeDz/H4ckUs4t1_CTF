@@ -4,7 +4,7 @@
   opacity: 0;
 }
 
-.preload * {
+.disable-animation * {
   transition: none !important;
 }
 
@@ -13,15 +13,11 @@ body {
 }
 
 #navbar {
-  background-color: rgb(133, 187, 140);
+  background-color: rgb(192, 150, 34);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-}
-#navbar a {
-  width: 0px;
-  display: inline;
 }
 #navbar #navbar-logo {
   text-align: left;
@@ -48,6 +44,46 @@ body {
   transition: max-height 0.5s, opacity 0.5s;
   max-height: 75px;
 }
+#navbar #navbar-nav > *:not(:last-child) {
+  margin-right: 8px;
+}
+#navbar #navbar-nav a {
+  font-size: 17px;
+  text-decoration: none;
+  color: rgb(0, 95, 150);
+  width: 0px;
+  white-space: nowrap;
+}
+#navbar #navbar-nav a:hover {
+  filter: brightness(125%);
+}
+#navbar #navbar-nav .navbar-nav-icon {
+  display: inline-block;
+  background: rgb(0, 95, 150);
+  -webkit-mask-size: cover;
+          mask-size: cover;
+  vertical-align: sub;
+  width: 19px;
+  height: 19px;
+}
+#navbar #navbar-nav .navbar-nav-icon:hover {
+  filter: brightness(115%);
+}
+#navbar #navbar-nav .navbar-nav-icon:active {
+  filter: brightness(85%);
+}
+#navbar #navbar-nav #navbar-nav-home {
+  -webkit-mask: url(../img/home.svg) no-repeat;
+          mask: url(../img/home.svg) no-repeat;
+}
+#navbar #navbar-nav #navbar-nav-scoreboard {
+  -webkit-mask: url(../img/scoreboard.svg) no-repeat;
+          mask: url(../img/scoreboard.svg) no-repeat;
+}
+#navbar #navbar-nav #navbar-nav-flag {
+  -webkit-mask: url(../img/flag.svg) no-repeat;
+          mask: url(../img/flag.svg) no-repeat;
+}
 #navbar #navbar-login-menu {
   transition: max-height 0.5s, opacity 0.5s;
   display: flex;
@@ -61,7 +97,7 @@ body {
   background-clip: padding-box;
   border: 0.133em solid transparent;
   border-radius: 7px;
-  padding: 0.4em 0.46em 0.46em 2.13em;
+  padding: 0.34em 0.46em 0.4em 2.13em;
   background-position: 0.46em 50%;
   background-repeat: no-repeat;
   background-size: 1.2em;
@@ -69,7 +105,7 @@ body {
 }
 #navbar #navbar-login-menu button:hover {
   cursor: pointer;
-  filter: brightness(110%);
+  filter: brightness(115%);
 }
 #navbar #navbar-login-menu button:active {
   border: 0.133em solid rgb(112, 111, 111);

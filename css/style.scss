@@ -8,7 +8,7 @@ $login-button-padding: 8px;
     opacity: 0;
 }
 
-.preload *{
+.disable-animation *{
     transition: none !important;
 }
 
@@ -18,17 +18,12 @@ body {
 }
 
 #navbar {
-    background-color: rgb(133, 187, 140);
+    background-color: rgb(192, 150, 34);
     
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-
-    a{
-        width: 0px;
-        display: inline;
-    }
 
     #navbar-logo {
         text-align: left;
@@ -55,12 +50,61 @@ body {
         }
 
         #navbar-menu-button:active {
+            
         }
     }
 
     #navbar-nav {
+        $color: rgb(0, 95, 150);
+        $size: 17px;
+        
         transition: max-height .5s, opacity .5s;
         max-height: 75px;
+
+        > *:not(:last-child) {
+            margin-right: 8px;
+        }
+
+        a{
+            font-size: $size;
+            text-decoration: none;
+            color: $color;
+            width: 0px;
+            white-space:nowrap;
+        }
+
+        a:hover {
+            filter: brightness(125%);
+        }
+
+        .navbar-nav-icon {
+            display: inline-block;
+            background: $color;
+            mask-size: cover;
+            vertical-align: sub;
+            width: $size+2;
+            height: $size+2;
+        }
+
+        .navbar-nav-icon:hover {
+            filter: brightness(115%);
+        }
+
+        .navbar-nav-icon:active {
+            filter: brightness(85%);
+        }
+
+        #navbar-nav-home {
+            mask: url(../img/home.svg) no-repeat;
+        }
+
+        #navbar-nav-scoreboard {
+            mask: url(../img/scoreboard.svg) no-repeat;
+        }
+
+        #navbar-nav-flag {
+            mask: url(../img/flag.svg) no-repeat;
+        }
     }
 
     #navbar-login-menu {
@@ -71,14 +115,13 @@ body {
 
         max-height: 60px;
 
-
         button{
             font-size: 15px;
             font-weight: 500;
             background-clip: padding-box;
             border: 0.133em solid transparent;
             border-radius: 7px;
-            padding: 0.4em 0.46em 0.46em 0.93em + 1.2em;
+            padding: 0.34em 0.46em 0.4em 0.93em + 1.2em;
             background-position: 0.46em 50%;
             background-repeat: no-repeat;
             background-size: 1.2em;
@@ -87,7 +130,7 @@ body {
 
         button:hover{
             cursor: pointer;
-            filter: brightness(110%);
+            filter: brightness(115%);
         }
 
         button:active {
