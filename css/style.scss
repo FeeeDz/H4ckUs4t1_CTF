@@ -1,13 +1,24 @@
-$navbar-height: 200px;
 $footer-height: 200px;
+$login-button-image-size: 18px;
+$login-button-padding: 8px;
+
+.hidden {
+    overflow-y: hidden;
+    max-height: 0 !important;
+    opacity: 0;
+}
+
+.preload *{
+    transition: none !important;
+}
 
 body {
+    // font-family: 'Source Sans Pro', serif;
     margin: 0px;
 }
 
 #navbar {
     background-color: rgb(133, 187, 140);
-    height: $navbar-height;
     
     display: flex;
     align-items: center;
@@ -15,32 +26,125 @@ body {
     flex-wrap: wrap;
 
     a{
-
+        width: 0px;
+        display: inline;
     }
 
     #navbar-logo {
         text-align: left;
     }
-
-    #navbar-nav {
-    }
-
-    #navbar-login {
-    }
-
+    
     #navbar-menu {
         width: 50%;
         text-align: right;
+
+        #navbar-menu-button {
+            border: 0px;
+            height: 35px;
+            width: 35px;
+            margin: 0px 20px;
+            background-color: transparent;
+            background-image: url(../img/menu.svg);
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+
+        #navbar-menu-button:hover {
+            cursor: pointer;
+        }
+
+        #navbar-menu-button:active {
+        }
     }
 
-    #navbar-menu-button {
-        
+    #navbar-nav {
+        transition: max-height .5s, opacity .5s;
+        max-height: 75px;
+    }
+
+    #navbar-login-menu {
+        transition: max-height .5s, opacity .5s;
+        display: flex;
+        align-items: center;
+        justify-content: right;
+
+        max-height: 60px;
+
+
+        button{
+            font-size: 15px;
+            font-weight: 500;
+            background-clip: padding-box;
+            border: 0.133em solid transparent;
+            border-radius: 7px;
+            padding: 0.4em 0.46em 0.46em 0.93em + 1.2em;
+            background-position: 0.46em 50%;
+            background-repeat: no-repeat;
+            background-size: 1.2em;
+            margin: 0.66em 0.66em;
+        }
+
+        button:hover{
+            cursor: pointer;
+            filter: brightness(110%);
+        }
+
+        button:active {
+            border: 0.133em solid rgb(112, 111, 111);
+            filter: brightness(85%);
+        }
+
+        // button{
+        //     border: 0px;
+        //     border-radius: 7px;
+        //     padding: 8px 8px 8px 14px + 18px;
+        //     background-position: 7px 50%;
+        //     background-repeat: no-repeat;
+        //     background-size: 18px;
+        //     margin: 10px 10px;
+        // }
+
+        // button:hover{
+        //     cursor: pointer;
+        //     filter: brightness(110%);
+        // }
+
+        // button:active {
+        //     border: 1px solid black;
+        //     padding: 7px 7px 7px 13px + 18px;
+        //     background-position: 6px 50%;
+        //     filter: brightness(85%);
+        // }
+
+        button:focus {
+        }
+
+        #login-button {
+            background-image: url(../img/login.svg);
+            background-color: rgb(0, 170, 0);
+        }
+
+        #register-button {
+            background-image: url(../img/register.svg);
+            background-color: rgb(0, 103, 221);
+        }
+
+        #account-button {
+            background-image: url(../img/account.svg);
+            background-color: rgb(0, 170, 0);
+        }
+
+        #logout-button {
+            background-image: url(../img/logout.svg);
+            background-color: rgb(221, 16, 16);
+        }
     }
 }
 
+
 #main {
     background-color: rgb(11, 105, 194);
-    min-height: calc(100vh - ($navbar-height + $footer-height));
 }
 
 #footer {
