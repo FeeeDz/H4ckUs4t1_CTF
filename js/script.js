@@ -29,21 +29,23 @@ function mq_width_listener(mq){
 
         navbar_login_menu.style.width = "100%";
         navbar_login_menu.style.justifyContent = "center";
+        navbar_login_menu_buttons[navbar_login_menu_buttons.length - 1].style.margin = "10px 0";
 
         navbar_menu_button(false);
     }
     else {
-        navbar_logo.style.width = "27%";
+        navbar_logo.style.width = "30%";
 
         navbar_nav.classList.remove("hidden");
-        navbar_nav.style.width = "46%";
+        navbar_nav.style.width = "40%";
         navbar_nav.style.textAlign = "center";
         navbar_nav_links.forEach(element => element.style.paddingLeft = "");
         navbar_nav_links.forEach(element => element.style.margin = "");
 
         navbar_login_menu.classList.remove("hidden");
-        navbar_login_menu.style.width = "27%";
+        navbar_login_menu.style.width = "30%";
         navbar_login_menu.style.justifyContent = "right";
+        navbar_login_menu_buttons[navbar_login_menu_buttons.length - 1].style.margin = "";
         
         // main.style.minHeight = "calc(100vh - " + (parseInt(navbar.clientHeight) + parseInt(footer.clientHeight)) + "px)";
     }
@@ -64,6 +66,7 @@ let navbar_logo = navbar.querySelector("#navbar-logo");
 let navbar_nav = navbar.querySelector("#navbar-nav");
 let navbar_nav_links = navbar_nav.querySelectorAll("a");
 let navbar_login_menu = navbar.querySelector("#navbar-login-menu");
+let navbar_login_menu_buttons = navbar_login_menu.querySelectorAll("button");
 let main = document.querySelector("#main");
 let footer = document.querySelector("#footer");
 

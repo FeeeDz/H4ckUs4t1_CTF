@@ -16,8 +16,8 @@ session_start();
 </head>
 <body>
     <nav id="navbar">
-        <div id="navbar-logo">
-            <img src = "img/logo.svg" alt="My Happy SVG" style="height: 100px;">
+        <div id="navbar-logo" style="height: 90px;">
+            <img src = "img/logo.svg">
         </div>
         <div id="navbar-menu">
             <button id="navbar-menu-button" onclick="navbar_menu_button()"></button>
