@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS CTF_challenge;
-DROP TABLE IF EXISTS CTF_team;
-DROP TABLE IF EXISTS CTF_user;
 DROP TABLE IF EXISTS CTF_submit;
+DROP TABLE IF EXISTS CTF_user;
+DROP TABLE IF EXISTS CTF_team;
+DROP TABLE IF EXISTS CTF_challenge;
 
 
 CREATE TABLE CTF_challenge (
@@ -24,15 +24,15 @@ CREATE TABLE CTF_team (
 CREATE TABLE CTF_user (
     user_id INT AUTO_INCREMENT,
     username VARCHAR(16) NOT NULL,
-    password_hash VARCHAR(512) NOT NULL,
-    email VARCHAR(320) NOT NULL,
+    password_hash VARCHAR(64) NOT NULL,
+    email VARCHAR(256) NOT NULL,
     registration_date DATETIME NOT NULL,
     last_login DATETIME NOT NULL,
     role CHAR(1),
     team_id INT,
     PRIMARY KEY (user_id),
     UNIQUE (username),
-    UNIQUE (email),
+    UNIQUE (email(191)),
     FOREIGN KEY (team_id) REFERENCES CTF_team(team_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
