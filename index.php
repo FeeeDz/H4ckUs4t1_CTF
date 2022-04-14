@@ -55,9 +55,11 @@ session_start();
     <div id="main">
 
         <?php
-        require "inc/db_functions.php";
+        require "db/db_functions.php";
 
         $conn = db_connect();
+
+        echo bin2hex(random_bytes(16));
 
         ?>
 
