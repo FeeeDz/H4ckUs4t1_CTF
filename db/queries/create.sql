@@ -23,7 +23,7 @@ CREATE TABLE CTF_role (
 ) ENGINE = INNODB;
 
 CREATE TABLE CTF_challenge (
-    challenge_id INT AUTO_INCREMENT,
+    challenge_id INT,
     flag VARCHAR(48) NOT NULL,
     PRIMARY KEY (challenge_id),
     UNIQUE (flag)
@@ -87,9 +87,9 @@ INSERT INTO CTF_role (role_name, role_description)
 VALUES
     ("", "");
 
-INSERT INTO CTF_challenge (flag)
+INSERT INTO CTF_challenge (challenge_id, flag)
 VALUES
-    ("");
+    (1, "");
 
 INSERT INTO CTF_team (team_name, token, registration_date)
 VALUES
