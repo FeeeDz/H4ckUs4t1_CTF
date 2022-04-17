@@ -7,10 +7,10 @@ require "inc/head.php";
     <?php require "inc/navbar.php"; ?>
     <div id="main">
     <?php
-    
+
     require "inc/functions.php";
     $conn = db_connect();
-
+    
     ?>
     </div>
     <?php require "inc/footer.php"; ?>
