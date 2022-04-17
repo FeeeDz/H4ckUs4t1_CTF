@@ -7,11 +7,10 @@ require "inc/head.php";
     <?php require "inc/navbar.php"; ?>
     <div id="main">
     <?php
+
     require "inc/functions.php";
     $conn = db_connect();
-    // if (db_login($conn, "imBenjamin741", "Beniamino2003")) {
-    //     echo $_SESSION["role"];
-    // }
+    
     ?>
     </div>
     <?php require "inc/footer.php"; ?>

@@ -41,16 +41,20 @@ function db_logout(){
 
 function db_register($conn, $username, $password, $email) {
     global $hash_options;
+    $role = 'U';
 
     $password_hash = password_hash($password, PASSWORD_DEFAULT, $hash_options);
     $query = "INSERT INTO CTF_user (username, password_hash, email, registration_date, last_login, role, team_id)
-        VALUES (?, ?, ?, NOW(), NOW(), 'U', NULL)";
+        VALUES (?, ?, ?, NOW(), NOW(), ?, NULL)";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("sss", $username, $password_hash, $email);
+    $stmt->bind_param("ssss", $username, $password_hash, $email, $role);
 
-    if ($stmt->execute())
+    if ($stmt->execute()){
+        $_SESSION['logged'] = $username;
+        $_SESSION['role'] = $role;
         return true;    
+    }
     return false;
 }
 
