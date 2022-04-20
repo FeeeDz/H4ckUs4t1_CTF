@@ -10,13 +10,6 @@ require "inc/head.php";
     <?php
     require "inc/functions.php";
     $conn = db_connect();
-    // if (db_login($conn, "imBenjamin741", "Beniamino2003")) {
-    //     echo $_SESSION["role"];
-    // }
-
-    // if (db_register($conn, "imBenjamin741bi", "Beniamino2003", "emails")) {
-    //     echo "adsf";
-    // }
 
     ?>
     </div>
