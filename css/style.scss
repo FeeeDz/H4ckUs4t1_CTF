@@ -67,19 +67,16 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    // align-items: center;
 
     .challenges__grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(4, 1fr);
-        grid-row-gap: 28px;
-
-        // margin: 0rem 2rem;
-        justify-content: space-between;
+        margin: 1rem 9rem;
+        justify-content: center;
         
         .challenge__box {
+            display: inline-block;
             border: 1px solid green;
-            width: 10rem;
+            width: 20rem;
             height: 3rem;
             cursor: pointer;
         }
