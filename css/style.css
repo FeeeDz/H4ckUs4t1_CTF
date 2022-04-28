@@ -45,7 +45,7 @@ body {
 }
 
 #nav {
-  background-color: rgb(192, 150, 34);
+  border-bottom: 1px solid #eef1f6;
 }
 #nav__toggle {
   position: absolute;
@@ -53,8 +53,58 @@ body {
   margin: 0rem 1rem;
   right: 0;
 }
-#nav__toggle span {
-  font-size: 1.5rem;
+#nav__toggle svg {
+  width: 1.5rem;
+  fill: #2a324b;
+}
+#nav__toggle__close {
+  display: none;
+}
+#nav__toggle__menu {
+  margin-top: 0.2rem;
+}
+#nav__checkbox {
+  display: none;
+}
+#nav__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  margin: 1rem;
+}
+#nav__menu li {
+  list-style: none;
+  display: none;
+}
+#nav__menu li:first-child {
+  margin-right: auto;
+  display: block;
+}
+#nav__menu li:nth-child(2) {
+  margin-right: auto;
+  display: block;
+}
+#nav__menu a {
+  text-decoration: none;
+  color: inherit;
+  font-size: 1.2rem;
+}
+#nav__menu svg {
+  width: 1.5rem;
+  fill: #2a324b;
+}
+
+#nav__checkbox:checked ~ ul.nav__menu li {
+  display: block;
+}
+
+#nav__checkbox:checked ~ label.nav__toggle .close {
+  display: block;
+}
+
+#nav__checkbox:checked ~ label.nav__toggle .menu {
+  display: none;
 }
 
 #main {
@@ -63,16 +113,21 @@ body {
   flex-direction: column;
   justify-content: center;
 }
-#main .challenges__grid {
-  margin: 1rem 9rem;
-  justify-content: center;
+#main .challenges__container .challenges__category {
+  margin: 0rem 2rem;
 }
-#main .challenges__grid .challenge__box {
+#main .challenges__container .challenges__grid {
+  margin: 0.5rem 1.5rem;
+  text-align: center;
+}
+#main .challenges__container .challenges__grid .challenge__box {
   display: inline-block;
   border: 1px solid green;
-  width: 20rem;
-  height: 3rem;
+  border-radius: 1rem;
+  width: 25rem;
+  height: 5rem;
   cursor: pointer;
+  margin: 0.5rem 0.5rem;
 }
 
 #footer {
@@ -80,19 +135,14 @@ body {
   height: 200px;
 }
 
-@media (max-width: 767px) {
-  #navbar a {
-    display: block;
-  }
-  #navbar #navbar-menu {
-    display: unset;
-  }
-}
-@media (min-width: 768px) {
-  #navbar a {
-    display: inline;
-  }
-  #navbar #navbar-menu {
+@media only screen and (min-width: 560px) {
+  #nav__toggle {
     display: none;
+  }
+  #nav__menu {
+    flex-direction: row;
+  }
+  #nav__menu li {
+    display: block;
   }
 }/*# sourceMappingURL=style.css.map */
