@@ -13,7 +13,6 @@ function db_connect() {
 }
 
 function db_login($conn, $username, $password) {
-
     $query = "SELECT user_id, password_hash, role FROM CTF_user WHERE username = ?";
 
     $stmt = $conn->prepare($query);
@@ -33,7 +32,7 @@ function db_login($conn, $username, $password) {
     return false;
 }
 
-function db_logout(){
+function db_logout() {
     $_SESSION = array();
 
     if (ini_get("session.use_cookies")) {
@@ -60,7 +59,7 @@ function db_register($conn, $username, $password, $email) {
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ssss", $username, $password_hash, $email, $role);
 
-    if ($stmt->execute()){
+    if ($stmt->execute()) {
         $_SESSION['logged'] = $username;
         $_SESSION['role'] = $role;
         return true;    

@@ -2,185 +2,88 @@ $footer-height: 200px;
 $login-button-image-size: 18px;
 $login-button-padding: 8px;
 
-.hidden {
-    overflow-y: hidden;
-    max-height: 0 !important;
-    opacity: 0;
-}
 
-.disable-animation *{
-    transition: none !important;
+//color variables
+$clr-primary:   skyblue;
+$clr-primary-hover: rgb(25, 209, 223);
+$clr-primary-dark: rgb(67, 108, 124);
+
+$clr-gray100: #f9fbff;
+$clr-gray150: #f4f6fb;
+$clr-gray200: #eef1f6;
+$clr-gray300: #e1e5ee;
+$clr-gray400: #767b91;
+$clr-gray500: #4f546c;
+$clr-gray600: #2a324b;
+$clr-gray700: #161d34;
+
+
+
+/* Rules for sizing the icon. */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+html {
+    font-size: 16px;
 }
 
 body {
-    // font-family: 'Source Sans Pro', serif;
+    font-family: 'Source Sans Pro', sans-serif;
+    // font-weight: 700;
+    color: $clr-gray600;
     margin: 0px;
+    height: 100vh;
 }
 
-#navbar {
+#nav {
     background-color: rgb(192, 150, 34);
     
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
+    &__toggle {
+        position: absolute;
+        cursor: pointer;
+        margin: 0rem 1rem;
+        right: 0;
 
-    #navbar-logo {
-        text-align: left;
-        padding-left: 20px;
-        box-sizing: border-box;
-
-        img {
-            max-width: 100%;
-            max-height: 100%;
-        }
-    }
-    
-    #navbar-menu {
-        width: 50%;
-        text-align: right;
-        padding-right: 20px;
-        box-sizing: border-box;
-
-        #navbar-menu-button {
-            border: 0px;
-            height: 35px;
-            width: 35px;
-            background-color: transparent;
-            background-image: url(../img/menu.svg);
-            background-position: 50% 50%;
-            background-repeat: no-repeat;
-            background-size: contain;
-        }
-
-        #navbar-menu-button:hover {
-            cursor: pointer;
-        }
-
-        #navbar-menu-button:active {
-            
-        }
-    }
-
-    #navbar-nav {
-        $color: rgb(0, 95, 150);
-        $size: 17px;
-        
-        transition: max-height .5s, opacity .5s;
-        max-height: 85px;
-
-        > *:not(:last-child) {
-            margin-right: 8px;
-        }
-
-        a{
-            font-size: $size;
-            text-decoration: none;
-            color: $color;
-            width: 0px;
-            white-space:nowrap;
-        }
-
-        a:hover {
-            filter: brightness(125%);
-        }
-
-        .navbar-nav-icon {
-            display: inline-block;
-            background: $color;
-            mask-size: cover;
-            vertical-align: sub;
-            width: $size+2;
-            height: $size+2;
-        }
-
-        .navbar-nav-icon:hover {
-            filter: brightness(115%);
-        }
-
-        .navbar-nav-icon:active {
-            filter: brightness(85%);
-        }
-
-        #navbar-nav-home {
-            mask: url(../img/home.svg) no-repeat;
-        }
-
-        #navbar-nav-scoreboard {
-            mask: url(../img/scoreboard.svg) no-repeat;
-        }
-
-        #navbar-nav-flag {
-            mask: url(../img/flag.svg) no-repeat;
-        }
-    }
-
-    #navbar-login-menu {
-        transition: max-height .5s, opacity .5s;
-        display: flex;
-        align-items: center;
-        justify-content: right;
-
-        max-height: 70px;
-
-        > *:not(:last-child) {
-            margin-right: 4px;
-        }
-
-        > *:last-child {
-            margin-right: 20px;
-        }
-
-        button{
-            font-size: 15px;
-            font-weight: 500;
-            background-clip: padding-box;
-            border: 0.133em solid transparent;
-            border-radius: 7px;
-            padding: 0.34em 0.46em 0.4em 0.93em + 1.2em;
-            background-position: 0.46em 50%;
-            background-repeat: no-repeat;
-            background-size: 1.2em;
-        }
-
-        button:hover{
-            cursor: pointer;
-            filter: brightness(115%);
-        }
-
-        button:active {
-            border: 0.133em solid rgb(112, 111, 111);
-            filter: brightness(85%);
-        }
-
-        button:focus {
-        }
-
-        #login-button {
-            background-image: url(../img/login.svg);
-            background-color: rgb(0, 170, 0);
-        }
-
-        #register-button {
-            background-image: url(../img/register.svg);
-            background-color: rgb(0, 103, 221);
-        }
-
-        #account-button {
-            background-image: url(../img/account.svg);
-            background-color: rgb(0, 170, 0);
-        }
-
-        #logout-button {
-            background-image: url(../img/logout.svg);
-            background-color: rgb(221, 16, 16);
+        span {
+            font-size: 1.5rem;
         }
     }
 }
 
 
 #main {
-    background-color: rgb(11, 105, 194);
+    background-color: rgb(141, 174, 204);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .challenges__grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+        grid-row-gap: 28px;
+
+        // margin: 0rem 2rem;
+        justify-content: space-between;
+        
+        .challenge__box {
+            border: 1px solid green;
+            width: 10rem;
+            height: 3rem;
+            cursor: pointer;
+        }
+    } 
 }
 
 #footer {
