@@ -12,6 +12,18 @@ require "inc/head.php";
     $conn = db_connect();
 
     ?>
+        <span>Miscellaneous</span>
+        <div class="challenges__grid"></div>
+        <span>Web</span>
+        <div class="challenges__grid">
+            <div class="challenge__box">Web</div>
+            <div class="challenge__box">Web</div>
+            <div class="challenge__box">Web</div>
+            <div class="challenge__box">Web</div>
+            <div class="challenge__box">Web</div>
+        </div>
+        <span>Pwn</span>
+        <div class="challenges__grid"></div>
     </div>
     <?php require "inc/footer.php"; ?>
     <script src="js/script.js"></script> 
