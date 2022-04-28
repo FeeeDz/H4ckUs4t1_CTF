@@ -46,18 +46,79 @@ body {
 }
 
 #nav {
-    background-color: rgb(192, 150, 34);
-    
+    border-bottom: 1px solid $clr-gray200;
+  
     &__toggle {
         position: absolute;
         cursor: pointer;
         margin: 0rem 1rem;
         right: 0;
-
-        span {
-            font-size: 1.5rem;
+  
+        svg {
+            width: 1.5rem;
+            fill: $clr-gray600;
+        }
+  
+        &__close {
+         display: none;
+        }
+  
+        &__menu {
+            margin-top: 0.2rem;
         }
     }
+  
+    &__checkbox {
+      display: none;
+    }
+  
+    &__menu {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        align-items: center;
+        margin: 1rem;
+  
+        li {
+            list-style: none;
+            display: none;
+    
+            &:first-child {
+                margin-right: auto;
+                display: block;
+            }
+
+            &:nth-child(2) {
+                margin-right: auto;
+                display: block;
+            }
+        }
+  
+        a {
+            text-decoration: none;
+            color: inherit;
+            font-size: 1.2rem;
+        }
+  
+        svg {
+            width: 1.5rem;
+            fill: $clr-gray600;
+        }
+    }
+}
+  
+// Toggle the hamburger menu in mobile view
+#nav__checkbox:checked ~ ul.nav__menu li {
+    display: block;
+}
+
+//Change from menu to close icon on tap
+#nav__checkbox:checked ~ label.nav__toggle .close {
+    display: block;
+}
+
+#nav__checkbox:checked ~ label.nav__toggle .menu {
+    display: none;
 }
 
 
@@ -69,18 +130,29 @@ body {
     justify-content: center;
     // align-items: center;
 
-    .challenges__grid {
-        margin: 1rem 9rem;
-        justify-content: center;
-        
-        .challenge__box {
-            display: inline-block;
-            border: 1px solid green;
-            width: 20rem;
-            height: 3rem;
-            cursor: pointer;
+    .challenges__container {
+
+        .challenges__category {
+            margin: 0rem 2rem;
         }
-    } 
+
+        .challenges__grid {
+            margin: 0.5rem 1.5rem;
+            text-align: center;
+            
+            .challenge__box {
+                display: inline-block;
+                border: 1px solid green;
+                border-radius: 1rem;
+                width: 25rem;
+                height: 5rem;
+                cursor: pointer;
+                margin: 0.5rem 0.5rem;
+            }
+        } 
+
+    }
+
 }
 
 #footer {
@@ -88,26 +160,30 @@ body {
     height: $footer-height;
 }
 
-@media (max-width: 767px) {
-    #navbar {
-        a {
-            display: block;
+@media only screen and (min-width: 560px) {
+    #nav {
+        &__toggle {
+            display: none;
         }
-
-        #navbar-menu {
-            display: unset;
+    
+        &__menu {
+            flex-direction: row;
+    
+            li {
+                display: block;
+            }
         }
     }
 }
   
-@media (min-width: 768px) {
-    #navbar{
-        a{
-            display: inline;
-        }
+// @media (min-width: 768px) {
+//     #navbar{
+//         a{
+//             display: inline;
+//         }
 
-        #navbar-menu {
-            display: none;
-        }
-    }
-}
+//         #navbar-menu {
+//             display: none;
+//         }
+//     }
+// }
