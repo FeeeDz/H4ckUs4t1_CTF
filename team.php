@@ -11,7 +11,7 @@ require "inc/head.php";
     require "inc/functions.php";
     $conn = db_connect();
 
-    db_register_team($conn, "adsfafa");
+    // db_register_team($conn, "adsfafa");
 
     ?>
 
