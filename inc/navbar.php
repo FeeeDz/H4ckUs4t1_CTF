@@ -4,7 +4,7 @@
         <span id="nav__toggle__menu" class="material-icons">menu</span>
         <span id="nav__toggle__close" class="material-icons">close</span>
     </label>
-    <ul class="nav__menu">
+    <ul id="nav__menu">
         <li><a href="index.php">
             <span class="material-icons">polymer</span>
         </a></li>
@@ -20,20 +20,28 @@
             <span class="material-icons">polymer</span>
             <span>Challenges</span>
         </a></li>
+        <li><a href="challenges.php">
+            <span class="material-icons">polymer</span>
+            <span>Challenges</span>
+        </a></li>
     </ul>
-    <div id="navbar-login-menu">
+    
+    <div id="nav__account">
     <?php if (isset($_SESSION["logged"])) : ?>
-        <button id="account-button" onclick="location.href = 'account.php'">
+        <button id="account__button" onclick="location.href = 'account.php'">
             <?php echo $_SESSION["logged"]; ?>
         </button>
-        <button id="logout-button" onclick="location.href = 'logout.php'">
+        <button id="team__button" onclick="location.href = 'team.php'">
+            Team
+        </button>
+        <button id="logout__button" onclick="location.href = 'logout.php'">
             Logout
         </button>
     <?php else : ?>
-        <button id="login-button" onclick="location.href = 'login.php?redirect=<?php echo basename($_SERVER['PHP_SELF']);?>'">
+        <button id="login__button" onclick="location.href = 'login.php?redirect=<?php echo basename($_SERVER['PHP_SELF']);?>'">
             Login
         </button>
-        <button id="register-button" onclick="location.href = 'register.php'">
+        <button id="register__button" onclick="location.href = 'register.php'">
             Register
         </button>
     <?php endif; ?>

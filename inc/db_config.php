@@ -1,6 +1,6 @@
 <?php
-$hostname = "localhost";
-$username = "quintaa2122sql";
-$password = "ruB1xo+2thl7";
-$servername = "quintaa2122_db";
+$db_hostname = "localhost";
+$db_username = "quintaa2122sql";
+$db_password = "ruB1xo+2thl7";
+$db_servername = "quintaa2122_db";
 ?>
