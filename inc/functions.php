@@ -7,22 +7,22 @@ $hash_options = [
 function db_connect() {
     require "inc/db_config.php";
 
-    if ($conn = mysqli_connect($hostname, $username, $password, $servername)) 
+    if ($conn = mysqli_connect($db_hostname, $db_username, $db_password, $db_servername)) 
         return $conn;
     return false;
 }
 
-function db_login($conn, $username, $password) {
-    $query = "SELECT user_id, password_hash, role FROM CTF_user WHERE username = ?";
+function db_login($conn, $email, $password) {
+    $query = "SELECT username, password_hash, role FROM CTF_user WHERE email = ?";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
     if ($row && password_verify($password, $row['password_hash'])) {
-        $_SESSION['logged'] = $username;
+        $_SESSION['logged'] = $row["username"];
         $_SESSION['role'] = $row['role'];
         return true;
     }
@@ -48,7 +48,7 @@ function db_logout() {
     return true;
 }
 
-function db_register($conn, $username, $password, $email) {
+function db_register_user($conn, $username, $password, $email) {
     global $hash_options;
     $role = 'U';
 
@@ -64,7 +64,25 @@ function db_register($conn, $username, $password, $email) {
         $_SESSION['role'] = $role;
         return true;    
     }
+
     return false;
+}
+
+function db_register_team($conn, $team_name) {
+    $token = bin2hex(random_bytes(16));
+
+    $query = "INSERT INTO CTF_team (team_name, token, registration_date)
+    VALUES (?, ?, NOW())";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ss", $team_name, $token);
+    if(!$stmt->execute()) return false;
+
+    $query = "UPDATE CTF_user SET team_name = ? WHERE username = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ss", $team_name, $_SESSION['logged']);
+    $stmt->execute();
+
+    return true;
 }
 
 ?>
