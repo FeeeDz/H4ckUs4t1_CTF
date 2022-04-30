@@ -49,6 +49,10 @@ function db_logout() {
 }
 
 function db_register_user($conn, $username, $password, $email) {
+    if(strlen($username) < 3 || strlen($username) > 16) return false;
+    if(strlen($password) < 8 || strlen($password) > 64) return false;
+    if(!filter_var($email, FILTER_VALIDATE_EMAIL)) return false;
+
     global $hash_options;
     $role = 'U';
 
@@ -69,6 +73,8 @@ function db_register_user($conn, $username, $password, $email) {
 }
 
 function db_register_team($conn, $team_name) {
+    if(strlen($team_name) < 3 || strlen($team_name) > 32) return false;
+
     $token = bin2hex(random_bytes(16));
 
     $query = "INSERT INTO CTF_team (team_name, token, registration_date)
@@ -82,7 +88,7 @@ function db_register_team($conn, $team_name) {
     $stmt->bind_param("ss", $team_name, $_SESSION['logged']);
     $stmt->execute();
 
-    return true;
+    return $token;
 }
 
 ?>
