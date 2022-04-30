@@ -11,10 +11,27 @@ require "inc/head.php";
     require "inc/functions.php";
     $conn = db_connect();
 
-    // db_register_team($conn, "adsfafa");
+    $team_name = get_team_name($conn);
+    $token = get_team_token($conn, $team_name);
+
+    if (!isset($_SESSION["logged"])) { 
+        header("Location: index.php");
     ?>
-    <?php if (!isset($_SESSION["logged"])) { ?>
-        <a href="   login.php">fai il login</a>
+        <a href="login.php?redirect=<?php echo basename($_SERVER['PHP_SELF']);?>">devi prima registrarti/fare il login</a>
+    <?php 
+    } elseif ($team_name) { 
+        if(isset($_GET["action"])) {
+            if($_GET["action"] == "quit") quit_team($conn);
+            header("Location: ".basename($_SERVER['PHP_SELF']));
+        }
+
+        echo $team_name."<br>";
+        echo $token;
+    ?>    
+        <form method="GET">
+            <input type="submit" value="Esci dal team">
+            <input type="hidden" name="action" value="quit">
+        </form>
     <?php } elseif (!isset($_GET["action"])) { ?>
         <form method="GET">
             <input type="submit" value="Join team">
@@ -24,14 +41,21 @@ require "inc/head.php";
             <input type="submit" value="Crea team">
             <input type="hidden" name="action" value="create">
         </form>
-    <?php } elseif ($_GET["action"] == "join") { ?>
-        join        
+    <?php } elseif ($_GET["action"] == "join") {
+        if (isset($_POST["token"])) { 
+            if (join_team($conn, $_POST["token"])) header("Location: ".basename($_SERVER['PHP_SELF']));
+            echo "token non valido";
+        } ?>
+        <form method="POST">
+            <input type="text" name="token" minlength="3" maxlength="32" pattern="[\x00-\x7F]+" required>
+            <input type="submit" value="Crea team">
+        </form>       
     <?php } elseif ($_GET["action"] == "create") {
         if (isset($_POST["team_name"])) { 
-            $token = db_register_team($conn, $_POST["team_name"]);
+            $token = register_team($conn, $_POST["team_name"]);
 
-            if (!$token) echo "Nome team già utilizzato!";
-            else echo $token;
+            if ($token) header("Location: ".basename($_SERVER['PHP_SELF']));
+            echo "Nome team già utilizzato!";
         } ?>
         <form method="POST">
             <input type="text" name="team_name" minlength="3" maxlength="32" pattern="[\x00-\x7F]+" required>
