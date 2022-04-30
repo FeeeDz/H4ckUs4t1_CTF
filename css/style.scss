@@ -68,13 +68,13 @@ body {
         cursor: pointer;
         margin: 0rem 1rem;
         right: 0;
+        transform: translateY(50%);
   
         &__close {
             display: none;
         }
   
         &__menu {
-            margin-top: 0.2rem;
         }
     }
   
