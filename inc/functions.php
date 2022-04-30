@@ -14,7 +14,6 @@ function db_connect() {
 
 function db_login($conn, $email, $password) {
     $query = "SELECT username, password_hash, role FROM CTF_user WHERE email = ?";
-
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -72,10 +71,45 @@ function db_register_user($conn, $username, $password, $email) {
     return false;
 }
 
-function db_register_team($conn, $team_name) {
-    if(strlen($team_name) < 3 || strlen($team_name) > 32) return false;
+function get_team_token($conn, $team_name) {
+    if(!$team_name) return false;
 
-    $token = bin2hex(random_bytes(16));
+    $query = "SELECT token FROM CTF_team WHERE team_name = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $team_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    return $row['token'];
+}
+
+function get_team_name($conn) {
+    if(!$_SESSION["logged"]) return false;
+
+    $query = "SELECT team_name FROM CTF_user WHERE username = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $_SESSION['logged']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    return $row['team_name'];
+}
+
+function register_team($conn, $team_name) {
+    if(!$_SESSION["logged"]) return false;
+    if(strlen($team_name) < 3 || strlen($team_name) > 32) return false;
+    if(get_team_name($conn)) return false;
+
+    do {
+        $token = bin2hex(random_bytes(16));
+        
+        $query = "SELECT team_name FROM CTF_team WHERE token = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $token);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+    } while($row);
 
     $query = "INSERT INTO CTF_team (team_name, token, registration_date)
     VALUES (?, ?, NOW())";
@@ -89,6 +123,39 @@ function db_register_team($conn, $team_name) {
     $stmt->execute();
 
     return $token;
+}
+
+function join_team($conn, $token) {
+    if(!$_SESSION["logged"]) return false;
+    if(get_team_name($conn)) return false;
+
+    $query = "SELECT team_name FROM CTF_team WHERE token = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    $team_name = $row['team_name'];
+
+    $query = "UPDATE CTF_user SET team_name = ? WHERE username = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ss", $team_name, $_SESSION['logged']);
+    $stmt->execute();
+
+    return true;
+}
+
+function quit_team($conn) {
+    if(!$_SESSION["logged"]) return false;
+    
+    $query = "UPDATE CTF_user SET team_name = NULL WHERE username = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $_SESSION['logged']);
+    $stmt->execute();
+    
+    return true;
 }
 
 ?>

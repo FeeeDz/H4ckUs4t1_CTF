@@ -46,9 +46,24 @@ body {
 }
 
 #nav {
-    border-bottom: 1px solid $clr-gray200;
+    // border-bottom: 1px solid $clr-gray200;
+    background-color: rgb(143, 105, 233);
+    margin: 0px;
+
+    #nav__checkbox:checked ~ ul#nav__menu li {
+        display: block;
+    }
+    
+    #nav__checkbox:checked ~ label#nav__toggle #nav__toggle__close {
+        display: block;
+    }
+    
+    #nav__checkbox:checked ~ label#nav__toggle #nav__toggle__menu {
+        display: none;
+    }
   
     &__toggle {
+        display: none;
         position: absolute;
         cursor: pointer;
         margin: 0rem 1rem;
@@ -64,133 +79,105 @@ body {
     }
   
     &__checkbox {
-      display: none;
+        display: none;
     }
   
     &__menu {
         display: flex;
-        flex-direction: column;
-        gap: 2rem;
+        flex-direction: row;
         align-items: center;
-        margin: 1rem;
+        justify-content: space-between;
+        gap: 2.5rem;
+        padding: 1rem;
+        margin: 0;
   
         li {
+            flex: 1;
             list-style: none;
-            display: none;
-    
-            &:first-child {
-                margin-right: auto;
-                display: block;
-                
+
+            #nav__logo {
+                justify-content: flex-start;
+            }
+
+            #nav__nav {
+                flex: 1;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 1.3rem;
+
+                a{
+                    color: rgb(201, 199, 199);
+                    gap: 0.3em;
+                    font-size: 1.2rem;
+                }
+
+                a.active, a.active:hover, a:hover{
+                    filter: brightness(125%);
+                }
+            }
+
+            #nav__account {
+                flex: 1;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 0.7rem;
+
+                a{
+                    gap: 0.6em;
+            
+                    font-weight: 600;
+                    border: 0.133em solid transparent;
+                    border-radius: 0.4em;
+                    padding: 0.3em 0.6em;
+                }
+            
+                a:hover{
+                    filter: brightness(115%);
+                }
+            
+                a:active {
+                    border: 0.133em solid rgb(112, 111, 111);
+                    filter: brightness(85%);
+                }
+            
+                a:focus {
+
+                }
+            
+                #login__button {
+                    background-color: rgb(0, 170, 0);
+                }
+                #team__button {
+                    background-color: rgb(40, 116, 202);
+                }
+                #register__button {
+                    background-color: rgb(0, 103, 221);
+                }
+                #account__button {
+                    background-color: rgb(0, 170, 0);
+                }
+                #logout__button {
+                    background-color: rgb(221, 16, 16);
+                }
+            }
+
+            a {
+                text-align: center;
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                color: inherit;
             }
         }
   
-        a {
-            text-decoration: none;
-            color: inherit;
-            font-size: 1.2rem;
-        }
     }
-}
 
-// Toggle the hamburger menu in mobile view
-#nav__checkbox:checked ~ ul#nav__menu li {
-    display: block;
-}
-
-//Change from menu to close icon on tap
-#nav__checkbox:checked ~ label#nav__toggle #nav__toggle__close {
-    display: block;
-}
-
-#nav__checkbox:checked ~ label#nav__toggle #nav__toggle__menu {
-    display: none;
-}
-
-@media only screen and (min-width: 560px) {
-    #nav {
-        &__toggle {
-            display: none;
-        }
     
-        &__menu {
-            flex-direction: row;
-    
-            li {
-                display: block;
-            }
-        }
-    }
 }
-
-#nav__account {
-    transition: max-height .5s, opacity .5s;
-    display: flex;
-    align-items: center;
-    justify-content: right;
-
-    max-height: 70px;
-
-    > *:not(:last-child) {
-        margin-right: 4px;
-    }
-
-    > *:last-child {
-        margin-right: 20px;
-    }
-
-    button{
-        font-size: 15px;
-        font-weight: 500;
-        background-clip: padding-box;
-        border: 0.133em solid transparent;
-        border-radius: 7px;
-        padding: 0.34em 0.46em 0.4em 0.93em + 1.2em;
-        background-position: 0.46em 50%;
-        background-repeat: no-repeat;
-        background-size: 1.2em;
-    }
-
-    button:hover{
-        cursor: pointer;
-        filter: brightness(115%);
-    }
-
-    button:active {
-        border: 0.133em solid rgb(112, 111, 111);
-        filter: brightness(85%);
-    }
-
-    button:focus {
-    }
-
-    #login__button {
-        background-image: url(../img/login.svg);
-        background-color: rgb(0, 170, 0);
-    }
-
-    #team__button {
-        background-image: url(../img/login.svg);
-        background-color: rgb(40, 116, 202);
-    }
-
-    #register__button {
-        background-image: url(../img/register.svg);
-        background-color: rgb(0, 103, 221);
-    }
-
-    #account__button {
-        background-image: url(../img/account.svg);
-        background-color: rgb(0, 170, 0);
-    }
-
-    #logout__button {
-        background-image: url(../img/logout.svg);
-        background-color: rgb(221, 16, 16);
-    }
-}
-  
-
 
 #main {
     background-color: rgb(141, 174, 204);
@@ -230,16 +217,33 @@ body {
     height: $footer-height;
 }
 
+@media only screen and (max-width: 600px) {
+    #nav {
+        &__toggle {
+            display: unset;
+        }
+    
+        &__menu {
+            flex-direction: column;
+    
+            li {
+                display: none;
 
-  
-// @media (min-width: 768px) {
-//     #navbar{
-//         a{
-//             display: inline;
-//         }
+                &:first-child {
+                    display: block;
+                }
+                
+                #nav__nav {
+                    flex-direction: column;
+                    gap: 0.3rem;
+                }
 
-//         #navbar-menu {
-//             display: none;
-//         }
-//     }
-// }
+                #nav__account {
+                    gap: 0.5rem;
+                }
+                
+            }
+        }
+
+    }
+}

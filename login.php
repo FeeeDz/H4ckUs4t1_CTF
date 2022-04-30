@@ -20,13 +20,6 @@ require "inc/head.php";
 <body>
     <?php require "inc/navbar.php"; ?>
     <div id="main">
-    <?php
-
-    
-
-    
-    
-    ?>
         <form method="POST">
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
