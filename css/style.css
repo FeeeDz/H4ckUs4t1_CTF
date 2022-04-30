@@ -63,12 +63,10 @@ body {
   cursor: pointer;
   margin: 0rem 1rem;
   right: 0;
+  transform: translateY(50%);
 }
 #nav__toggle__close {
   display: none;
-}
-#nav__toggle__menu {
-  margin-top: 0.2rem;
 }
 #nav__checkbox {
   display: none;
