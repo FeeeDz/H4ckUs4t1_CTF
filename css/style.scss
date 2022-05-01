@@ -2,7 +2,6 @@ $footer-height: 200px;
 $login-button-image-size: 18px;
 $login-button-padding: 8px;
 
-
 //color variables
 $clr-primary:   skyblue;
 $clr-primary-hover: rgb(25, 209, 223);
@@ -16,8 +15,6 @@ $clr-gray400: #767b91;
 $clr-gray500: #4f546c;
 $clr-gray600: #2a324b;
 $clr-gray700: #161d34;
-
-
 
 /* Rules for sizing the icon. */
 .material-icons.md-18 { font-size: 18px; }
@@ -73,9 +70,6 @@ body {
         &__close {
             display: none;
         }
-  
-        &__menu {
-        }
     }
   
     &__checkbox {
@@ -95,13 +89,21 @@ body {
             flex: 1;
             list-style: none;
 
+            a {
+                text-align: center;
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                color: inherit;
+            }
+
             #nav__logo {
                 justify-content: flex-start;
             }
 
             #nav__nav {
-                flex: 1;
                 display: flex;
+                flex: 1;
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
@@ -144,10 +146,6 @@ body {
                     filter: brightness(85%);
                 }
             
-                a:focus {
-
-                }
-            
                 #login__button {
                     background-color: rgb(0, 170, 0);
                 }
@@ -164,52 +162,36 @@ body {
                     background-color: rgb(221, 16, 16);
                 }
             }
-
-            a {
-                text-align: center;
-                display: flex;
-                align-items: center;
-                text-decoration: none;
-                color: inherit;
-            }
         }
-  
     }
-
-    
 }
 
 #main {
     background-color: rgb(141, 174, 204);
 
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: space-between;
-    // align-items: center;
-
     .challenges__container {
+        display: flex;
+        flex-direction: column;
 
         .challenges__category {
             margin: 0rem 2rem;
         }
 
         .challenges__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 17rem);
+            grid-auto-rows: 4.5rem;
+            grid-gap: 1rem;
+            justify-content: center;
             margin: 0.5rem 1.5rem;
-            text-align: center;
-            
+
             .challenge__box {
-                display: inline-block;
                 border: 1px solid green;
                 border-radius: 1rem;
-                width: 25rem;
-                height: 5rem;
                 cursor: pointer;
-                margin: 0.5rem 0.5rem;
             }
         } 
-
     }
-
 }
 
 #footer {
@@ -241,9 +223,7 @@ body {
                 #nav__account {
                     gap: 0.5rem;
                 }
-                
             }
         }
-
     }
 }

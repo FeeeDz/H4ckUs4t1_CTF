@@ -1,7 +1,6 @@
 <?php 
 session_start();
 
-
 if(isset($_POST["email"]) && isset($_POST["password"])){
     require "inc/functions.php";
 
@@ -25,7 +24,6 @@ require "inc/head.php";
             <input type="password" name="password" placeholder="Password" required>
             <input type="submit" value="Login">
         </form>
-
     </div>
     <?php require "inc/footer.php"; ?>
     <script src="js/script.js"></script> 

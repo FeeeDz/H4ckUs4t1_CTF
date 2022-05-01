@@ -3,15 +3,13 @@ session_start();
 
 $title = "CTF h4ckus4t1";
 require "inc/head.php";
+
+// require "inc/functions.php";
+// $conn = db_connect();
 ?>
 <body>
     <?php require "inc/navbar.php"; ?>
     <div id="main">
-    <?php
-    require "inc/functions.php";
-    $conn = db_connect();
-
-    ?>
         <div class="challenges__container">
             <span class="challenges__category">Miscellaneous</span>
             <div class="challenges__grid">
@@ -21,7 +19,7 @@ require "inc/head.php";
                 <div class="challenge__box">Web</div>
                 <div class="challenge__box">Web</div>
             </div>
-            <span>Web</span>
+            <span class="challenges__category">Web</span>
             <div class="challenges__grid">
                 <div class="challenge__box">Web</div>
                 <div class="challenge__box">Web</div>
@@ -29,7 +27,7 @@ require "inc/head.php";
                 <div class="challenge__box">Web</div>
                 <div class="challenge__box">Web</div>
             </div>
-            <span>Pwn</span>
+            <span class="challenges__category">Pwn</span>
             <div class="challenges__grid">
                 <div class="challenge__box">Web</div>
                 <div class="challenge__box">Web</div>
@@ -37,7 +35,7 @@ require "inc/head.php";
                 <div class="challenge__box">Web</div>
                 <div class="challenge__box">Web</div>
             </div>
-            <span>Pwn</span>
+            <span class="challenges__category">Pwn</span>
             <div class="challenges__grid">
                 <div class="challenge__box">Web</div>
                 <div class="challenge__box">Web</div>

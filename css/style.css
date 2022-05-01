@@ -84,12 +84,19 @@ body {
   flex: 1;
   list-style: none;
 }
+#nav__menu li a {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
 #nav__menu li #nav__logo {
   justify-content: flex-start;
 }
 #nav__menu li #nav__nav {
-  flex: 1;
   display: flex;
+  flex: 1;
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -140,32 +147,29 @@ body {
 #nav__menu li #nav__account #logout__button {
   background-color: rgb(221, 16, 16);
 }
-#nav__menu li a {
-  text-align: center;
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: inherit;
-}
 
 #main {
   background-color: rgb(141, 174, 204);
+}
+#main .challenges__container {
+  display: flex;
+  flex-direction: column;
 }
 #main .challenges__container .challenges__category {
   margin: 0rem 2rem;
 }
 #main .challenges__container .challenges__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 17rem);
+  grid-auto-rows: 4.5rem;
+  grid-gap: 1rem;
+  justify-content: center;
   margin: 0.5rem 1.5rem;
-  text-align: center;
 }
 #main .challenges__container .challenges__grid .challenge__box {
-  display: inline-block;
   border: 1px solid green;
   border-radius: 1rem;
-  width: 25rem;
-  height: 5rem;
   cursor: pointer;
-  margin: 0.5rem 0.5rem;
 }
 
 #footer {
