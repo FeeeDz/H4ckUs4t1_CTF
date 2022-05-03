@@ -44,8 +44,15 @@ require "inc/head.php";
                 <div class="challenge__box">Web</div>
             </div>
         </div>
+        <form action="?" method="POST">
+      <div class="g-recaptcha" data-sitekey="6Lcg97wfAAAAAHusVv8og846Xm4feb8Ur7fgGos-"></div>
+      <br/>
+      <input type="submit" value="Submit">
+    </form>
+
+
     </div>
     <?php require "inc/footer.php"; ?>
-    <script src="js/script.js"></script> 
+    <script src="js/script.js"></script>
 </body>
 </html>

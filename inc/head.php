@@ -9,4 +9,6 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://www.google.com/recaptcha/api.js"></script>
 </head>
