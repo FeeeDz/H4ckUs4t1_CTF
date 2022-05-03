@@ -52,7 +52,7 @@ body {
     }
     
     #nav__checkbox:checked ~ label#nav__toggle #nav__toggle__close {
-        display: block;
+        display: unset;
     }
     
     #nav__checkbox:checked ~ label#nav__toggle #nav__toggle__menu {

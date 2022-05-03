@@ -50,4 +50,6 @@ Sviluppare una piattaforma di Challenges stile capture the flag.
 > ??? hint
 > form submit flag
 
-
+### TO-DO list
+- eliminazione team se l'unico membro esce
+- divieto di accesso a team se ha già 4 membri
