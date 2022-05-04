@@ -11,7 +11,7 @@ require "inc/head.php";
     require "inc/functions.php";
     $conn = db_connect();
 
-    $team_name = get_team_name($conn);
+    $team_name = get_user_team_name($conn);
     $token = get_team_token($conn, $team_name);
 
     if (!isset($_SESSION["logged"])) { 
@@ -48,7 +48,7 @@ require "inc/head.php";
         } ?>
         <form method="POST">
             <input type="text" name="token" minlength="3" maxlength="32" pattern="[\x00-\x7F]+" required>
-            <input type="submit" value="Crea team">
+            <input type="submit" value="Join team">
         </form>       
     <?php } elseif ($_GET["action"] == "create") {
         if (isset($_POST["team_name"])) { 
