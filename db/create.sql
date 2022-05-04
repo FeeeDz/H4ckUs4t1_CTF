@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS CTF_submit;
 DROP TABLE IF EXISTS CTF_user;
 DROP TABLE IF EXISTS CTF_team;
-DROP TABLE IF EXISTS CTF_challenge_resource;
 DROP TABLE IF EXISTS CTF_resource;
 DROP TABLE IF EXISTS CTF_hint;
 DROP TABLE IF EXISTS CTF_challenge;
@@ -24,16 +23,10 @@ CREATE TABLE CTF_hint (
 ) ENGINE = INNODB;
 
 CREATE TABLE CTF_resource (
-    link VARCHAR(255),
-    PRIMARY KEY (link)
-) ENGINE = INNODB;
-
-CREATE TABLE CTF_challenge_resource (
-    challenge_name VARCHAR(64) NOT NULL,
     link VARCHAR(255) NOT NULL,
+    challenge_name VARCHAR(64) NOT NULL,
     PRIMARY KEY (link),
-    FOREIGN KEY (challenge_name) REFERENCES CTF_challenge(challenge_name),
-    FOREIGN KEY (link) REFERENCES CTF_resource(link)
+    FOREIGN KEY (challenge_name) REFERENCES CTF_challenge(challenge_name)
 ) ENGINE = INNODB;
 
 CREATE TABLE CTF_team (
