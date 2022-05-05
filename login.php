@@ -1,7 +1,7 @@
 <?php 
 session_start();
 
-if(isset($_POST["email"]) && isset($_POST["password"])){
+if(!isset($_SESSION["logged"]) && isset($_POST["email"]) && isset($_POST["password"])){
     require "inc/functions.php";
 
     $conn = db_connect();

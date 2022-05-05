@@ -4,13 +4,21 @@ DROP TABLE IF EXISTS CTF_team;
 DROP TABLE IF EXISTS CTF_resource;
 DROP TABLE IF EXISTS CTF_hint;
 DROP TABLE IF EXISTS CTF_challenge;
+DROP TABLE IF EXISTS CTF_challenge_category;
+
+CREATE TABLE CTF_challenge_category (
+    category VARCHAR(64),
+    PRIMARY KEY (category)
+) ENGINE = INNODB;
 
 CREATE TABLE CTF_challenge (
     challenge_name VARCHAR(64),
     flag VARCHAR(48) NOT NULL,
     description VARCHAR(1024) NOT NULL,
+    category VARCHAR(64),
     PRIMARY KEY (challenge_name),
-    UNIQUE (flag)
+    UNIQUE (flag),
+    FOREIGN KEY (category) REFERENCES CTF_challenge_category(category)
 ) ENGINE = INNODB;
 
 CREATE TABLE CTF_hint (
@@ -70,6 +78,14 @@ CREATE TABLE CTF_submit (
     ON UPDATE CASCADE
     ON DELETE CASCADE
 ) ENGINE = INNODB;
+
+
+INSERT INTO CTF_challenge_category (category)
+VALUES
+    ("web"),
+    ("misc"),
+    ("crypto"),
+    ("pwn");
 
 
 -- INSERT INTO CTF_challenge (challenge_name, flag)

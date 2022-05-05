@@ -23,29 +23,35 @@
             </a>
         </div></li>
         <li><div id="nav__account">
-        <?php if (isset($_SESSION["logged"])) : ?>
-            <a id="account__button" href="account.php">
+        <?php if (isset($_SESSION["logged"])) { ?>
+            <a id="account-button" href="account.php">
                 <span class="material-icons">person</span>
                 <span><?php echo $_SESSION["logged"]; ?></span>
             </a>
-            <a id="team__button" href="team.php">
+            <a id="team-button" href="team.php">
                 <span class="material-icons">group</span>
                 <span>Team</span>
             </a>
-            <a id="logout__button" href="logout.php">
+            <?php if ($_SESSION["role"] == 'A') { ?>
+            <a id="admin-panel-button" href="admin_panel.php">
+                <span class="material-icons">admin_panel_settings</span>
+                <span>Admin Panel</span>
+            </a>
+            <?php } ?>
+            <a id="logout-button" href="logout.php">
                 <span class="material-icons">logout</span>
                 <span>Logout</span>
             </a>
-        <?php else : ?>
-            <a id="login__button" href="login.php?redirect=<?php echo basename($_SERVER['PHP_SELF']);?>">
+        <?php } else { ?>
+            <a id="login-button" href="login.php?redirect=<?php echo basename($_SERVER['PHP_SELF']);?>">
                 <span class="material-icons">login</span>
                 <span>Login</span>
             </a>
-            <a id="register__button" href="register.php">
+            <a id="register-button" href="register.php">
                 <span class="material-icons">edit_note</span>
                 <span>Register</span>
             </a>
-        <?php endif; ?>
+        <?php } ?>
         </div></li>
     </ul>
     
