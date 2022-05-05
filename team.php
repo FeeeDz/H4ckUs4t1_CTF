@@ -47,7 +47,7 @@ require "inc/head.php";
             echo "token non valido";
         } ?>
         <form method="POST">
-            <input type="text" name="token" minlength="3" maxlength="32" pattern="[\x00-\x7F]+" required>
+            <input type="text" name="token" minlength="3" required>
             <input type="submit" value="Join team">
         </form>       
     <?php } elseif ($_GET["action"] == "create") {
