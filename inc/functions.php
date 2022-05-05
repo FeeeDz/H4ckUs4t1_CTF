@@ -13,10 +13,14 @@ function db_connect() {
 }
 
 function db_login($conn, $email, $password) {
+    if($_SESSION["logged"]) return false;
+
     $query = "SELECT username, password_hash, role FROM CTF_user WHERE email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $email);
-    $stmt->execute();
+
+    if(!$stmt->execute()) return false;
+    
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
@@ -25,10 +29,6 @@ function db_login($conn, $email, $password) {
         $_SESSION['role'] = $row['role'];
         return true;
     }
-
-    unset($_SESSION['logged']);
-    unset($_SESSION['role']);
-    return false;
 }
 
 function db_logout() {
@@ -47,18 +47,18 @@ function db_logout() {
     return true;
 }
 
-function db_register_user($conn, $username, $password, $email) {
+function db_register_user($conn, $username, $email, $password) {
     if(strlen($username) < 3 || strlen($username) > 16) return false;
-    if(strlen($password) < 8 || strlen($password) > 64) return false;
     if(!filter_var($email, FILTER_VALIDATE_EMAIL)) return false;
+    if(strlen($password) < 8 || strlen($password) > 128) return false;
 
     global $hash_options;
+
     $role = 'U';
-
     $password_hash = password_hash($password, PASSWORD_DEFAULT, $hash_options);
-    $query = "INSERT INTO CTF_user (username, password_hash, email, registration_date, last_login, role, team_id)
+    
+    $query = "INSERT INTO CTF_user (username, password_hash, email, registration_date, last_login, role, team_name)
         VALUES (?, ?, ?, NOW(), NOW(), ?, NULL)";
-
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ssss", $username, $password_hash, $email, $role);
 
