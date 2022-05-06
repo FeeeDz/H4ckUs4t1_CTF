@@ -21,33 +21,36 @@ require "inc/head.php";
             <input type="submit" value="Edit challenge">
             <input type="hidden" name="action" value="edit">
         </form>
-    <?php } elseif ($_GET["action"] == "add") {
-        if (isset($_POST["token"])) { 
-            if (join_team($conn, $_POST["token"])) header("Location: ".basename($_SERVER['PHP_SELF']));
-            echo "token non valido";
-        } ?>
-        <form method="POST">
-            <input type="text" name="token" minlength="3" required>
-            <input type="submit" value="Join team">
-        </form>       
+    <?php } elseif ($_GET["action"] == "add") { ?>
+        add     
     <?php } elseif ($_GET["action"] == "edit") {
         require "inc/functions.php";
         $conn = db_connect();
         
-        if (isset($_POST["challenge"])) { 
-            echo "modifica".$_POST["challenge"];
+        if (isset($_GET["challenge"])) { 
+            $query = "SELECT challenge_name, flag, description, type, category FROM CTF_challenge WHERE challenge_name = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $_GET["challenge"]);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+
+            if(!$row) header("Location: ".basename($_SERVER['PHP_SELF']));
+
+            echo "edit";
+
         } else { ?>
             <form method="GET">
+                <input type="hidden" name="action" value="edit">
                 <select name="challenge">
                 <?php
                     $query = "SELECT challenge_name FROM CTF_challenge";
                     $stmt = $conn->prepare($query);
-                    $stmt->bind_param("s", $token);
                     $stmt->execute();
                     $result = $stmt->get_result();
-                    $row = $result->fetch_assoc();
+                    while ($row = $result->fetch_assoc())
+                        echo "<option value='".$row["challenge_name"]."'>".$row["challenge_name"]."</option>";
                 ?>
-                    <option value="volvo">Volvo</option>
                 </select>
                 <input type="submit" value="Edit challenge">
             </form>

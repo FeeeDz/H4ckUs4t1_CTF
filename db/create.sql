@@ -12,7 +12,7 @@ CREATE TABLE CTF_challenge_category (
 ) ENGINE = INNODB;
 
 CREATE TABLE CTF_challenge (
-    challenge_name VARCHAR(64),
+    challenge_name VARCHAR(64) NOT NULL,
     flag VARCHAR(48) NOT NULL,
     description VARCHAR(1024) NOT NULL,
     type CHAR(1) NOT NULL,
@@ -25,10 +25,10 @@ CREATE TABLE CTF_challenge (
 ) ENGINE = INNODB;
 
 CREATE TABLE CTF_hint (
-    hint_id INT,
+    hint_id INT NOT NULL AUTO_INCREMENT,
+    challenge_name VARCHAR(64) NOT NULL,
     cost INT NOT NULL,
     description VARCHAR(1024) NOT NULL,
-    challenge_name VARCHAR(64) NOT NULL,
     PRIMARY KEY (hint_id),
     FOREIGN KEY (challenge_name) REFERENCES CTF_challenge(challenge_name)
     ON UPDATE CASCADE
@@ -68,7 +68,7 @@ CREATE TABLE CTF_user (
 ) ENGINE = INNODB;
 
 CREATE TABLE CTF_submit (
-    submit_id INT AUTO_INCREMENT,
+    submit_id INT NOT NULL AUTO_INCREMENT,
     username VARCHAR(16) NOT NULL,
     team_name VARCHAR(32),
     challenge_name VARCHAR(64) NOT NULL,
@@ -95,11 +95,6 @@ VALUES
     ("crypto"),
     ("reverse"),
     ("pwn");
-
-
--- INSERT INTO CTF_challenge (challenge_name, flag)
--- VALUES
---     (1, "");
 
 -- INSERT INTO CTF_team (team_name, token, registration_date)
 -- VALUES
