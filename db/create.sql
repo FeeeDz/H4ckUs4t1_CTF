@@ -72,8 +72,9 @@ CREATE TABLE CTF_submit (
     username VARCHAR(16) NOT NULL,
     team_name VARCHAR(32),
     challenge_name VARCHAR(64) NOT NULL,
-    submit_time DATETIME NOT NULL,
+    content VARCHAR(64) NOT NULL,
     points INT,
+    submit_time DATETIME NOT NULL,
     PRIMARY KEY (submit_id),
     FOREIGN KEY (username) REFERENCES CTF_user(username)
     ON UPDATE CASCADE

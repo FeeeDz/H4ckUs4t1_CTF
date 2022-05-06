@@ -8,7 +8,7 @@
                     <mxGeometry x="100" y="585" width="170" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="q7P-6Obig4FQji7qMEAy-115" value="submit" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;" parent="1" vertex="1">
-                    <mxGeometry x="80" y="510" width="260" height="210" as="geometry"/>
+                    <mxGeometry x="80" y="510" width="260" height="240" as="geometry"/>
                 </mxCell>
                 <mxCell id="q7P-6Obig4FQji7qMEAy-116" value="" style="shape=partialRectangle;collapsible=0;dropTarget=0;pointerEvents=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=1;" parent="q7P-6Obig4FQji7qMEAy-115" vertex="1">
                     <mxGeometry y="30" width="260" height="30" as="geometry"/>
@@ -78,12 +78,12 @@
                         <mxRectangle width="30" height="30" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="q7P-6Obig4FQji7qMEAy-128" value="submit_time" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;" parent="q7P-6Obig4FQji7qMEAy-183" vertex="1">
+                <mxCell id="q7P-6Obig4FQji7qMEAy-128" value="content" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;" parent="q7P-6Obig4FQji7qMEAy-183" vertex="1">
                     <mxGeometry x="30" width="100" height="30" as="geometry">
                         <mxRectangle width="220" height="30" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="q7P-6Obig4FQji7qMEAy-178" value="DATETIME" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=1;bottom=0;right=0;align=left;spacingLeft=6;" parent="q7P-6Obig4FQji7qMEAy-183" vertex="1">
+                <mxCell id="q7P-6Obig4FQji7qMEAy-178" value="VARCHAR(64)" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=1;bottom=0;right=0;align=left;spacingLeft=6;" parent="q7P-6Obig4FQji7qMEAy-183" vertex="1">
                     <mxGeometry x="150" width="110" height="30" as="geometry">
                         <mxRectangle width="220" height="30" as="alternateBounds"/>
                     </mxGeometry>
@@ -401,7 +401,7 @@
                         <mxRectangle width="230" height="30" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="q7P-6Obig4FQji7qMEAy-361" value="VARCHAR(48)" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=1;bottom=0;right=0;align=left;spacingLeft=6;" parent="1" vertex="1">
+                <mxCell id="q7P-6Obig4FQji7qMEAy-361" value="VARCHAR(64)" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=1;bottom=0;right=0;align=left;spacingLeft=6;" parent="1" vertex="1">
                     <mxGeometry x="650" y="630" width="120" height="30" as="geometry">
                         <mxRectangle width="220" height="30" as="alternateBounds"/>
                     </mxGeometry>
@@ -410,9 +410,6 @@
                     <mxGeometry x="650" y="598" width="100" height="30" as="geometry">
                         <mxRectangle width="220" height="30" as="alternateBounds"/>
                     </mxGeometry>
-                </mxCell>
-                <mxCell id="13" value="" style="shape=partialRectangle;collapsible=0;dropTarget=0;pointerEvents=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;container=0;" parent="1" vertex="1">
-                    <mxGeometry x="110" y="925" width="170" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="23" value="" style="shape=partialRectangle;collapsible=0;dropTarget=0;pointerEvents=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;container=0;" parent="1" vertex="1">
                     <mxGeometry x="520" y="955" width="170" height="30" as="geometry"/>
@@ -644,24 +641,42 @@
                 <mxCell id="123" value="category" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="650" y="480" width="60" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="124" value="" style="group" vertex="1" connectable="0" parent="1">
+                <mxCell id="124" value="" style="group" parent="1" vertex="1" connectable="0">
                     <mxGeometry x="500" y="690" width="270" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="125" value="" style="group" vertex="1" connectable="0" parent="124">
+                <mxCell id="125" value="" style="group" parent="124" vertex="1" connectable="0">
                     <mxGeometry width="130" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="126" value="" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=1;" vertex="1" parent="125">
+                <mxCell id="126" value="" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=1;" parent="125" vertex="1">
                     <mxGeometry width="30" height="30" as="geometry">
                         <mxRectangle width="30" height="30" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="127" value="type" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;" vertex="1" parent="125">
+                <mxCell id="127" value="type" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;" parent="125" vertex="1">
                     <mxGeometry x="30" width="100" height="30" as="geometry">
                         <mxRectangle width="220" height="30" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="128" value="CHAR(1)" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=1;bottom=0;right=0;align=left;spacingLeft=6;" vertex="1" parent="124">
+                <mxCell id="128" value="CHAR(1)" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=1;bottom=0;right=0;align=left;spacingLeft=6;" parent="124" vertex="1">
                     <mxGeometry x="150" width="120" height="30" as="geometry">
+                        <mxRectangle width="220" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="135" value="" style="group" vertex="1" connectable="0" parent="1">
+                    <mxGeometry x="80" y="720" width="130" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="136" value="" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=1;" vertex="1" parent="135">
+                    <mxGeometry width="30" height="30" as="geometry">
+                        <mxRectangle width="30" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="137" value="submit_time" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;" vertex="1" parent="135">
+                    <mxGeometry x="30" width="100" height="30" as="geometry">
+                        <mxRectangle width="220" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="138" value="DATETIME" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=1;bottom=0;right=0;align=left;spacingLeft=6;" vertex="1" parent="1">
+                    <mxGeometry x="230" y="720" width="80" height="30" as="geometry">
                         <mxRectangle width="220" height="30" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
