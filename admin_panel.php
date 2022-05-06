@@ -1,5 +1,7 @@
 <?php 
 session_start();
+require "inc/functions.php";
+$conn = db_connect();
 
 if($_SESSION["role"] != 'A') {
     $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
@@ -24,8 +26,6 @@ require "inc/head.php";
     <?php } elseif ($_GET["action"] == "add") { ?>
         add     
     <?php } elseif ($_GET["action"] == "edit") {
-        require "inc/functions.php";
-        $conn = db_connect();
         
         if (isset($_GET["challenge"])) { 
             $query = "SELECT challenge_name, flag, description, type, category FROM CTF_challenge WHERE challenge_name = ?";

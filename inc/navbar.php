@@ -23,10 +23,10 @@
             </a>
         </div></li>
         <li><div id="nav__account">
-        <?php if (isset($_SESSION["logged"])) { ?>
+        <?php if (isset($_SESSION["user_id"])) { ?>
             <a id="account-button" href="account.php">
                 <span class="material-icons">person</span>
-                <span><?php echo $_SESSION["logged"]; ?></span>
+                <span><?php echo get_username_from_id($conn, $_SESSION["user_id"]); ?></span>
             </a>
             <a id="team-button" href="team.php">
                 <span class="material-icons">group</span>
