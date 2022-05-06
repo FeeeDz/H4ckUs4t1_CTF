@@ -16,9 +16,6 @@ require "inc/head.php";
 
     if (!isset($_SESSION["logged"])) { 
         header("Location: index.php");
-    ?>
-        <a href="login.php?redirect=<?php echo basename($_SERVER['PHP_SELF']);?>">devi prima registrarti/fare il login</a>
-    <?php 
     } elseif ($team_name) { 
         if(isset($_GET["action"])) {
             if($_GET["action"] == "quit") quit_team($conn);
