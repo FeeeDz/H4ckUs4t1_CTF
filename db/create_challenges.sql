@@ -1,36 +1,28 @@
-CREATE TABLE CTF_challenge (
-    challenge_name VARCHAR(64),
-    flag VARCHAR(48) NOT NULL,
-    description VARCHAR(1024) NOT NULL,
-    type CHAR(1) NOT NULL,
-    category VARCHAR(64) NOT NULL,
-    PRIMARY KEY (challenge_name),
-    UNIQUE (flag),
-    FOREIGN KEY (category) REFERENCES CTF_challenge_category(category)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-) ENGINE = INNODB;
-
 INSERT INTO CTF_challenge (challenge_name, flag, description, type, category)
 VALUES
-    ("ez_jmp", "ITT{W3_l1K3_s0Ft_L4Nd1nGsz!!}", );
+    ("baby_smash",
+    "ITT{34zy_w4rmupz!!}",
+    "Smash it!",
+    "T",
+    "pwn"),
+    ("ez_jmp",
+    "ITT{W3_l1K3_s0Ft_L4Nd1nGsz!!}",
+    "Try to jump",
+    "T",
+    "pwn");
 
-CREATE TABLE CTF_hint (
-    hint_id INT,
-    cost INT NOT NULL,
-    description VARCHAR(1024) NOT NULL,
-    challenge_name VARCHAR(64) NOT NULL,
-    PRIMARY KEY (hint_id),
-    FOREIGN KEY (challenge_name) REFERENCES CTF_challenge(challenge_name)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-) ENGINE = INNODB;
+INSERT INTO CTF_hint (challenge_name, cost, description)
+VALUES
+    ("baby_smash",
+    50,
+    "https://en.wikipedia.org/wiki/Buffer_overflow"),
+    ("ez_jmp",
+    50,
+    "What would happen if you put an address in a register?");
 
-CREATE TABLE CTF_resource (
-    link VARCHAR(255) NOT NULL,
-    challenge_name VARCHAR(64) NOT NULL,
-    PRIMARY KEY (link),
-    FOREIGN KEY (challenge_name) REFERENCES CTF_challenge(challenge_name)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-) ENGINE = INNODB;
+INSERT INTO CTF_resource (challenge_name, link)
+VALUES
+    ("baby_smash",
+    "challenges/pwn/baby_smash/baby_smash"),
+    ("ez_jmp",
+    "challenges/pwn/ez_jmp/ez_jmp");
