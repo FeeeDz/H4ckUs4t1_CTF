@@ -11,18 +11,18 @@ VALUES
     "T",
     "pwn");
 
-INSERT INTO CTF_hint (challenge_name, cost, description)
+INSERT INTO CTF_hint (challenge_id, cost, description)
 VALUES
-    ("baby_smash",
+    (1,
     50,
     "https://en.wikipedia.org/wiki/Buffer_overflow"),
-    ("ez_jmp",
+    (2,
     50,
     "What would happen if you put an address in a register?");
 
-INSERT INTO CTF_resource (challenge_name, link)
+INSERT INTO CTF_resource (challenge_id, link)
 VALUES
-    ("baby_smash",
+    (1,
     "challenges/pwn/baby_smash/baby_smash"),
-    ("ez_jmp",
+    (2,
     "challenges/pwn/ez_jmp/ez_jmp");

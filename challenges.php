@@ -1,11 +1,10 @@
 <?php 
 session_start();
+require "inc/functions.php";
+$conn = db_connect();
 
 $title = "CTF h4ckus4t1";
 require "inc/head.php";
-
-// require "inc/functions.php";
-// $conn = db_connect();
 ?>
 <body>
     <?php require "inc/navbar.php"; ?>

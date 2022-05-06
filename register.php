@@ -1,14 +1,15 @@
 <?php 
 session_start();
+require "inc/functions.php";
+$conn = db_connect();
 
-if(!isset($_SESSION["logged"]) && isset($_POST["username"]) && isset($_POST["email"]) && isset($_POST["password"])){
-    require "inc/functions.php";
-
-    $conn = db_connect();
-    db_register_user($conn, $_POST["username"], $_POST["email"], $_POST["password"]);
+if(!isset($_SESSION["user_id"]) && isset($_POST["username"]) && isset($_POST["email"]) && isset($_POST["password"])) {
+    if(register_user($conn, $_POST["username"], $_POST["email"], $_POST["password"])) {
+        login($conn, $_POST["email"], $_POST["password"]);
+    }
 }
 
-if(isset($_SESSION["logged"])) {
+if(isset($_SESSION["user_id"])) {
     $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
     header("Location: $redirect");
 }
