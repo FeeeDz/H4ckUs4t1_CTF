@@ -15,10 +15,13 @@ CREATE TABLE CTF_challenge (
     challenge_name VARCHAR(64),
     flag VARCHAR(48) NOT NULL,
     description VARCHAR(1024) NOT NULL,
-    category VARCHAR(64),
+    type CHAR(1) NOT NULL,
+    category VARCHAR(64) NOT NULL,
     PRIMARY KEY (challenge_name),
     UNIQUE (flag),
     FOREIGN KEY (category) REFERENCES CTF_challenge_category(category)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 CREATE TABLE CTF_hint (
@@ -28,6 +31,8 @@ CREATE TABLE CTF_hint (
     challenge_name VARCHAR(64) NOT NULL,
     PRIMARY KEY (hint_id),
     FOREIGN KEY (challenge_name) REFERENCES CTF_challenge(challenge_name)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 CREATE TABLE CTF_resource (
@@ -35,6 +40,8 @@ CREATE TABLE CTF_resource (
     challenge_name VARCHAR(64) NOT NULL,
     PRIMARY KEY (link),
     FOREIGN KEY (challenge_name) REFERENCES CTF_challenge(challenge_name)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 CREATE TABLE CTF_team (
