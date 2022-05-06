@@ -92,6 +92,7 @@ VALUES
     ("web"),
     ("misc"),
     ("crypto"),
+    ("reverse"),
     ("pwn");
 
 
