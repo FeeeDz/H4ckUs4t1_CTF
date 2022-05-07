@@ -44,25 +44,24 @@ require "inc/head.php";
                     <option <?php if($challenge_data["type"] == "T") echo "selected=\"selected\""?>>T</option>
                     <option <?php if($challenge_data["type"] == "O") echo "selected=\"selected\""?>>O</option>
                 </select>
-                <select name="category">
-                    <?php foreach($categories as $category) : ?>
-                        <option <?php if($challenge_data["category"] == $category["category"]) echo "selected=\"selected\""?>><?php echo $category["category"]; ?></option>
-                    <?php endforeach; ?>
-                </select>
                 <div>
                     <?php foreach($hints as $hint) : ?>
-                        <span>
+                        <span style="border: 3px solid black;">
                             <input type="text" name="hint_description_<?php echo $hint["hint_id"]?>" value="<?php echo $hint["description"]?>">
                             <input type="number" name="hint_cost_<?php echo $hint["hint_id"]?>" value="<?php echo $hint["cost"]?>">
+                            <span class="material-icons">remove</span>
                         </span>
                     <?php endforeach; ?>
+                    <span class="material-icons">add</span>
                 </div>
                 <div>
                     <?php foreach($resources as $resource) :?>
-                        <span>
+                        <span style="border: 3px solid black;">
                             <input type="text" name="resource_<?php echo $resource["resource_id"]?>" value="<?php echo $resource["link"]?>">
+                            <span class="material-icons">remove</span>
                         </span>
                     <?php endforeach; ?>
+                    <span class="material-icons">add</span>
                 </div>
                 <input type="submit" value="Edit challenge">
             </form>
