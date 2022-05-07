@@ -16,6 +16,9 @@ VALUES
     (1,
     50,
     "https://en.wikipedia.org/wiki/Buffer_overflow"),
+    (1,
+    100,
+    "Ci sei quasi"),
     (2,
     50,
     "What would happen if you put an address in a register?");

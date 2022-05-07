@@ -5,7 +5,7 @@ $hash_options = [
 ];
 
 function db_connect() {
-    require "inc/db_config.php";
+    require __DIR__."/db_config.php";
 
     if ($conn = mysqli_connect($db_hostname, $db_username, $db_password, $db_servername)) 
         return $conn;
@@ -73,7 +73,7 @@ function register_user($conn, $username, $email, $password) {
 function get_username_from_id($conn, $user_id) {
     $query = "SELECT username FROM CTF_user WHERE user_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $user_id);
+    $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -99,7 +99,7 @@ function get_user_team_name($conn, $user_id) {
 
     $query = "SELECT team_name FROM CTF_team WHERE team_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $team_id);
+    $stmt->bind_param("i", $team_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -111,7 +111,7 @@ function get_user_team_name($conn, $user_id) {
 function count_team_members($conn, $team_id) {
     $query = "SELECT COUNT(username) AS members FROM CTF_user WHERE team_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $team_id);
+    $stmt->bind_param("i", $team_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -123,7 +123,7 @@ function count_team_members($conn, $team_id) {
 function get_user_team_id($conn, $user_id) {
     $query = "SELECT team_id FROM CTF_user WHERE user_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $user_id);
+    $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -175,7 +175,7 @@ function join_team($conn, $user_id, $token) {
 
     $query = "UPDATE CTF_user SET team_id = ? WHERE user_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ss", $team_id, $user_id);
+    $stmt->bind_param("ii", $team_id, $user_id);
     if(!$stmt->execute()) return false;
 
     return true;
@@ -201,6 +201,77 @@ function quit_team($conn, $user_id) {
 
 function get_url_base() {
     return $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
+}
+
+function redirect_if_logged() {
+    if(isset($_SESSION["user_id"])) {
+        $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
+        header("Location: $redirect");
+    }
+}
+
+function redirect_if_not_admin() {
+    if($_SESSION["role"] != 'A') {
+        $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
+        header("Location: $redirect");
+    }
+}
+
+function get_challenge_id($conn, $challenge_name) {
+    $query = "SELECT challenge_id FROM CTF_challenge WHERE challenge_name = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $challenge_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if(!$row) return false;
+    return $row["challenge_id"];
+}
+
+function get_challenge_data($conn, $challenge_id) {
+    $query = "SELECT challenge_name, flag, description, type, category FROM CTF_challenge WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $challenge_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if(!$row) return false;
+    return $row;
+}
+
+function get_challenge_hints($conn, $challenge_id) {
+    $query = "SELECT hint_id, description, cost FROM CTF_hint WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $challenge_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+    
+    if(!$rows) return false;
+    return $rows;
+}
+
+function get_challenge_resources($conn, $challenge_id) {
+    $query = "SELECT resource_id, link FROM CTF_resource WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $challenge_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+    
+    if(!$rows) return false;
+    return $rows;
+}
+
+function get_challenge_categories($conn) {
+    $query = "SELECT category FROM CTF_challenge_category";
+    $result = $conn->query($query);
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+    
+    if(!$rows) return false;
+    return $rows;
 }
 
 ?>
