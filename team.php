@@ -63,6 +63,5 @@ require "inc/head.php";
     <?php } ?>
     </div>
     <?php require "inc/footer.php"; ?>
-    <script src="js/script.js"></script> 
 </body>
 </html>

@@ -24,9 +24,8 @@ require "inc/head.php";
             <input type="hidden" name="action" value="edit">
         </form>
     <?php } elseif ($_GET["action"] == "add") { ?>
-        add     
+        add
     <?php } elseif ($_GET["action"] == "edit") {
-        
         if (isset($_GET["challenge"])) { 
             $query = "SELECT challenge_name, flag, description, type, category FROM CTF_challenge WHERE challenge_name = ?";
             $stmt = $conn->prepare($query);
@@ -35,11 +34,15 @@ require "inc/head.php";
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
 
-            if(!$row) header("Location: ".basename($_SERVER['PHP_SELF']));
+            if(!$row) header("Location: ".basename($_SERVER['PHP_SELF'])."?action=edit");
+        ?>
 
-            echo "edit";
-
-        } else { ?>
+            <!-- <form method="POST">
+                <input type="submit" value="Edit challenge">
+                <input type="hidden" name="action" value="edit">
+                <input type="hidden" name="action" value="edit">
+            </form> -->
+    <?php } else { ?>
             <form method="GET">
                 <input type="hidden" name="action" value="edit">
                 <select name="challenge">
@@ -58,6 +61,10 @@ require "inc/head.php";
     } ?>
     </div>
     <?php require "inc/footer.php"; ?>
-    <script src="js/script.js"></script> 
+    <script>
+
+        
+
+    </script>
 </body>
 </html>
