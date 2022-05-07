@@ -38,9 +38,10 @@ CREATE TABLE CTF_hint (
 ) ENGINE = INNODB;
 
 CREATE TABLE CTF_resource (
+    resource_id INT NOT NULL AUTO_INCREMENT,
     link VARCHAR(255) NOT NULL,
     challenge_id INT NOT NULL,
-    PRIMARY KEY (link),
+    PRIMARY KEY (resource_id),
     FOREIGN KEY (challenge_id) REFERENCES CTF_challenge(challenge_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
