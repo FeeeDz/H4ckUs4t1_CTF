@@ -199,4 +199,8 @@ function quit_team($conn, $user_id) {
     return true;
 }
 
+function get_url_base() {
+    return $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
+}
+
 ?>

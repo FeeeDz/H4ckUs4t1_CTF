@@ -1,3 +1,6 @@
+<?php 
+basename($_SERVER['PHP_SELF']);
+?>
 <nav id="nav">
     <input type="checkbox" id="nav__checkbox">
     <label for="nav__checkbox" id="nav__toggle">
@@ -9,15 +12,15 @@
             <span class="material-icons">polymer</span>
         </a></li>
         <li><div id="nav__nav">
-            <a href="index.php">
+            <a href="index.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "index.php") echo "active"; ?>">
                 <span class="material-icons">home</span>
                 <span>Home</span>
             </a>
-            <a href="scoreboard.php">
+            <a href="scoreboard.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "scoreboard.php") echo "active"; ?>">
                 <span class="material-icons">scoreboard</span>
                 <span>Classifica</span>
             </a>
-            <a href="challenges.php">
+            <a href="challenges.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "challenges.php") echo "active"; ?>">
                 <span class="material-icons">polymer</span>
                 <span>Challenges</span>
             </a>

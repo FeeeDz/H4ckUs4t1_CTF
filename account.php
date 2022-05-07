@@ -11,6 +11,5 @@ require "inc/head.php";
     <div id="main">
     </div>
     <?php require "inc/footer.php"; ?>
-    <script src="js/script.js"></script> 
 </body>
 </html>
