@@ -5,7 +5,7 @@ $hash_options = [
 ];
 
 function db_connect() {
-    require __DIR__."/db_config.php";
+    require __DIR__."/db-config.php";
 
     if ($conn = mysqli_connect($db_hostname, $db_username, $db_password, $db_servername)) 
         return $conn;
@@ -229,6 +229,27 @@ function get_challenge_id($conn, $challenge_name) {
     return $row["challenge_id"];
 }
 
+function get_challenge_names($conn) {
+    $query = "SELECT challenge_name FROM CTF_challenge";
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
+    return $rows;
+}
+
+function get_challenge_filenames($conn, $challenge_id) {
+    $challenge_data = get_challenge_data($conn, $challenge_id);
+   
+    $resources = scandir(__DIR__."/../challenges/".$challenge_data["category"]."/".$challenge_data["challenge_name"]);
+    echo __DIR__."../challenges/".$challenge_data["category"]."/".$challenge_data["challenge_name"];
+    $resources = array_values(array_diff($resources, array('.', '..')));
+
+    return $resources;
+}
+
 function get_challenge_data($conn, $challenge_id) {
     $query = "SELECT challenge_name, flag, description, type, category FROM CTF_challenge WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
@@ -272,6 +293,24 @@ function get_challenge_categories($conn) {
     
     if(!$rows) return false;
     return $rows;
+}
+
+function edit_challenge_data($conn, $challenge_id, $description, $type) {
+    $query = "UPDATE CTF_challenge SET description = ?, type = ? FROM CTF_challenge WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ssi", $description, $type, $challenge_id);
+    if(!$stmt->execute()) return false;
+
+    return true;
+}
+
+function edit_challenge_hint($conn, $challenge_id, $description, $type) {
+    $query = "UPDATE CTF_challenge SET description = ?, type = ? FROM CTF_challenge WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ssi", $description, $type, $challenge_id);
+    if(!$stmt->execute()) return false;
+
+    return true;
 }
 
 ?>
