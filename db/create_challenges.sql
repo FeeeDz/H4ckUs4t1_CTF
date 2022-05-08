@@ -26,6 +26,6 @@ VALUES
 INSERT INTO CTF_resource (challenge_id, link)
 VALUES
     (1,
-    "challenges/pwn/baby_smash/baby_smash"),
+    "baby_smash"),
     (2,
-    "challenges/pwn/ez_jmp/ez_jmp");
+    "ez_jmp");

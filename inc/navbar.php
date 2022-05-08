@@ -36,7 +36,7 @@ basename($_SERVER['PHP_SELF']);
                 <span>Team</span>
             </a>
             <?php if ($_SESSION["role"] == 'A') { ?>
-            <a id="admin-panel-button" href="admin_panel.php">
+            <a id="admin-panel-button" href="admin-panel.php">
                 <span class="material-icons">admin_panel_settings</span>
                 <span>Admin Panel</span>
             </a>
