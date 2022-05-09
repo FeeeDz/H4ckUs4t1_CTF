@@ -229,7 +229,7 @@ function get_challenge_id($conn, $challenge_name) {
     return $row["challenge_id"];
 }
 
-function get_challenge_names($conn) {
+function get_challenge_list($conn) {
     $query = "SELECT challenge_name FROM CTF_challenge";
     $stmt = $conn->prepare($query);
     $stmt->execute();
@@ -240,11 +240,51 @@ function get_challenge_names($conn) {
     return $rows;
 }
 
+function get_challenges_on_server($conn) {
+    $db_challenge_list = array();
+    foreach (get_challenge_list($conn) as $item) {
+        array_push($db_challenge_list, array_values($item)[0]);
+    }
+
+    $base_dir = __DIR__."/../challenges";
+    $challenge_on_server = array();
+    foreach (array_diff(scandir($base_dir), array('.', '..')) as $dir) {
+        $challenges = scandir($base_dir."/".$dir);
+        $challenges = array_diff($challenges, array('.', '..'));
+        foreach ($challenges as $item) 
+            if(is_dir($base_dir."/".$dir."/".$item)) 
+                array_push($challenge_on_server, $item);
+    }
+
+    return array_diff($challenge_on_server, $db_challenge_list);
+}
+
+function get_challenge_category_on_server($challenge_name) {
+    $base_dir = __DIR__."/../challenges";
+    foreach (array_diff(scandir($base_dir), array('.', '..')) as $dir) {
+        $challenges = scandir($base_dir."/".$dir);
+        foreach ($challenges as $item) 
+            if($item == $challenge_name) return $dir; 
+    }
+
+    return false;
+}
+
+function get_challenge_filenames_on_server($challenge_name) {
+    $base_dir = __DIR__."/../challenges";
+    foreach (array_diff(scandir($base_dir), array('.', '..')) as $dir) {
+        $challenges = scandir($base_dir."/".$dir);
+        foreach ($challenges as $item) 
+            if($item == $challenge_name) return array_diff(scandir($base_dir."/".$dir."/".$challenge_name), array('.', '..')); 
+    }
+
+    return false;
+}
+
 function get_challenge_filenames($conn, $challenge_id) {
     $challenge_data = get_challenge_data($conn, $challenge_id);
    
     $resources = scandir(__DIR__."/../challenges/".$challenge_data["category"]."/".$challenge_data["challenge_name"]);
-    echo __DIR__."../challenges/".$challenge_data["category"]."/".$challenge_data["challenge_name"];
     $resources = array_values(array_diff($resources, array('.', '..')));
 
     return $resources;
@@ -295,8 +335,66 @@ function get_challenge_categories($conn) {
     return $rows;
 }
 
+function add_challenge($conn, $challenge_name, $description, $type, $category) {
+    $query = "INSERT INTO CTF_challenge (challenge_name, description, type, category) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ssss", $challenge_name, $description, $type, $category);
+
+    if (!$stmt->execute()) return false;
+    return $conn->insert_id;
+}
+
+function add_challenge_hint($conn, $challenge_id, $hint_description, $hint_cost) {
+    $query = "INSERT INTO CTF_hint (challenge_id, description, cost) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("isi", $challenge_id, $hint_description, $hint_cost);
+
+    if (!$stmt->execute()) return false;
+    return true;
+}
+
+function add_challenge_resource($conn, $challenge_id, $resource_link) {
+    $query = "INSERT INTO CTF_resource (challenge_id, link) VALUES (?, ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("is", $challenge_id, $resource_link);
+
+    if (!$stmt->execute()) return false;
+    return true;
+}
+
+function delete_challenge($conn, $challenge_id) {
+    $query = "DELETE FROM CTF_challenge WHERE challenge_id = $challenge_id";
+    if (!$conn->query($query)) return false;
+
+    $query = "DELETE FROM CTF_hint WHERE challenge_id = $challenge_id";
+    if (!$conn->query($query)) return false;
+
+    $query = "DELETE FROM CTF_resource WHERE challenge_id = $challenge_id";
+    if (!$conn->query($query)) return false;
+
+    return true;
+}
+
+function delete_challenge_hint($conn, $hint_id) {
+    $query = "DELETE FROM CTF_hint WHERE hint_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $hint_id);
+
+    if (!$stmt->execute()) return false;
+    return true;
+}
+
+function delete_challenge_resource($conn, $resource_id) {
+    $query = "DELETE FROM CTF_resource WHERE resource_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $resource_id);
+
+    if (!$stmt->execute()) return false;
+    return true;
+}
+
 function edit_challenge_data($conn, $challenge_id, $description, $type) {
-    $query = "UPDATE CTF_challenge SET description = ?, type = ? FROM CTF_challenge WHERE challenge_id = ?";
+    $query = "UPDATE CTF_challenge SET description = ?, type = ? WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ssi", $description, $type, $challenge_id);
     if(!$stmt->execute()) return false;
@@ -304,12 +402,24 @@ function edit_challenge_data($conn, $challenge_id, $description, $type) {
     return true;
 }
 
-function edit_challenge_hint($conn, $challenge_id, $description, $type) {
-    $query = "UPDATE CTF_challenge SET description = ?, type = ? FROM CTF_challenge WHERE challenge_id = ?";
+function edit_challenge_hint($conn, $hint_id, $hint_description, $hint_cost) {
+    $query = "UPDATE CTF_hint SET description = ?, cost = ? WHERE hint_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssi", $description, $type, $challenge_id);
+    $stmt->bind_param("sii", $hint_description, $hint_cost, $hint_id);
     if(!$stmt->execute()) return false;
 
+    return true;
+}
+
+function is_challenge_name_used($conn, $challenge_name) {
+    $query = "SELECT challenge_name FROM CTF_challenge WHERE challenge_name = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $challenge_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if(!$row) return false;
     return true;
 }
 

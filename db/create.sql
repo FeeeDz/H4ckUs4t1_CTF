@@ -42,6 +42,7 @@ CREATE TABLE CTF_resource (
     link VARCHAR(255) NOT NULL,
     challenge_id INT NOT NULL,
     PRIMARY KEY (resource_id),
+    UNIQUE (link, challenge_id),
     FOREIGN KEY (challenge_id) REFERENCES CTF_challenge(challenge_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
