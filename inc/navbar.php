@@ -10,7 +10,7 @@
         </a></li>
     <?php else : ?>
         <li><a id="nav__logo" href="index.php">
-            <img src="img/logo_h4ckus4t1_white.png" width="50">
+            <img src="img/logo_h4ckus4t1_black_and_white.png" width="50">
         </a></li>
     <?php endif; ?>
     <li><div id="nav__nav">
