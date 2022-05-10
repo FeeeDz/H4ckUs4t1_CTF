@@ -42,10 +42,12 @@ body {
   color: #2a324b;
   margin: 0px;
   height: 100vh;
+  background-image: url("../img/background-index.jpg");
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 #nav {
-  background-color: rgb(143, 105, 233);
   margin: 0px;
 }
 #nav #nav__checkbox:checked ~ ul#nav__menu li {
@@ -64,6 +66,7 @@ body {
   margin: 0rem 1rem;
   right: 0;
   transform: translateY(50%);
+  color: #e1e5ee;
 }
 #nav__toggle__close {
   display: none;
@@ -156,8 +159,19 @@ body {
   background-color: rgb(221, 16, 16);
 }
 
-#main {
-  background-color: rgb(141, 174, 204);
+#main #countdownTimer {
+  text-align: center;
+  margin: auto;
+  width: 60%;
+}
+#main #countdownTimer #time {
+  font-size: 2.5rem;
+  color: yellow;
+  font-family: "Segment", monospace;
+}
+#main #countdownTimer #time label {
+  font-size: 1rem;
+  color: #f9fbff;
 }
 #main .challenges__container {
   display: flex;
@@ -180,7 +194,6 @@ body {
 }
 
 #footer {
-  background-color: rgb(93, 194, 11);
   height: 200px;
 }
 
