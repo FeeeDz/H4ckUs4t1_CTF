@@ -6,6 +6,12 @@ $conn = db_connect();
 $title = "CTF h4ckus4t1";
 require "inc/head.php";
 ?>
+
+<style>
+body {
+  background-image: url('img/pexels-marek-piwnicki-6160167.jpg');
+}
+</style>
 <body>
     <?php require "inc/navbar.php"; ?>
     <div id="main">
