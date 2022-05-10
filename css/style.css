@@ -38,12 +38,12 @@
 }
 
 body {
+  padding: 0;
+  margin: 0;
   font-size: 15px;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   color: #2a324b;
   height: 100vh;
-  padding: 0;
-  margin: 0;
   background-color: black;
 }
 body.index-body {
@@ -56,7 +56,6 @@ body.index-body {
 
 #nav {
   background-image: linear-gradient(to right, #38b6ff, #4c38ff);
-  margin: 0px;
 }
 #nav #nav__checkbox:checked ~ ul#nav__menu li {
   display: block;
@@ -222,6 +221,7 @@ body.index-body {
 #main__logo {
   display: block;
   margin: auto;
+  padding: 2rem 0 0 0;
 }
 #main #countdownTimer {
   text-align: center;
