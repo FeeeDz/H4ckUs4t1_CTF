@@ -6,15 +6,17 @@ $conn = db_connect();
 $title = "CTF h4ckus4t1";
 require "inc/head.php";
 ?>
-<body>
-    <div id="index-container">
+<body class="index-body">
+    <nav id="nav" class="no-bg-color">
         <?php require "inc/navbar.php"; ?>
-        <div id="main">
-                <img id="main__logo" src="img/logo_h4ckus4t1_white.png" width="300">
-                <div id="countdownTimer">
-                    <p id="time"></p>
-                </div>
+    </nav>
+    <div id="main" class="no-bg-color">
+        <img id="main__logo" src="img/logo_h4ckus4t1_white.png" width="300">
+        <div id="countdownTimer">
+            <p id="time"></p>
         </div>
+    </div>
+    <div id="footer" class="no-bg-color">
         <?php require "inc/footer.php"; ?>
     </div>
     <script>

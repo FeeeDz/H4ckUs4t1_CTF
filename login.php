@@ -13,7 +13,9 @@ $title = "Login CTF h4ckus4t1";
 require "inc/head.php";
 ?>
 <body>
-    <?php require "inc/navbar.php"; ?>
+    <nav id="nav">
+        <?php require "inc/navbar.php"; ?>
+    </nav>
     <div id="main">
         <form method="POST">
             <input type="email" name="email" placeholder="Email" required> 
@@ -21,6 +23,8 @@ require "inc/head.php";
             <input type="submit" value="Login">
         </form>
     </div>
-    <?php require "inc/footer.php"; ?>
+    <footer id="footer">
+        <?php require "inc/footer.php"; ?>
+    </footer>  
 </body>
 </html>

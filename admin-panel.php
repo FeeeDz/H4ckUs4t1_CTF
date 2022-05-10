@@ -63,7 +63,9 @@ $title = "CTF h4ckus4t1";
 require "inc/head.php";
 ?>
 <body>
-    <?php require "inc/navbar.php"; ?>
+    <nav id="nav">
+        <?php require "inc/navbar.php"; ?>
+    </nav>
     <div id="main">
     <?php if (!isset($_POST["action"])) { ?>
         <form method="POST">
@@ -191,7 +193,9 @@ require "inc/head.php";
         </form>
     <?php } ?>
     </div>
-    <?php require "inc/footer.php"; ?>
+    <div id="footer">
+        <?php require "inc/footer.php"; ?>
+    </div>
     <script>
 
         remove_duplicated_resources();

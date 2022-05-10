@@ -7,7 +7,9 @@ $title = "CTF h4ckus4t1 Team";
 require "inc/head.php";
 ?>
 <body>
-    <?php require "inc/navbar.php"; ?>
+    <nav id="nav">
+        <?php require "inc/navbar.php"; ?>
+    </nav>
     <div id="main">
     <?php
     $team_name = get_user_team_name($conn, $_SESSION['user_id']);
@@ -62,6 +64,8 @@ require "inc/head.php";
         </form>
     <?php } ?>
     </div>
-    <?php require "inc/footer.php"; ?>
+    <div id="footer">
+        <?php require "inc/footer.php"; ?>
+    </div>
 </body>
 </html>
