@@ -1,6 +1,7 @@
 $footer-height: 200px;
 $login-button-image-size: 18px;
 $login-button-padding: 8px;
+$nav-logo-width: 3rem;
 
 //color variables
 $clr-primary:   skyblue;
@@ -80,10 +81,15 @@ body {
         cursor: pointer;
         margin: 0rem 1rem;
         right: 0;
-        transform: translateY(50%);
+        top: ($nav-logo-width + 1rem) / 2;
         color: $clr-gray300;
+
+        &__menu {
+            user-select: none;
+        }
   
         &__close {
+            user-select: none;
             display: none;
         }
     }
@@ -116,6 +122,10 @@ body {
 
             #nav__logo {
                 justify-content: flex-start;
+
+                img {
+                    width: $nav-logo-width;
+                }
             }
 
             #nav__nav {
@@ -192,6 +202,7 @@ body {
 }
 
 #main {
+    color: $clr-gray300;
     background-color: rgb(0, 0, 0);
 
     &.rules-main {
@@ -301,6 +312,7 @@ body {
 }
 
 #footer {
+    color: $clr-gray300;
     background-color: rgb(0, 0, 0);
     height: $footer-height;
 }
