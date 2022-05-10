@@ -4,8 +4,8 @@ require "inc/functions.php";
 $conn = db_connect();
 
 ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 redirect_if_not_admin();
 
@@ -15,7 +15,7 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
     $challenge_id = get_challenge_id($conn, $_POST["challenge_name"]);
     switch ($_POST["action"]) {
         case "add":
-            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["description"], $_POST['points'], $_POST["type"], $_POST["category"]);
+            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["flag"], $_POST["description"], $_POST['points'], $_POST["type"], $_POST["category"]);
 
             if(isset($_POST["add_hint_description"]))
                 for($i = 0; $i < count($_POST["add_hint_description"]); $i++)
@@ -67,62 +67,68 @@ require "inc/head.php";
         <?php require "inc/navbar.php"; ?>
     </nav>
     <div id="main">
-    <?php if (!isset($_POST["action"])) { ?>
-        <form method="POST">
+    <?php if (!isset($_GET["action"])) { ?>
+        <form method="GET">
             <input type="hidden" name="action" value="add">
             <input type="submit" value="Add challenge">
         </form>
-        <form method="POST">
+        <form method="GET">
             <input type="hidden" name="action" value="edit">
             <input type="submit" value="Edit challenge">
         </form>
-        <form method="POST">
+        <form method="GET">
             <input type="hidden" name="action" value="delete">
             <input type="submit" value="Delete challenge">
         </form>
-    <?php } elseif (!isset($_POST["challenge_name"])) { ?>
-        <form method="POST">
-            <input type="hidden" name="action" value="<?php echo $_POST["action"]; ?>">
-            <select name="challenge_name">
-            <?php
-                if($_POST["action"] == "add") {
-                    $challenges = get_challenges_on_server($conn);
-                    if (!$challenges) {
-                        echo "<option value=''></option>";
+    <?php } elseif (!isset($_GET["challenge_name"])) { ?>
+        <?php if($_GET["action"] == "delete") : ?>
+            <form method="POST">
+        <?php else : ?>
+            <form method="GET">
+        <?php endif; ?>
+                <input type="hidden" name="action" value="<?php echo $_GET["action"]; ?>">
+                <select name="challenge_name">
+                <?php
+                    if($_GET["action"] == "add") {
+                        $challenges = get_challenges_on_server($conn);
+                        if (!$challenges) {
+                            echo "<option value=''></option>";
+                        } else {
+                            foreach ($challenges as $challenge)
+                                echo "<option value='".$challenge."'>".$challenge."</option>";
+                        }
                     } else {
-                        foreach ($challenges as $challenge)
-                            echo "<option value='".$challenge."'>".$challenge."</option>";
+                        $rows = get_challenge_list($conn);
+                        foreach ($rows as $row)
+                            echo "<option value='".$row["challenge_name"]."'>".$row["challenge_name"]."</option>";
                     }
-                } else {
-                    $rows = get_challenge_list($conn);
-                    foreach ($rows as $row)
-                        echo "<option value='".$row["challenge_name"]."'>".$row["challenge_name"]."</option>";
-                }
-            ?>
-            </select>
-            <?php if($_POST["action"] == "add") : ?>
-                <input type="submit" value="Add challenge">
-            <?php elseif($_POST["action"] == "edit") : ?>
-                <input type="submit" value="Edit challenge">
-            <?php elseif($_POST["action"] == "delete") : ?>
-                <input type="hidden" name="submit">
-                <input type="submit" value="Delete challenge">
-            <?php endif; ?>
-        </form>
-    <?php } elseif ($_POST["action"] == "add") {
-        $category = get_challenge_category_on_server($_POST["challenge_name"]);
-        if (is_challenge_name_used($conn, $_POST["challenge_name"]) || !$category) header("Location: ".basename($_SERVER['PHP_SELF']));
+                ?>
+                </select>
+                <?php if($_GET["action"] == "add") : ?>
+                    <input type="submit" value="Add challenge">
+                <?php elseif($_GET["action"] == "edit") : ?>
+                    <input type="submit" value="Edit challenge">
+                <?php elseif($_GET["action"] == "delete") : ?>
+                    <input type="hidden" name="submit">
+                    <input type="submit" value="Delete challenge">
+                <?php endif; ?>
+            </form>
+    <?php } elseif ($_GET["action"] == "add") {
+        $category = get_challenge_category_on_server($_GET["challenge_name"]);
+        $flag = get_challenge_flag_on_server($_GET["challenge_name"]);
+        if (is_challenge_name_used($conn, $_GET["challenge_name"]) || !$category || !$flag ) header("Location: ".basename($_SERVER['PHP_SELF']));
     ?>
         <form method="POST">
             <input type="hidden" name="action" value="add">
             <input type="hidden" name="sumbit">
-            <input type="text" name="challenge_name" value="<?php echo $_POST["challenge_name"]; ?>" readonly>
+            <input type="text" name="challenge_name" value="<?php echo $_GET["challenge_name"]; ?>" readonly>
             <input type="text" name="category" value="<?php echo $category; ?>" readonly>
-            <input type="text" name="description">
-            <input type="number" name="points">
-            <select name="type">
-                <option>T</option>
-                <option>O</option>
+            <input type="text" name="flag" value="<?php echo $flag; ?>" readonly>
+            <input type="text" name="description" required>
+            <input type="number" name="points" required>
+            <select name="type" required>
+                <option value="T">Training</option>
+                <option value="O">Official</option>
             </select>
             <div>
                 <span class="material-icons" id="add-hint" onclick="add_hint()">add</span>
@@ -131,7 +137,7 @@ require "inc/head.php";
                 <div id="add-resource">
                     <select id="select-resource">
                     <?php
-                        $filenames = get_challenge_filenames_on_server($_POST["challenge_name"]);
+                        $filenames = get_challenge_filenames_on_server($_GET["challenge_name"]);
                         foreach ($filenames as $filename)
                             echo "<option value='".$filename."'>".$filename."</option>";
                     ?>
@@ -141,8 +147,8 @@ require "inc/head.php";
             </div>
             <input type="submit" name="submit" value="Add challenge">
         </form>
-    <?php } elseif ($_POST["action"] == "edit") {
-        $challenge_id = get_challenge_id($conn, $_POST["challenge_name"]);
+    <?php } elseif ($_GET["action"] == "edit") {
+        $challenge_id = get_challenge_id($conn, $_GET["challenge_name"]);
         if(!$challenge_id) header("Location: ".basename($_SERVER['PHP_SELF']));
 
         $challenge_data = get_challenge_data($conn, $challenge_id);
@@ -151,16 +157,18 @@ require "inc/head.php";
     ?>
         <form method="POST">
             <input type="hidden" name="action" value="edit">
-            <input type="hidden" name="challenge_name" value="<?php echo $_POST["challenge_name"]; ?>">
             <input type="hidden" name="sumbit">
-            <input type="text" name="description" value="<?php echo $challenge_data["description"]; ?>">
-            <input type="number" name="points" value="<?php echo $challenge_data["points"]; ?>">
+            <input type="text" name="challenge_name" value="<?php echo $_GET["challenge_name"]; ?>" readonly>
+            <input type="text" name="category" value="<?php echo $challenge_data["category"]; ?>" readonly>
+            <input type="text" name="flag" value="<?php echo $challenge_data["flag"]; ?>" readonly>
+            <input type="text" name="description" value="<?php echo $challenge_data["description"]; ?>" required>
+            <input type="number" name="points" value="<?php echo $challenge_data["points"]; ?>" required>
             <select name="type">
-                <option <?php if($challenge_data["type"] == "T") echo "selected=\"selected\""?>>T</option>
-                <option <?php if($challenge_data["type"] == "O") echo "selected=\"selected\""?>>O</option>
+                <option value="T" <?php if($challenge_data["type"] == "T") echo "selected=\"selected\""?>>Training</option>
+                <option value="O" <?php if($challenge_data["type"] == "O") echo "selected=\"selected\""?>>Official</option>
             </select>
             <div>
-            <?php foreach($hints as $hint) : ?>
+            <?php if($hints) foreach($hints as $hint) : ?>
                 <span class="challenge-hint">
                     <input type="hidden" name="edit_hint_id[]" value="<?php echo $hint["hint_id"]?>" required>
                     <input type="text" name="edit_hint_description[]" value="<?php echo $hint["description"]?>" required>
@@ -171,7 +179,7 @@ require "inc/head.php";
                 <span class="material-icons" id="add-hint" onclick="add_hint()">add</span>
             </div>
             <div>
-            <?php foreach($resources as $resource) :?>
+            <?php if($resources) foreach($resources as $resource) :?>
                 <span class="challenge-resource">
                     <input type="text" name="edit_resource_link[]" value="<?php echo $resource["link"]?>" readonly>
                     <input type="hidden" name="edit_resource_id[]" value="<?php echo $resource["resource_id"]?>">
