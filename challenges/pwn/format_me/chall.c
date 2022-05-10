@@ -1,8 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(){
-    char flag[18]="ITT{U_f0UnD_M3!!}";
+void init(){
+    setbuf(stdout, NULL);
+    setbuf(stdin, NULL);
+    setbuf(stderr, NULL);
+}
+
+void vuln(){
+char flag[18]="ITT{U_f0UnD_M3!!}";
     int *ptr=flag;
     char input[100];
     puts("Welcome back to another pwn boyz!\n");
@@ -14,5 +20,13 @@ int main(){
     printf(input);
 }
 
+int main(){
+    init();
+    vuln();
+}
+
 
 // %23$s
+
+
+//remote %7$s
