@@ -15,7 +15,9 @@ $title = "CTF h4ckus4t1";
 require "inc/head.php";
 ?>
 <body>
-    <?php require "inc/navbar.php"; ?>
+    <nav id="nav">
+        <?php require "inc/navbar.php"; ?>
+    </nav>
     <div id="main">
         <form method="POST">
             <input type="text" name="username" placeholder="Username" minlength="3" maxlength="16" pattern="[\x00-\x7F]+" required>
@@ -25,7 +27,9 @@ require "inc/head.php";
             <input type="submit" value="Register">
         </form>
     </div>
-    <?php require "inc/footer.php"; ?>
+    <div id="footer">
+        <?php require "inc/footer.php"; ?>
+    </div>
     <script>
 
         const password = document.getElementById("password")

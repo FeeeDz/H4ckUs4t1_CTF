@@ -8,6 +8,8 @@ $clr-primary-hover: rgb(25, 209, 223);
 $clr-primary-dark: rgb(67, 108, 124);
 
 $clr-clock:  yellow;
+$clr-cross:  rgb(219, 0, 0);
+$clr-arrow:  rgb(0, 253, 0);
 
 $clr-gray100: #f9fbff;
 $clr-gray150: #f4f6fb;
@@ -32,27 +34,35 @@ $clr-gray700: #161d34;
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
-html {
-    font-size: 16px;
+.no-bg-color {
+    background: unset !important;
 }
 
 body {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 15px;
+    font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
     // font-weight: 700;
     color: $clr-gray600;
-    margin: 0px;
     height: 100vh;
+    padding: 0;
+    margin: 0;
 
-    #index-container {
-        height: 100vh;
+    &.index-body {
         background-image: url('../img/background-index.jpg');
         background-position: bottom;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
     }
 }
 
+  
+
+
 #nav {
     // border-bottom: 1px solid $clr-gray200;
-    // background-color: rgb(143, 105, 233);
+    background-image: linear-gradient(to right, #38b6ff, #4c38ff);
+
     margin: 0px;
 
     #nav__checkbox:checked ~ ul#nav__menu li {
@@ -165,13 +175,13 @@ body {
                     background-color: rgb(0, 170, 0);
                 }
                 #team-button {
-                    background-color: rgb(40, 116, 202);
+                    background-color: rgb(0, 217, 255);
                 }
                 #admin-panel-button {
                     background-color: rgb(207, 209, 53);
                 }
                 #register-button {
-                    background-color: rgb(0, 103, 221);
+                    background-color: rgb(0, 217, 255);
                 }
                 #account-button {
                     background-color: rgb(0, 170, 0);
@@ -185,7 +195,64 @@ body {
 }
 
 #main {
-    // background-color: rgb(141, 174, 204);
+    background-color: rgb(0, 0, 0);
+
+
+    &.rules-main {
+        color: $clr-gray300;
+        text-align: center;
+
+        .rules-container {
+            display: inline-block;
+            padding: 2rem 2rem;
+            text-align: left;
+            max-width: 900px;
+    
+            ul {
+                line-height: 1.5em;
+                margin: 5px 0 15px;
+                padding: 0;
+        
+                li {
+                    list-style: none;
+                    position: relative;
+                    padding: 0 0 0 20px;
+                }
+            
+                li.cross::before {
+                    content: "";
+                    position: absolute;
+                    height: 15px;
+                    border-left: 2px solid $clr-cross;
+                    transform: rotate(45deg);
+                    top: 2px;
+                    left: 5px;
+                }
+                
+                li.cross::after {
+                    content: "";
+                    position: absolute;
+                    height: 15px;
+                    border-left: 2px solid $clr-cross;
+                    transform: rotate(-45deg);
+                    top: 2px;
+                    left: 5px;
+                }
+                            
+                li.arrow::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 6px;
+                    height: 5px;
+                    width: 5px;
+                    border: 1px solid $clr-arrow;
+                    border-width: 2px 2px 0 0;
+                    transform: rotate(45deg);
+                }
+            }
+        }  
+    }  
 
     &__logo {
         display: block;
@@ -202,6 +269,8 @@ body {
             font-size: 2.5rem;
             color: $clr-clock;
             font-family: 'Segment', monospace;
+            margin: 0;
+            padding: 3rem 0rem;
 
             label {
                 font-size: 1rem;
@@ -235,7 +304,7 @@ body {
 }
 
 #footer {
-    // background-color: rgb(93, 194, 11);
+    background-color: rgb(0, 0, 0);
     height: $footer-height;
 }
 

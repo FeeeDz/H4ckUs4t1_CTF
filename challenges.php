@@ -7,7 +7,9 @@ $title = "CTF h4ckus4t1";
 require "inc/head.php";
 ?>
 <body>
-    <?php require "inc/navbar.php"; ?>
+    <nav id="nav">
+        <?php require "inc/navbar.php"; ?>
+    </nav>
     <div id="main">
         <div class="challenges__container">
             <span class="challenges__category">Miscellaneous</span>
@@ -44,6 +46,8 @@ require "inc/head.php";
             </div>
         </div>
     </div>
-    <?php require "inc/footer.php"; ?>
+    <div id="footer">
+        <?php require "inc/footer.php"; ?>
+    </div>
 </body>
 </html>

@@ -33,23 +33,28 @@
   color: rgba(255, 255, 255, 0.3);
 }
 
-html {
-  font-size: 16px;
+.no-bg-color {
+  background: unset !important;
 }
 
 body {
-  font-family: "Source Sans Pro", sans-serif;
+  font-size: 15px;
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   color: #2a324b;
-  margin: 0px;
   height: 100vh;
+  padding: 0;
+  margin: 0;
 }
-body #index-container {
-  height: 100vh;
+body.index-body {
   background-image: url("../img/background-index.jpg");
   background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 #nav {
+  background-image: linear-gradient(to right, #38b6ff, #4c38ff);
   margin: 0px;
 }
 #nav #nav__checkbox:checked ~ ul#nav__menu li {
@@ -146,13 +151,13 @@ body #index-container {
   background-color: rgb(0, 170, 0);
 }
 #nav__menu li #nav__account #team-button {
-  background-color: rgb(40, 116, 202);
+  background-color: rgb(0, 217, 255);
 }
 #nav__menu li #nav__account #admin-panel-button {
   background-color: rgb(207, 209, 53);
 }
 #nav__menu li #nav__account #register-button {
-  background-color: rgb(0, 103, 221);
+  background-color: rgb(0, 217, 255);
 }
 #nav__menu li #nav__account #account-button {
   background-color: rgb(0, 170, 0);
@@ -161,6 +166,58 @@ body #index-container {
   background-color: rgb(221, 16, 16);
 }
 
+#main {
+  background-color: rgb(0, 0, 0);
+}
+#main.rules-main {
+  color: #e1e5ee;
+  text-align: center;
+}
+#main.rules-main .rules-container {
+  display: inline-block;
+  padding: 2rem 2rem;
+  text-align: left;
+  max-width: 900px;
+}
+#main.rules-main .rules-container ul {
+  line-height: 1.5em;
+  margin: 5px 0 15px;
+  padding: 0;
+}
+#main.rules-main .rules-container ul li {
+  list-style: none;
+  position: relative;
+  padding: 0 0 0 20px;
+}
+#main.rules-main .rules-container ul li.cross::before {
+  content: "";
+  position: absolute;
+  height: 15px;
+  border-left: 2px solid rgb(219, 0, 0);
+  transform: rotate(45deg);
+  top: 2px;
+  left: 5px;
+}
+#main.rules-main .rules-container ul li.cross::after {
+  content: "";
+  position: absolute;
+  height: 15px;
+  border-left: 2px solid rgb(219, 0, 0);
+  transform: rotate(-45deg);
+  top: 2px;
+  left: 5px;
+}
+#main.rules-main .rules-container ul li.arrow::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  height: 5px;
+  width: 5px;
+  border: 1px solid rgb(0, 253, 0);
+  border-width: 2px 2px 0 0;
+  transform: rotate(45deg);
+}
 #main__logo {
   display: block;
   margin: auto;
@@ -174,6 +231,8 @@ body #index-container {
   font-size: 2.5rem;
   color: yellow;
   font-family: "Segment", monospace;
+  margin: 0;
+  padding: 3rem 0rem;
 }
 #main #countdownTimer #time label {
   font-size: 1rem;
@@ -200,6 +259,7 @@ body #index-container {
 }
 
 #footer {
+  background-color: rgb(0, 0, 0);
   height: 200px;
 }
 
