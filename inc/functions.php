@@ -270,6 +270,20 @@ function get_challenge_category_on_server($challenge_name) {
     return false;
 }
 
+function get_challenge_flag_on_server($challenge_name) {
+    $base_dir = __DIR__."/../challenges";
+    foreach (array_diff(scandir($base_dir), array('.', '..')) as $dir) {
+        $challenges = scandir($base_dir."/".$dir);
+        foreach ($challenges as $item) 
+            if($item == $challenge_name) {
+                if(!file_exists($base_dir."/".$dir."/".$challenge_name."/flag.txt")) return false;
+                return file_get_contents($base_dir."/".$dir."/".$challenge_name."/flag.txt");
+            } 
+    }
+
+    return false;
+}
+
 function get_challenge_filenames_on_server($challenge_name) {
     $base_dir = __DIR__."/../challenges";
     foreach (array_diff(scandir($base_dir), array('.', '..')) as $dir) {
@@ -335,11 +349,12 @@ function get_challenge_categories($conn) {
     return $rows;
 }
 
-function add_challenge($conn, $challenge_name, $description, $points, $type, $category) {
-    $query = "INSERT INTO CTF_challenge (challenge_name, description, points, type, category) VALUES (?, ?, ?, ?)";
+function add_challenge($conn, $challenge_name, $flag, $description, $points, $type, $category) {
+    $query = "INSERT INTO CTF_challenge (challenge_name, flag, description, points, type, category) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssiss", $challenge_name, $description, $points, $type, $category);
-
+    $stmt->bind_param("sssiss", $challenge_name, $flag, $description, $points, $type, $category);
+    
+    var_dump($challenge_name, $description, $points, $type, $category);
     if (!$stmt->execute()) return false;
     return $conn->insert_id;
 }
