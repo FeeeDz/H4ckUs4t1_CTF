@@ -1,13 +1,15 @@
-INSERT INTO CTF_challenge (challenge_name, flag, description, type, category)
+INSERT INTO CTF_challenge (challenge_name, flag, description, type, points, category)
 VALUES
     ("baby_smash",
     "ITT{34zy_w4rmupz!!}",
     "Smash it!",
+    500,
     "T",
     "pwn"),
     ("ez_jmp",
     "ITT{W3_l1K3_s0Ft_L4Nd1nGsz!!}",
     "Try to jump",
+    500,
     "T",
     "pwn");
 

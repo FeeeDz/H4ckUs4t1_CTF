@@ -16,6 +16,7 @@ CREATE TABLE CTF_challenge (
     challenge_name VARCHAR(64) NOT NULL,
     flag VARCHAR(48) NOT NULL,
     description VARCHAR(1024) NOT NULL,
+    points INT NOT NULL,
     type CHAR(1) NOT NULL,
     category VARCHAR(64) NOT NULL,
     PRIMARY KEY (challenge_id),

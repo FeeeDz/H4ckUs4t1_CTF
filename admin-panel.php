@@ -15,7 +15,7 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
     $challenge_id = get_challenge_id($conn, $_POST["challenge_name"]);
     switch ($_POST["action"]) {
         case "add":
-            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["description"], $_POST["type"], $_POST["category"]);
+            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["description"], $_POST['points'], $_POST["type"], $_POST["category"]);
 
             if(isset($_POST["add_hint_description"]))
                 for($i = 0; $i < count($_POST["add_hint_description"]); $i++)
@@ -32,7 +32,7 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
             break;
 
         case "edit":
-            edit_challenge_data($conn, $challenge_id, $_POST["description"], $_POST["type"]);
+            edit_challenge_data($conn, $challenge_id, $_POST["description"], $_POST['points'], $_POST["type"]);
 
             if(isset($_POST["delete_hint"]))
                 foreach ($_POST["delete_hint"] as $hint_id)
@@ -115,8 +115,9 @@ require "inc/head.php";
             <input type="hidden" name="action" value="add">
             <input type="hidden" name="sumbit">
             <input type="text" name="challenge_name" value="<?php echo $_POST["challenge_name"]; ?>" readonly>
-            <input type="text" name="category" value="<?php echo $category; ?>">
-            <input type="text" name="description" value="">
+            <input type="text" name="category" value="<?php echo $category; ?>" readonly>
+            <input type="text" name="description">
+            <input type="number" name="points">
             <select name="type">
                 <option>T</option>
                 <option>O</option>
@@ -151,6 +152,7 @@ require "inc/head.php";
             <input type="hidden" name="challenge_name" value="<?php echo $_POST["challenge_name"]; ?>">
             <input type="hidden" name="sumbit">
             <input type="text" name="description" value="<?php echo $challenge_data["description"]; ?>">
+            <input type="number" name="points" value="<?php echo $challenge_data["points"]; ?>">
             <select name="type">
                 <option <?php if($challenge_data["type"] == "T") echo "selected=\"selected\""?>>T</option>
                 <option <?php if($challenge_data["type"] == "O") echo "selected=\"selected\""?>>O</option>
