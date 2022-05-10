@@ -9,7 +9,7 @@ require "inc/head.php";
 
 <style>
 body {
-  background-image: url('img/pexels-photo-904690.jpg');
+  background-image: url('img/pexels-marek-piwnicki-6160167.jpg');
 }
 </style>
 <body>
