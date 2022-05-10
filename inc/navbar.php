@@ -16,6 +16,10 @@ basename($_SERVER['PHP_SELF']);
                 <span class="material-icons">home</span>
                 <span>Home</span>
             </a>
+            <a href="rules.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "rules.php") echo "active"; ?>">
+                <span class="material-icons">description</span>
+                <span>Rules</span>
+            </a>
             <a href="scoreboard.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "scoreboard.php") echo "active"; ?>">
                 <span class="material-icons">scoreboard</span>
                 <span>Classifica</span>

@@ -7,14 +7,16 @@ $title = "CTF h4ckus4t1";
 require "inc/head.php";
 ?>
 <body>
-    <?php require "inc/navbar.php"; ?>
-    <div id="main">
-        <img id="main__logo" src="img/logo_h4ckus4t1_white.png" width="300">
-        <div id="countdownTimer">
-            <p id="time"></p>
+    <div id="index-container">
+        <?php require "inc/navbar.php"; ?>
+        <div id="main">
+                <img id="main__logo" src="img/logo_h4ckus4t1_white.png" width="300">
+                <div id="countdownTimer">
+                    <p id="time"></p>
+                </div>
         </div>
+        <?php require "inc/footer.php"; ?>
     </div>
-    <?php require "inc/footer.php"; ?>
     <script>
         const timeElem = document.getElementById("time");
         const ctfDate = new Date("2022-06-03");
