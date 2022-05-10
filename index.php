@@ -9,7 +9,7 @@ require "inc/head.php";
 <body>
     <?php require "inc/navbar.php"; ?>
     <div id="main">
-        <img src="img/logo_h4ckus4t1_noBG.svg">
+        <img id="main__logo" src="img/logo_h4ckus4t1_white.png">
         <div id="countdownTimer">
             <p id="time"></p>
         </div>

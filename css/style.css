@@ -159,6 +159,10 @@ body {
   background-color: rgb(221, 16, 16);
 }
 
+#main__logo {
+  display: block;
+  margin: auto;
+}
 #main #countdownTimer {
   text-align: center;
   margin: auto;
