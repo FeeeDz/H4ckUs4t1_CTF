@@ -42,9 +42,9 @@ body {
     color: $clr-gray600;
     margin: 0px;
     height: 100vh;
+
     background-image: url('../img/background-index.jpg');
-    background-attachment:fixed;
-    background-size: cover;
+    background-position: bottom;
 }
 
 #nav {
