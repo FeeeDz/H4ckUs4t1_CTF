@@ -1,0 +1,1 @@
+gcc -fno-stack-protector -g1 -no-pie -m32 -z execstack chall.c -o ez_jmp

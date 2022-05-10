@@ -1,6 +1,3 @@
-<?php 
-basename($_SERVER['PHP_SELF']);
-?>
 <nav id="nav">
     <input type="checkbox" id="nav__checkbox">
     <label for="nav__checkbox" id="nav__toggle">
