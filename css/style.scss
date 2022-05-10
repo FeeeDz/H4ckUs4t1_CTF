@@ -43,8 +43,11 @@ body {
     margin: 0px;
     height: 100vh;
 
-    background-image: url('../img/background-index.jpg');
-    background-position: bottom;
+    #index-container {
+        height: 100vh;
+        background-image: url('../img/background-index.jpg');
+        background-position: bottom;
+    }
 }
 
 #nav {

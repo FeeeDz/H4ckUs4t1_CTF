@@ -42,6 +42,9 @@ body {
   color: #2a324b;
   margin: 0px;
   height: 100vh;
+}
+body #index-container {
+  height: 100vh;
   background-image: url("../img/background-index.jpg");
   background-position: bottom;
 }
