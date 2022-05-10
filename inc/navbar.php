@@ -9,7 +9,7 @@ basename($_SERVER['PHP_SELF']);
     </label>
     <ul id="nav__menu">
         <li><a id="nav__logo" href="index.php">
-            <img src="img/logo_montani2.png" width="50px">
+            <img src="img/logo_montani2.png" width="50">
         </a></li>
         <li><div id="nav__nav">
             <a href="index.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "index.php") echo "active"; ?>">
