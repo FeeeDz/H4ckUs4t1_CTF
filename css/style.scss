@@ -7,6 +7,8 @@ $clr-primary:   skyblue;
 $clr-primary-hover: rgb(25, 209, 223);
 $clr-primary-dark: rgb(67, 108, 124);
 
+$clr-clock:  yellow;
+
 $clr-gray100: #f9fbff;
 $clr-gray150: #f4f6fb;
 $clr-gray200: #eef1f6;
@@ -40,11 +42,14 @@ body {
     color: $clr-gray600;
     margin: 0px;
     height: 100vh;
+    background-image: url('../img/background-index.jpg');
+    background-attachment:fixed;
+    background-size: cover;
 }
 
 #nav {
     // border-bottom: 1px solid $clr-gray200;
-    background-color: rgb(143, 105, 233);
+    // background-color: rgb(143, 105, 233);
     margin: 0px;
 
     #nav__checkbox:checked ~ ul#nav__menu li {
@@ -66,6 +71,7 @@ body {
         margin: 0rem 1rem;
         right: 0;
         transform: translateY(50%);
+        color: $clr-gray300;
   
         &__close {
             display: none;
@@ -176,8 +182,25 @@ body {
 }
 
 #main {
-    background-color: rgb(141, 174, 204);
+    // background-color: rgb(141, 174, 204);
+    #countdownTimer {
+        text-align: center;
+        margin: auto;
+        width: 60%;
+        // margin-bottom: -2em;
 
+        #time {
+            font-size: 2.5rem;
+            color: $clr-clock;
+            font-family: 'Segment', monospace;
+
+            label {
+                font-size: 1rem;
+                color: $clr-gray100;
+            }
+        }
+    }
+    
     .challenges__container {
         display: flex;
         flex-direction: column;
@@ -203,7 +226,7 @@ body {
 }
 
 #footer {
-    background-color: rgb(93, 194, 11);
+    // background-color: rgb(93, 194, 11);
     height: $footer-height;
 }
 
