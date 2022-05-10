@@ -291,7 +291,7 @@ function get_challenge_filenames($conn, $challenge_id) {
 }
 
 function get_challenge_data($conn, $challenge_id) {
-    $query = "SELECT challenge_name, flag, description, type, category FROM CTF_challenge WHERE challenge_id = ?";
+    $query = "SELECT challenge_name, flag, description, points, type, category FROM CTF_challenge WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $challenge_id);
     $stmt->execute();
@@ -335,10 +335,10 @@ function get_challenge_categories($conn) {
     return $rows;
 }
 
-function add_challenge($conn, $challenge_name, $description, $type, $category) {
-    $query = "INSERT INTO CTF_challenge (challenge_name, description, type, category) VALUES (?, ?, ?, ?)";
+function add_challenge($conn, $challenge_name, $description, $points, $type, $category) {
+    $query = "INSERT INTO CTF_challenge (challenge_name, description, points, type, category) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssss", $challenge_name, $description, $type, $category);
+    $stmt->bind_param("ssiss", $challenge_name, $description, $points, $type, $category);
 
     if (!$stmt->execute()) return false;
     return $conn->insert_id;
@@ -393,10 +393,10 @@ function delete_challenge_resource($conn, $resource_id) {
     return true;
 }
 
-function edit_challenge_data($conn, $challenge_id, $description, $type) {
-    $query = "UPDATE CTF_challenge SET description = ?, type = ? WHERE challenge_id = ?";
+function edit_challenge_data($conn, $challenge_id, $description, $points, $type) {
+    $query = "UPDATE CTF_challenge SET description = ?, points = ?, type = ? WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssi", $description, $type, $challenge_id);
+    $stmt->bind_param("sisi", $description, $points, $type, $challenge_id);
     if(!$stmt->execute()) return false;
 
     return true;
