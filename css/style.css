@@ -34,7 +34,7 @@
 }
 
 .no-bg-color {
-  background: unset !important;
+  background: inherit !important;
 }
 
 body {
@@ -45,6 +45,8 @@ body {
   color: #2a324b;
   height: 100vh;
   background-color: black;
+  display: flex;
+  flex-direction: column;
 }
 body.index-body {
   background-image: url("../img/background-index.jpg");
@@ -55,6 +57,10 @@ body.index-body {
 }
 
 #nav {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1;
   background-image: linear-gradient(to right, #38b6ff, #4c38ff);
 }
 #nav #nav__checkbox:checked ~ ul#nav__menu li {
@@ -189,7 +195,7 @@ body.index-body {
 }
 #main.rules-main .rules-container {
   display: inline-block;
-  padding: 2rem 2rem;
+  padding: 1rem 2rem 0rem 2rem;
   text-align: left;
   max-width: 900px;
 }
@@ -247,7 +253,7 @@ body.index-body {
   color: yellow;
   font-family: "Segment", monospace;
   margin: 0;
-  padding: 3rem 0rem;
+  padding: 3rem 0rem 1rem 0rem;
 }
 #main #countdownTimer #time label {
   font-size: 1rem;
@@ -274,9 +280,11 @@ body.index-body {
 }
 
 #footer {
+  margin-top: auto;
+  padding: 1rem 0rem 0rem 0rem;
+  text-align: center;
   color: #e1e5ee;
   background-color: rgb(0, 0, 0);
-  height: 200px;
 }
 
 @media only screen and (max-width: 1000px) {
