@@ -16,17 +16,6 @@ CREATE TABLE CTF_upcoming_event (
     PRIMARY KEY (event_id)
 ) ENGINE = INNODB;
 
-CREATE TABLE CTF_rule (
-    rule_id INT NOT NULL AUTO_INCREMENT,
-    type CHAR(1) NOT NULL,
-    description VARCHAR(1024) NOT NULL,
-    event_id INT,
-    PRIMARY KEY (rule_id),
-    FOREIGN KEY (event_id) REFERENCES CTF_upcoming_event(event_id)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-) ENGINE = INNODB;
-
 CREATE TABLE CTF_challenge_category (
     category VARCHAR(64),
     PRIMARY KEY (category)
@@ -118,26 +107,11 @@ CREATE TABLE CTF_submit (
 ) ENGINE = INNODB;
 
 
-INSERT INTO CTF_rule (start_date, end_date)
+INSERT INTO CTF_upcoming_event (start_date, end_date)
 VALUES
     ("2022-05-16 14:00:00", "2022-05-17 14:00:00"),
     ("2022-05-18 14:00:00", "2022-05-19 14:00:00"),
     ("2022-05-20 14:00:00", "2022-05-21 14:00:00");
-
-INSERT INTO CTF_rule (type, description, event_id)
-VALUES
-    ("X","Share flags with or give help to other participants", NULL),
-    ("X", "Use automated scanning and probing tools such as Nmap, Gobuster, Dirb, sqlmap, etc. <i>unless specified in the challenge description", NULL),
-    ("X", "Attempt to (or succeed at) DoSing or DDoSing any infrastructure or other participants", NULL),
-    ("X", "Try to brute force flag submissions - it will not work", NULL),
-    ("X", "Attempt to (or succeed at) DoSing or DDoSing any infrastructure or other participants", NULL),
-    ("X", "Hoard flags. Any user that solves multiple challenges but doesn't turn in the flag until the last moment to trick others into thinking they will win will be punished. <b>If you're really good enough to win, you don't need to do this", NULL),
-    ("N", "The flag format is <code>ITT{example_flag}", NULL),
-    ("N", "All flags are case sensitive unless specified", NULL),
-    ("N", "Scoring is dynamic and decreases in value as more participants solve the problem. Most challenges start at 500 points", NULL),
-    ("N", "Each problem has a tag telling you whether it's ""Easy"", ""Medium"", or ""Hard"" - these may not be perfect, but they are generally correct", NULL),
-    ("N", "If any challenges are broken, you feel the flag you have is correct, or you have any other questions, please reach out to an admin on our Discord", NULL),
-    ("N", "If you do anything that we believe to be directly against the spirit of the competition, we reserve the right to remove anyone at any point. Please don't make us do that. This is for your learning and benefit", NULL);
 
     
 INSERT INTO CTF_challenge_category (category)
