@@ -12,7 +12,6 @@ require "inc/head.php";
     </nav>  
     <div id="main" class="rules-main">
         <div class="rules-container">
-            <br>
             <h1>Rules</h1>
             <h4><b>Do NOT:</b></h4>
             <ul>
