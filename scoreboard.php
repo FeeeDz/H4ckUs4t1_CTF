@@ -11,6 +11,7 @@ require "inc/head.php";
         <?php require "inc/navbar.php"; ?>
     </nav>  
     <div id="main">
+        
     </div>
     <div id="footer">
         <?php require "inc/footer.php"; ?>
