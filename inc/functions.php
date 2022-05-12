@@ -438,4 +438,31 @@ function is_challenge_name_used($conn, $challenge_name) {
     return true;
 }
 
+function get_upcoming_event_start_date($conn) {
+    $query = "SELECT MIN(start_date) AS start_date FROM CTF_event WHERE start_date > NOW()";
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["start_date"];
+}
+
+function get_current_event_end_date($conn) {
+    $query = "SELECT end_date FROM CTF_event WHERE start_date < NOW() AND end_date > NOW()";
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["end_date"];
+}
+
+function is_event_started($conn) {
+    $query = "SELECT event_id FROM CTF_event WHERE start_date < NOW() AND end_date > NOW()";
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return true;
+}
+
 ?>

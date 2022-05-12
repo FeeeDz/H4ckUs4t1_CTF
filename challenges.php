@@ -14,7 +14,13 @@ require "inc/head.php";
         <div class="challenges__container">
             <span class="challenges__category">Miscellaneous</span>
             <div class="challenges__grid">
-                <div class="challenge__box">Web</div>
+                <div class="challenge__box">
+                    <span>a</span>
+                    <span>a</span>
+                    <span>a</span>
+                    <span>a</span>
+                    <span>a</span>
+                </div>
                 <div class="challenge__box">Web</div>
                 <div class="challenge__box">Web</div>
                 <div class="challenge__box">Web</div>

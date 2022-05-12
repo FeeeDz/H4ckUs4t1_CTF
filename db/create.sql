@@ -6,10 +6,10 @@ DROP TABLE IF EXISTS CTF_hint;
 DROP TABLE IF EXISTS CTF_challenge;
 DROP TABLE IF EXISTS CTF_challenge_category;
 DROP TABLE IF EXISTS CTF_rule;
-DROP TABLE IF EXISTS CTF_upcoming_event;
+DROP TABLE IF EXISTS CTF_event;
 
 
-CREATE TABLE CTF_upcoming_event (
+CREATE TABLE CTF_event (
     event_id INT NOT NULL AUTO_INCREMENT,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE CTF_submit (
 ) ENGINE = INNODB;
 
 
-INSERT INTO CTF_upcoming_event (start_date, end_date)
+INSERT INTO CTF_event (start_date, end_date)
 VALUES
     ("2022-05-16 14:00:00", "2022-05-17 14:00:00"),
     ("2022-05-18 14:00:00", "2022-05-19 14:00:00"),
