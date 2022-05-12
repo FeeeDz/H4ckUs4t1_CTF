@@ -243,19 +243,20 @@ body.index-body {
   margin: auto;
   padding: 2rem 0 0 0;
 }
-#main #countdownTimer {
+#main #countdown-timer {
   text-align: center;
   margin: auto;
   width: 60%;
-}
-#main #countdownTimer #time {
-  font-size: 2.5rem;
-  color: yellow;
-  font-family: "Segment", monospace;
-  margin: 0;
   padding: 3rem 0rem 1rem 0rem;
+  font-size: 2.5rem;
+  font-family: "Segment", monospace;
+  color: yellow;
 }
-#main #countdownTimer #time label {
+#main #countdown-timer #time {
+  margin: 0;
+  color: yellow;
+}
+#main #countdown-timer #time label {
   font-size: 1rem;
   color: #f9fbff;
 }
