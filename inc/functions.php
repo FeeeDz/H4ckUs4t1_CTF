@@ -1,5 +1,7 @@
 <?php
 
+$private_dir = "/home/quintaa2122/informatica/CTF_h4ckus4t1_private";
+
 $hash_options = [
     'cost' => 10,
 ];
@@ -241,18 +243,20 @@ function get_challenge_list($conn) {
 }
 
 function get_challenges_on_server($conn) {
+    global $private_dir;
+    $challenge_dir = $private_dir."/challenges";
+
     $db_challenge_list = array();
     foreach (get_challenge_list($conn) as $item) {
         array_push($db_challenge_list, array_values($item)[0]);
     }
 
-    $base_dir = __DIR__."/../challenges";
     $challenge_on_server = array();
-    foreach (array_diff(scandir($base_dir), array('.', '..')) as $dir) {
-        $challenges = scandir($base_dir."/".$dir);
+    foreach (array_diff(scandir($challenge_dir), array('.', '..')) as $dir) {
+        $challenges = scandir($challenge_dir."/".$dir);
         $challenges = array_diff($challenges, array('.', '..'));
         foreach ($challenges as $item) 
-            if(is_dir($base_dir."/".$dir."/".$item)) 
+            if(is_dir($challenge_dir."/".$dir."/".$item)) 
                 array_push($challenge_on_server, $item);
     }
 
@@ -260,9 +264,11 @@ function get_challenges_on_server($conn) {
 }
 
 function get_challenge_category_on_server($challenge_name) {
-    $base_dir = __DIR__."/../challenges";
-    foreach (array_diff(scandir($base_dir), array('.', '..')) as $dir) {
-        $challenges = scandir($base_dir."/".$dir);
+    global $private_dir;
+    $challenge_dir = $private_dir."/challenges";
+
+    foreach (array_diff(scandir($challenge_dir), array('.', '..')) as $dir) {
+        $challenges = scandir($challenge_dir."/".$dir);
         foreach ($challenges as $item) 
             if($item == $challenge_name) return $dir; 
     }
@@ -271,13 +277,15 @@ function get_challenge_category_on_server($challenge_name) {
 }
 
 function get_challenge_flag_on_server($challenge_name) {
-    $base_dir = __DIR__."/../challenges";
-    foreach (array_diff(scandir($base_dir), array('.', '..')) as $dir) {
-        $challenges = scandir($base_dir."/".$dir);
+    global $private_dir;
+    $challenge_dir = $private_dir."/challenges";
+
+    foreach (array_diff(scandir($challenge_dir), array('.', '..')) as $dir) {
+        $challenges = scandir($challenge_dir."/".$dir);
         foreach ($challenges as $item) 
             if($item == $challenge_name) {
-                if(!file_exists($base_dir."/".$dir."/".$challenge_name."/flag.txt")) return false;
-                return file_get_contents($base_dir."/".$dir."/".$challenge_name."/flag.txt");
+                if(!file_exists($challenge_dir."/".$dir."/".$challenge_name."/flag.txt")) return false;
+                return file_get_contents($challenge_dir."/".$dir."/".$challenge_name."/flag.txt");
             } 
     }
 
@@ -285,20 +293,25 @@ function get_challenge_flag_on_server($challenge_name) {
 }
 
 function get_challenge_filenames_on_server($challenge_name) {
-    $base_dir = __DIR__."/../challenges";
-    foreach (array_diff(scandir($base_dir), array('.', '..')) as $dir) {
-        $challenges = scandir($base_dir."/".$dir);
+    global $private_dir;
+    $challenge_dir = $private_dir."/challenges";
+
+    foreach (array_diff(scandir($challenge_dir), array('.', '..')) as $dir) {
+        $challenges = scandir($challenge_dir."/".$dir);
         foreach ($challenges as $item) 
-            if($item == $challenge_name) return array_diff(scandir($base_dir."/".$dir."/".$challenge_name), array('.', '..')); 
+            if($item == $challenge_name) return array_diff(scandir($challenge_dir."/".$dir."/".$challenge_name), array('.', '..')); 
     }
 
     return false;
 }
 
 function get_challenge_filenames($conn, $challenge_id) {
+    global $private_dir;
+    $challenge_dir = $private_dir."/challenges";
+
     $challenge_data = get_challenge_data($conn, $challenge_id);
    
-    $resources = scandir(__DIR__."/../challenges/".$challenge_data["category"]."/".$challenge_data["challenge_name"]);
+    $resources = scandir($challenge_dir."/".$challenge_data["category"]."/".$challenge_data["challenge_name"]);
     $resources = array_values(array_diff($resources, array('.', '..')));
 
     return $resources;

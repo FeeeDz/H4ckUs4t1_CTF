@@ -5,6 +5,8 @@ $conn = db_connect();
 
 $title = "CTF h4ckus4t1";
 require "inc/head.php";
+
+var_dump(scandir("/home/quintaa2122/informatica/CTF_h4ckus4t1_private"));
 ?>
 <body>
     <nav id="nav">
