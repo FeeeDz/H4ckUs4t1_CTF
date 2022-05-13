@@ -1,5 +1,6 @@
 <?php
 
+$site_directory = "~quintaa2122/informatica/CTF_h4ckus4t1";
 $private_dir = "/home/quintaa2122/informatica/CTF_h4ckus4t1_private";
 
 $hash_options = [
@@ -201,8 +202,8 @@ function quit_team($conn, $user_id) {
     return true;
 }
 
-function get_url_base() {
-    return $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
+function get_base_url() {
+    return $_SERVER['HTTP_HOST'];
 }
 
 function redirect_if_logged() {
@@ -242,9 +243,9 @@ function get_challenge_list($conn) {
     return $rows;
 }
 
-function get_challenges_on_server($conn) {
+function get_db_missing_challenges($conn) {
     global $private_dir;
-    $challenge_dir = $private_dir."/challenges";
+    $challenges_dir = $private_dir."/challenges";
 
     $db_challenge_list = array();
     foreach (get_challenge_list($conn) as $item) {
@@ -252,75 +253,63 @@ function get_challenges_on_server($conn) {
     }
 
     $challenge_on_server = array();
-    foreach (array_diff(scandir($challenge_dir), array('.', '..')) as $dir) {
-        $challenges = scandir($challenge_dir."/".$dir);
+    foreach (array_diff(scandir($challenges_dir), array('.', '..')) as $category) {
+        $challenges = scandir($challenges_dir."/".$category);
         $challenges = array_diff($challenges, array('.', '..'));
-        foreach ($challenges as $item) 
-            if(is_dir($challenge_dir."/".$dir."/".$item)) 
-                array_push($challenge_on_server, $item);
+        foreach ($challenges as $challenge) 
+            if(is_dir($challenges_dir."/".$category."/".$challenge)) array_push($challenge_on_server, $challenge);
     }
 
     return array_diff($challenge_on_server, $db_challenge_list);
 }
 
-function get_challenge_category_on_server($challenge_name) {
+function get_local_challenge_category($challenge_name) {
     global $private_dir;
-    $challenge_dir = $private_dir."/challenges";
+    $challenges_dir = $private_dir."/challenges";
 
-    foreach (array_diff(scandir($challenge_dir), array('.', '..')) as $dir) {
-        $challenges = scandir($challenge_dir."/".$dir);
-        foreach ($challenges as $item) 
-            if($item == $challenge_name) return $dir; 
+    foreach (array_diff(scandir($challenges_dir), array('.', '..')) as $category) {
+        $challenges = scandir($challenges_dir."/".$category);
+        foreach ($challenges as $challenge) 
+            if($challenge == $challenge_name) return $category; 
     }
 
     return false;
 }
 
-function get_challenge_flag_on_server($challenge_name) {
+function get_local_challenge_flag($challenge_name) {
     global $private_dir;
-    $challenge_dir = $private_dir."/challenges";
+    
+    $category = get_local_challenge_category($challenge_name);
+    $challenge_dir = "$private_dir/challenges/$category/$challenge_name";
 
-    foreach (array_diff(scandir($challenge_dir), array('.', '..')) as $dir) {
-        $challenges = scandir($challenge_dir."/".$dir);
-        foreach ($challenges as $item) 
-            if($item == $challenge_name) {
-                if(!file_exists($challenge_dir."/".$dir."/".$challenge_name."/flag.txt")) return false;
-                return file_get_contents($challenge_dir."/".$dir."/".$challenge_name."/flag.txt");
-            } 
-    }
+    if(!file_exists("$challenge_dir/flag.txt")) return false;
+    return file_get_contents("$challenge_dir/flag.txt");
 
     return false;
 }
 
-function get_challenge_filenames_on_server($challenge_name) {
+function get_local_challenge_resources($challenge_name) {
     global $private_dir;
-    $challenge_dir = $private_dir."/challenges";
 
-    foreach (array_diff(scandir($challenge_dir), array('.', '..')) as $dir) {
-        $challenges = scandir($challenge_dir."/".$dir);
-        foreach ($challenges as $item) 
-            if($item == $challenge_name) return array_diff(scandir($challenge_dir."/".$dir."/".$challenge_name), array('.', '..')); 
-    }
+    $category = get_local_challenge_category($challenge_name);
+    $challenge_dir = "$private_dir/challenges/$category/$challenge_name";
+
+    if(!is_dir($challenge_dir)) return false;
+    return array_diff(scandir($challenge_dir), array('.', '..')); 
+}
+
+function get_challenge_resource_path($challenge_name, $filename) {
+    global $private_dir;
+
+    $category = get_local_challenge_category($challenge_name);
+    $challenge_dir = "$private_dir/challenges/$category/$challenge_name";
+
+    if (file_exists("$challenge_dir/$filename")) return "$challenge_dir/$filename"; 
 
     return false;
 }
 
-function challenge_file_path($challenge_name, $filename) {
-    global $private_dir;
-    $challenge_dir = $private_dir."/challenges";
-
-    foreach (array_diff(scandir($challenge_dir), array('.', '..')) as $dir) {
-        $challenges = scandir($challenge_dir."/".$dir);
-        foreach ($challenges as $item) {
-            if($item == $challenge_name && file_exists($challenge_dir."/".$dir."/".$challenge_name."/".$filename))
-                return $challenge_dir."/".$dir."/".$challenge_name."/".$filename; 
-        }
-    }
-
-    return false;
-}
-
-function challenge_resource_exists_on_db ($conn, $challenge_id, $filename) {
+function is_challenge_resource ($conn, $challenge_id, $filename) {
     $query = "SELECT resource_id FROM CTF_resource WHERE challenge_id = ? AND filename = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("is", $challenge_id, $filename);
@@ -332,20 +321,8 @@ function challenge_resource_exists_on_db ($conn, $challenge_id, $filename) {
     return true;
 }
 
-function get_challenge_filenames($conn, $challenge_id) {
-    global $private_dir;
-    $challenge_dir = $private_dir."/challenges";
-
-    $challenge_data = get_challenge_data($conn, $challenge_id);
-   
-    $resources = scandir($challenge_dir."/".$challenge_data["category"]."/".$challenge_data["challenge_name"]);
-    $resources = array_values(array_diff($resources, array('.', '..')));
-
-    return $resources;
-}
-
 function get_challenge_data($conn, $challenge_id) {
-    $query = "SELECT challenge_name, flag, description, points, type, category FROM CTF_challenge WHERE challenge_id = ?";
+    $query = "SELECT challenge_name, flag, description, type, category, initial_points, minimum_points, points_decay FROM CTF_challenge WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $challenge_id);
     $stmt->execute();
@@ -368,7 +345,19 @@ function get_challenge_hints($conn, $challenge_id) {
     return $rows;
 }
 
-function get_challenge_resources($conn, $challenge_id) {
+function is_hint_unlocked($conn, $hint_id, $user_id) {
+    $query = "SELECT hint_id FROM CTF_unlock_hint WHERE hint_id = ? AND user_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ii", $hint_id, $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $rows = $result->fetch_assoc();
+    
+    if(!$rows) return false;
+    return true;
+}
+
+function get_db_challenge_resources($conn, $challenge_id) {
     $query = "SELECT resource_id, filename FROM CTF_resource WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $challenge_id);
@@ -408,6 +397,35 @@ function get_challenges_from_category($conn, $category) {
 }
 
 function compute_challenge_points($conn, $challenge_id) {
+    $query = "SELECT initial_points, minimum_points, points_decay FROM CTF_challenge WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $challenge_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    if(!$row) return false;
+
+    $initial = $row["initial_points"];
+    $minimum = $row["minimum_points"];
+    $decay = $row["points_decay"];
+    $solve_count = get_challenge_solves($conn, $challenge_id);
+
+    return ceil(((($minimum - $initial)/($decay*2)) * ($solve_count*2)) + $initial);
+}
+
+function get_challenge_solves($conn, $challenge_id) {
+    $query = "SELECT COUNT(challenge_id) AS solve_count FROM CTF_submit WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $challenge_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    if(!$row) return false;
+
+    return $row["solve_count"];
+}
+
+function submit_flag($conn, $challenge_id, $flag) {
     $query = "SELECT points FROM CTF_challenge WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $challenge_id);
@@ -419,12 +437,13 @@ function compute_challenge_points($conn, $challenge_id) {
     return $row["points"];
 }
 
-function add_challenge($conn, $challenge_name, $flag, $description, $points, $type, $category) {
-    $query = "INSERT INTO CTF_challenge (challenge_name, flag, description, points, type, category) VALUES (?, ?, ?, ?, ?, ?)";
+function add_challenge($conn, $challenge_name, $flag, $description, $type, $category, $initial_points, $minimum_points, $points_decay) {
+    if($initial_points <= $minimum_points) return false;
+
+    $query = "INSERT INTO CTF_challenge (challenge_name, flag, description, type, category, initial_points, minimum_points, points_decay) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("sssiss", $challenge_name, $flag, $description, $points, $type, $category);
+    $stmt->bind_param("sssssiii", $challenge_name, $flag, $description, $type, $category, $initial_points, $minimum_points, $points_decay);
     
-    var_dump($challenge_name, $description, $points, $type, $category);
     if (!$stmt->execute()) return false;
     return $conn->insert_id;
 }
@@ -478,10 +497,12 @@ function delete_challenge_resource($conn, $resource_id) {
     return true;
 }
 
-function edit_challenge_data($conn, $challenge_id, $description, $points, $type) {
-    $query = "UPDATE CTF_challenge SET description = ?, points = ?, type = ? WHERE challenge_id = ?";
+function edit_challenge_data($conn, $challenge_id, $description, $type, $initial_points, $minimum_points, $points_decay) {
+    if($initial_points <= $minimum_points) return false;
+    
+    $query = "UPDATE CTF_challenge SET description = ?, type = ?, initial_points = ?, minimum_points = ?, points_decay = ? WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("sisi", $description, $points, $type, $challenge_id);
+    $stmt->bind_param("ssiiii", $description, $type, $initial_points, $minimum_points, $points_decay, $challenge_id);
     if(!$stmt->execute()) return false;
 
     return true;
