@@ -3,27 +3,28 @@ session_start();
 require "inc/functions.php";
 $conn = db_connect();
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 redirect_if_not_admin();
-
-get_challenges_on_server($conn);
 
 if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST["challenge_name"])) {
     $challenge_id = get_challenge_id($conn, $_POST["challenge_name"]);
+    $success = true;
     switch ($_POST["action"]) {
         case "add":
-            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["flag"], $_POST["description"], $_POST['points'], $_POST["type"], $_POST["category"]);
+            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["flag"], $_POST["description"], $_POST["type"], $_POST["category"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"]);
+            if (!$challenge_id){
+                $success = false;
+                break;
+            } 
 
             if(isset($_POST["add_hint_description"]))
                 for($i = 0; $i < count($_POST["add_hint_description"]); $i++)
-                    add_challenge_hint($conn, $challenge_id, $_POST["add_hint_description"][$i], $_POST["add_hint_cost"][$i]);
+                    if (!add_challenge_hint($conn, $challenge_id, $_POST["add_hint_description"][$i], $_POST["add_hint_cost"][$i])) $success = false;
 
             if(isset($_POST["add_resource"]))
-                foreach ($_POST["add_resource"] as $resource_link)
-                    add_challenge_resource($conn, $challenge_id, $resource_link);
+                foreach ($_POST["add_resource"] as $resource_filename)
+                    if (!add_challenge_resource($conn, $challenge_id, $resource_filename)) $success = false;
+
+            if (!$success) header("Refresh:0");
 
             break;
 
@@ -32,31 +33,33 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
             break;
 
         case "edit":
-            edit_challenge_data($conn, $challenge_id, $_POST["description"], $_POST['points'], $_POST["type"]);
+            if (!edit_challenge_data($conn, $challenge_id, $_POST["description"], $_POST["type"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"])) $success = false;
 
             if(isset($_POST["delete_hint"]))
                 foreach ($_POST["delete_hint"] as $hint_id)
-                    delete_challenge_hint($conn, $hint_id);
+                    if (!delete_challenge_hint($conn, $hint_id)) $success = false;
 
             if(isset($_POST["delete_resource"]))
                 foreach ($_POST["delete_resource"] as $resource_id)
-                    delete_challenge_resource($conn, $resource_id);
+                    if (!delete_challenge_resource($conn, $resource_id)) $success = false;
 
             if(isset($_POST["add_hint_description"]))
                 for($i = 0; $i < count($_POST["add_hint_description"]); $i++)
-                    add_challenge_hint($conn, $challenge_id, $_POST["add_hint_description"][$i], $_POST["add_hint_cost"][$i]);
+                    if (!add_challenge_hint($conn, $challenge_id, $_POST["add_hint_description"][$i], $_POST["add_hint_cost"][$i])) $success = false;
 
             if(isset($_POST["add_resource"]))
-                foreach ($_POST["add_resource"] as $resource_link)
-                    add_challenge_resource($conn, $challenge_id, $resource_link);
+                foreach ($_POST["add_resource"] as $resource_filename)
+                    if (!add_challenge_resource($conn, $challenge_id, $resource_filename)) $success = false;
 
             if(isset($_POST["edit_hint_id"]))
                 for($i = 0; $i < count($_POST["edit_hint_id"]); $i++)
-                    edit_challenge_hint($conn, $_POST["edit_hint_id"][$i], $_POST["edit_hint_description"][$i], $_POST["edit_hint_cost"][$i]);
+                    if (!edit_challenge_hint($conn, $_POST["edit_hint_id"][$i], $_POST["edit_hint_description"][$i], $_POST["edit_hint_cost"][$i])) $success = false;
+
+            if (!$success) header("Refresh:0");
 
             break;
         }
-    header("Location: ".basename($_SERVER['PHP_SELF']));
+    if ($success) header("Location: ".basename($_SERVER['PHP_SELF']));
 }
 
 $title = "CTF h4ckus4t1";
@@ -90,7 +93,7 @@ require "inc/head.php";
                 <select name="challenge_name">
                 <?php
                     if($_GET["action"] == "add") {
-                        $challenges = get_challenges_on_server($conn);
+                        $challenges = get_db_missing_challenges($conn);
                         if (!$challenges) {
                             echo "<option value=''></option>";
                         } else {
@@ -114,18 +117,21 @@ require "inc/head.php";
                 <?php endif; ?>
             </form>
     <?php } elseif ($_GET["action"] == "add") {
-        $category = get_challenge_category_on_server($_GET["challenge_name"]);
-        $flag = get_challenge_flag_on_server($_GET["challenge_name"]);
-        if (is_challenge_name_used($conn, $_GET["challenge_name"]) || !$category || !$flag ) header("Location: ".basename($_SERVER['PHP_SELF']));
+        $challenge_name = $_GET["challenge_name"];
+        $category = get_local_challenge_category($challenge_name);
+        $flag = get_local_challenge_flag($challenge_name);
+        if (is_challenge_name_used($conn, $challenge_name) || !$category || !$flag ) header("Location: ".basename($_SERVER['PHP_SELF']));
     ?>
         <form method="POST">
             <input type="hidden" name="action" value="add">
             <input type="hidden" name="sumbit">
-            <input type="text" name="challenge_name" value="<?php echo $_GET["challenge_name"]; ?>" readonly>
+            <input type="text" name="challenge_name" value="<?php echo $challenge_name; ?>" readonly>
             <input type="text" name="category" value="<?php echo $category; ?>" readonly>
             <input type="text" name="flag" value="<?php echo $flag; ?>" readonly>
             <input type="text" name="description" required>
-            <input type="number" name="points" required>
+            <input type="number" name="initial_points" required>
+            <input type="number" name="minimum_points" required>
+            <input type="number" name="points_decay" required>
             <select name="type" required>
                 <option value="T">Training</option>
                 <option value="O">Official</option>
@@ -137,7 +143,7 @@ require "inc/head.php";
                 <div id="add-resource">
                     <select id="select-resource">
                     <?php
-                        $filenames = get_challenge_filenames_on_server($_GET["challenge_name"]);
+                        $filenames = get_local_challenge_resources($challenge_name);
                         foreach ($filenames as $filename)
                             echo "<option value='".$filename."'>".$filename."</option>";
                     ?>
@@ -148,21 +154,24 @@ require "inc/head.php";
             <input type="submit" name="submit" value="Add challenge">
         </form>
     <?php } elseif ($_GET["action"] == "edit") {
-        $challenge_id = get_challenge_id($conn, $_GET["challenge_name"]);
+        $challenge_name = $_GET["challenge_name"];
+        $challenge_id = get_challenge_id($conn, $challenge_name);
         if(!$challenge_id) header("Location: ".basename($_SERVER['PHP_SELF']));
 
         $challenge_data = get_challenge_data($conn, $challenge_id);
         $hints = get_challenge_hints($conn, $challenge_id);
-        $resources = get_challenge_resources($conn, $challenge_id);
+        $resources = get_db_challenge_resources($conn, $challenge_id);
     ?>
         <form method="POST">
             <input type="hidden" name="action" value="edit">
             <input type="hidden" name="sumbit">
-            <input type="text" name="challenge_name" value="<?php echo $_GET["challenge_name"]; ?>" readonly>
+            <input type="text" name="challenge_name" value="<?php echo $challenge_name; ?>" readonly>
             <input type="text" name="category" value="<?php echo $challenge_data["category"]; ?>" readonly>
             <input type="text" name="flag" value="<?php echo $challenge_data["flag"]; ?>" readonly>
             <input type="text" name="description" value="<?php echo $challenge_data["description"]; ?>" required>
-            <input type="number" name="points" value="<?php echo $challenge_data["points"]; ?>" required>
+            <input type="number" name="initial_points" value="<?php echo $challenge_data["initial_points"]; ?>" required>
+            <input type="number" name="minimum_points" value="<?php echo $challenge_data["minimum_points"]; ?>" required>
+            <input type="number" name="points_decay" value="<?php echo $challenge_data["points_decay"]; ?>" required>
             <select name="type">
                 <option value="T" <?php if($challenge_data["type"] == "T") echo "selected=\"selected\""?>>Training</option>
                 <option value="O" <?php if($challenge_data["type"] == "O") echo "selected=\"selected\""?>>Official</option>
@@ -179,9 +188,9 @@ require "inc/head.php";
                 <span class="material-icons" id="add-hint" onclick="add_hint()">add</span>
             </div>
             <div>
-            <?php if($resources) foreach($resources as $resource) :?>
+            <?php if($resources) foreach($resources as $resource) : ?>
                 <span class="challenge-resource">
-                    <input type="text" name="edit_resource_link[]" value="<?php echo $resource["link"]?>" readonly>
+                    <input type="text" name="edit_resource_filename[]" value="<?php echo $resource["filename"]?>" readonly>
                     <input type="hidden" name="edit_resource_id[]" value="<?php echo $resource["resource_id"]?>">
                     <span class="material-icons" onclick="delete_resource(this.parentNode)">remove</span>
                 </span>
@@ -189,8 +198,8 @@ require "inc/head.php";
                 <div id="add-resource">
                     <select id="select-resource">
                     <?php
-                        $filenames = get_challenge_filenames($conn, $challenge_id);
-                        foreach ($filenames as $filename)
+                        $local_resources = get_local_challenge_resources($challenge_name);
+                        foreach ($local_resources as $filename)
                             echo "<option value='".$filename."'>".$filename."</option>";
                     ?>
                     </select>
