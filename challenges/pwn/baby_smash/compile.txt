@@ -1,1 +1,0 @@
-gcc -fno-stack-protector -g1 -no-pie -m32  chall.c -o baby_smash
