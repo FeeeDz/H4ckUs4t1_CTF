@@ -305,6 +305,33 @@ function get_challenge_filenames_on_server($challenge_name) {
     return false;
 }
 
+function challenge_file_path($challenge_name, $filename) {
+    global $private_dir;
+    $challenge_dir = $private_dir."/challenges";
+
+    foreach (array_diff(scandir($challenge_dir), array('.', '..')) as $dir) {
+        $challenges = scandir($challenge_dir."/".$dir);
+        foreach ($challenges as $item) {
+            if($item == $challenge_name && file_exists($challenge_dir."/".$dir."/".$challenge_name."/".$filename))
+                return $challenge_dir."/".$dir."/".$challenge_name."/".$filename; 
+        }
+    }
+
+    return false;
+}
+
+function challenge_resource_exists_on_db ($conn, $challenge_id, $filename) {
+    $query = "SELECT resource_id FROM CTF_resource WHERE challenge_id = ? AND filename = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("is", $challenge_id, $filename);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if(!$row) return false;
+    return true;
+}
+
 function get_challenge_filenames($conn, $challenge_id) {
     global $private_dir;
     $challenge_dir = $private_dir."/challenges";
@@ -342,7 +369,7 @@ function get_challenge_hints($conn, $challenge_id) {
 }
 
 function get_challenge_resources($conn, $challenge_id) {
-    $query = "SELECT resource_id, link FROM CTF_resource WHERE challenge_id = ?";
+    $query = "SELECT resource_id, filename FROM CTF_resource WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $challenge_id);
     $stmt->execute();
@@ -356,10 +383,40 @@ function get_challenge_resources($conn, $challenge_id) {
 function get_challenge_categories($conn) {
     $query = "SELECT category FROM CTF_challenge_category";
     $result = $conn->query($query);
-    $rows = $result->fetch_all(MYSQLI_ASSOC);
-    
+    $rows = $result->fetch_all();
+
     if(!$rows) return false;
-    return $rows;
+
+    $categories = array();
+    foreach ($rows as $item) array_push($categories, array_values($item)[0]);
+    return $categories;
+}
+
+function get_challenges_from_category($conn, $category) {
+    $query = "SELECT challenge_id FROM CTF_challenge WHERE category = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $category);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
+
+    $challenges = array();
+    foreach ($rows as $item) array_push($challenges, array_values($item)[0]);
+    return $challenges;
+}
+
+function compute_challenge_points($conn, $challenge_id) {
+    $query = "SELECT points FROM CTF_challenge WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $challenge_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if(!$row) return false;
+    return $row["points"];
 }
 
 function add_challenge($conn, $challenge_name, $flag, $description, $points, $type, $category) {
@@ -381,10 +438,10 @@ function add_challenge_hint($conn, $challenge_id, $hint_description, $hint_cost)
     return true;
 }
 
-function add_challenge_resource($conn, $challenge_id, $resource_link) {
-    $query = "INSERT INTO CTF_resource (challenge_id, link) VALUES (?, ?)";
+function add_challenge_resource($conn, $challenge_id, $filename) {
+    $query = "INSERT INTO CTF_resource (challenge_id, filename) VALUES (?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("is", $challenge_id, $resource_link);
+    $stmt->bind_param("is", $challenge_id, $filename);
 
     if (!$stmt->execute()) return false;
     return true;
