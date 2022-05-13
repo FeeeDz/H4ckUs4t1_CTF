@@ -21,9 +21,10 @@ require "inc/head.php";
                         <div class="challenge_name"><?php echo $challenge_data["challenge_name"]; ?></div>
                         <div class="description"><?php echo $challenge_data["description"]; ?></div>
                         <div class="points"><?php echo $compute_challenge_points($conn, $challenge_id); ?></div>
-                    <?php foreach (get_challenge_hints($conn, $challenge_id) as $hint) {
-                    } ?>
+                        <?php foreach (get_challenge_hints($conn, $challenge_id) as $hint) {
+                        } ?>
                     <?php } ?>
+                </div>
             <?php endforeach; ?>
 
             <span class="challenges__category">Miscellaneous</span>
