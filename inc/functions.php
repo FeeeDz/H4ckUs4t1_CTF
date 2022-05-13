@@ -381,13 +381,11 @@ function get_challenge_categories($conn) {
     return $categories;
 }
 
-function get_challenges_from_category($conn, $category) {
-    $query = "SELECT challenge_id FROM CTF_challenge WHERE category = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $category);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $rows = $result->fetch_all(MYSQLI_ASSOC);
+function get_challenges_from_category($conn, $category, $type) {
+    if ($type) $query = "SELECT challenge_id FROM CTF_challenge WHERE category = '$category' AND type = '$type'";
+    else $query = "SELECT challenge_id FROM CTF_challenge WHERE category = '$category'";
+    $result = $conn->query($query);
+    $rows = $result->fetch_all();
 
     if(!$rows) return false;
 

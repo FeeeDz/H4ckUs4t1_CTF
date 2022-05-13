@@ -3,7 +3,10 @@ session_start();
 require "inc/functions.php";
 $conn = db_connect();
 
-if(!isset($_SESSION["user_id"])) header("Location: login.php");
+if (!isset($_SESSION["user_id"])) header("Location: login.php");
+
+if (is_event_started($conn)) $challenge_type = "O";
+else $challenge_type = "T";
 
 $title = "CTF h4ckus4t1";
 require "inc/head.php";
@@ -17,7 +20,7 @@ require "inc/head.php";
             <?php foreach (get_challenge_categories($conn) as $category) : ?>
                 <span class="challenges__category"><?php echo $category?></span>
                 <div class="challenges__grid">
-                    <?php foreach (get_challenges_from_category($conn, $category) as $challenge_id) {
+                    <?php foreach (get_challenges_from_category($conn, $category, $challenge_type) as $challenge_id) {
                         $challenge_data = get_challenge_data($conn, $challenge_id);
                     ?>
                     <div class="challenge__box">
