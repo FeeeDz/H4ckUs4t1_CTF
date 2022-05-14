@@ -189,76 +189,6 @@ body.index-body {
   color: #e1e5ee;
   background-color: black;
 }
-#main.login {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  background: linear-gradient(#141e30, #243b55);
-}
-#main.login .login-box {
-  padding: 30px 50px;
-  background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
-  border-radius: 10px;
-  text-align: center;
-}
-#main.login .login-box h2 {
-  margin: 0 0 30px;
-  padding: 0;
-  color: #fff;
-  text-align: center;
-}
-#main.login .user-box {
-  position: relative;
-}
-#main.login .user-box input {
-  width: 100%;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #fff;
-  margin-bottom: 30px;
-  border: none;
-  border-bottom: 1px solid #fff;
-  outline: none;
-  background: transparent;
-}
-#main.login .login-box .user-box label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #fff;
-  pointer-events: none;
-  transition: 0.3s;
-}
-#main.login .user-box input:focus ~ label,
-#main.login .user-box input:valid ~ label {
-  top: -20px;
-  left: 0;
-  color: #03e9f4;
-  font-size: 12px;
-}
-#main.login .submit {
-  margin-top: 25px;
-  padding: 10px 20px;
-  color: #03e9f4;
-  background-color: transparent;
-  border: 0;
-  font-size: 16px;
-  text-decoration: none;
-  text-transform: uppercase;
-  overflow: hidden;
-  transition: 0.2s;
-  letter-spacing: 4px;
-  border-radius: 5px;
-}
-#main.login .submit:hover {
-  background: #03e9f4;
-  color: #fff;
-  border-radius: 5px;
-}
 #main.rules-main {
   color: #e1e5ee;
   text-align: center;
@@ -330,24 +260,112 @@ body.index-body {
   font-size: 1rem;
   color: #f9fbff;
 }
-#main .challenges__container {
+
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: linear-gradient(#141e30, #243b55);
+}
+.login__form {
+  padding: 30px 50px;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  text-align: center;
+}
+.login__form h2 {
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+.login__form__box {
+  position: relative;
+}
+.login__form__box input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+.login__form__box label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: 0.3s;
+}
+.login__form__box input:not(:-moz-placeholder-shown) ~ label {
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
+.login__form__box input:not(:-ms-input-placeholder) ~ label {
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
+.login__form__box input:focus ~ label,
+.login__form__box input:not(:placeholder-shown) ~ label {
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
+.login__form__submit {
+  margin-top: 25px;
+  padding: 10px 20px;
+  color: #03e9f4;
+  background-color: transparent;
+  border: 0;
+  font-size: 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: 0.2s;
+  letter-spacing: 4px;
+  border-radius: 5px;
+}
+.login__form__submit:hover {
+  background: #03e9f4;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.challenges__container {
   display: flex;
   flex-direction: column;
 }
-#main .challenges__container .challenges__category {
+.challenges__container .challenges__category {
   margin: 0.5rem 2.5rem 0.5rem 2.5rem;
 }
-#main .challenges__container .challenges__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 17rem);
-  grid-auto-rows: 4.5rem;
-  grid-gap: 1rem;
-  margin: 0rem 2.5rem 1rem 2.5rem;
-}
-#main .challenges__container .challenges__grid .challenge__box {
+.challenges__container .challenge__box {
+  display: inline-block;
+  color: #2a324b;
   border: 1px solid green;
+  background-color: rgb(173, 173, 173);
   border-radius: 1rem;
+}
+.challenges__container .challenge__box.closed {
+  height: 5.5rem;
+  width: 17rem;
   cursor: pointer;
+}
+.challenges__container .challenge__box.open {
+  height: 12rem;
+  width: 17rem;
 }
 
 #footer {

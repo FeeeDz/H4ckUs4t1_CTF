@@ -211,85 +211,6 @@ body {
     color: $clr-gray300;
     background-color: black;
 
-    &.login {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        background: linear-gradient(#141e30, #243b55);
-
-        .login-box {
-            padding: 30px 50px;
-            background: rgba(0,0,0,.5);
-            box-shadow: 0 15px 25px rgba(0,0,0,.6);
-            border-radius: 10px;
-            text-align: center;
-        }
-          
-        .login-box h2 {
-            margin: 0 0 30px;
-            padding: 0;
-            color: #fff;
-            text-align: center;
-        }
-          
-        .user-box {
-            position: relative;
-        }
-          
-        .user-box input {
-            width: 100%;
-            padding: 10px 0;
-            font-size: 16px;
-            color: #fff;
-            margin-bottom: 30px;
-            border: none;
-            border-bottom: 1px solid #fff;
-            outline: none;
-            background: transparent;
-        }
-
-        .login-box .user-box label {
-            position: absolute;
-            top:0;
-            left: 0;
-            padding: 10px 0;
-            font-size: 16px;
-            color: #fff;
-            pointer-events: none;
-            transition: 0.3s;
-        }
-
-        .user-box input:focus ~ label,
-        .user-box input:valid ~ label {
-            top: -20px;
-            left: 0;
-            color: $clr-login-form;
-            font-size: 12px;
-        }
-          
-        .submit {
-            margin-top: 25px;
-            padding: 10px 20px;
-            color: $clr-login-form;
-            background-color: transparent;
-            border: 0;
-            font-size: 16px;
-            text-decoration: none;
-            text-transform: uppercase;
-            overflow: hidden;
-            transition: 0.2s;
-            letter-spacing: 4px;
-            border-radius: 5px;
-        }
-          
-        .submit:hover {
-            background: $clr-login-form;
-            color: #fff;
-            border-radius: 5px;
-        }
-    }
-
     &.rules-main {
         color: $clr-gray300;
         text-align: center;
@@ -372,28 +293,122 @@ body {
             }
         }
     }
-    
-    .challenges__container {
-        display: flex;
-        flex-direction: column;
+}
 
-        .challenges__category {
-            margin: 0.5rem 2.5rem 0.5rem 2.5rem;
+.login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: linear-gradient(#141e30, #243b55);
+
+    &__form {
+        padding: 30px 50px;
+        background: rgba(0,0,0,.5);
+        box-shadow: 0 15px 25px rgba(0,0,0,.6);
+        border-radius: 10px;
+        text-align: center;
+
+        h2 {
+            margin: 0 0 30px;
+            padding: 0;
+            color: #fff;
+            text-align: center;
         }
 
-        .challenges__grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, 17rem);
-            grid-auto-rows: 4.5rem;
-            grid-gap: 1rem;
-            margin: 0rem 2.5rem 1rem 2.5rem;
+        &__box {
+            position: relative;
 
-            .challenge__box {
-                border: 1px solid green;
-                border-radius: 1rem;
-                cursor: pointer;
+            input {
+                width: 100%;
+                padding: 10px 0;
+                font-size: 16px;
+                color: #fff;
+                margin-bottom: 30px;
+                border: none;
+                border-bottom: 1px solid #fff;
+                outline: none;
+                background: transparent;
             }
-        } 
+
+            label {
+                position: absolute;
+                top:0;
+                left: 0;
+                padding: 10px 0;
+                font-size: 16px;
+                color: #fff;
+                pointer-events: none;
+                transition: 0.3s;
+            }
+
+            input:focus ~ label,
+            input:not(:placeholder-shown) ~ label {
+                top: -20px;
+                left: 0;
+                color: $clr-login-form;
+                font-size: 12px;
+            }
+        }
+
+        &__submit {
+            margin-top: 25px;
+            padding: 10px 20px;
+            color: $clr-login-form;
+            background-color: transparent;
+            border: 0;
+            font-size: 16px;
+            text-decoration: none;
+            text-transform: uppercase;
+            overflow: hidden;
+            transition: 0.2s;
+            letter-spacing: 4px;
+            border-radius: 5px;
+    
+            &:hover {
+                background: $clr-login-form;
+                color: #fff;
+                border-radius: 5px;
+            }
+        }
+    }
+}
+
+.challenges__container {
+    display: flex;
+    flex-direction: column;
+
+    .challenges__category {
+        margin: 0.5rem 2.5rem 0.5rem 2.5rem;
+    }
+
+    .challenges__grid {
+        // display: grid;
+        // grid-template-columns: repeat(auto-fill, 17rem);
+        // grid-auto-rows: 5.5rem;
+        // grid-gap: 1rem;
+        // margin: 0rem 2.5rem 1rem 2.5rem;
+
+        
+    } 
+
+    .challenge__box {
+        display: inline-block;
+        color: $clr-gray600;
+        border: 1px solid green;
+        background-color: rgb(173, 173, 173);
+        border-radius: 1rem;
+
+        &.closed {
+            height: 5.5rem;
+            width: 17rem;
+            cursor: pointer;
+        }
+
+        &.open {
+            height: 12rem;
+            width: 17rem;
+        }
     }
 }
 

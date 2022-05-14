@@ -438,7 +438,7 @@ function submit_flag($conn, $challenge_id, $flag) {
 function add_challenge($conn, $challenge_name, $flag, $description, $service, $type, $category, $initial_points, $minimum_points, $points_decay) {
     if($initial_points <= $minimum_points) return false;
 
-    $query = "INSERT INTO CTF_challenge (challenge_name, flag, description, service, type, category, initial_points, minimum_points, points_decay) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO CTF_challenge (challenge_name, flag, description, service, type, category, initial_points, minimum_points, points_decay) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ssssssiii", $challenge_name, $flag, $description, $service, $type, $category, $initial_points, $minimum_points, $points_decay);
     
