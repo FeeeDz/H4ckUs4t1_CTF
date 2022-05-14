@@ -3,6 +3,10 @@ session_start();
 require "inc/functions.php";
 $conn = db_connect();
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 redirect_if_not_admin();
 
 if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST["challenge_name"])) {

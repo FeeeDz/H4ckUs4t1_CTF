@@ -23,7 +23,7 @@ require "inc/head.php";
                     <?php foreach (get_challenges_from_category($conn, $category, $challenge_type) as $challenge_id) {
                         $challenge_data = get_challenge_data($conn, $challenge_id);
                     ?>
-                    <div class="challenge__box" onclick="challenge_popup()">
+                    <div class="challenge__box closed" onclick="challenge_popup(this)">
                         <div class="challenge_name"><?php echo $challenge_data["challenge_name"]; ?></div>
                         <div class="description" style="display: none;"><?php echo $challenge_data["description"]; ?></div>
                         <div class="service" style="display: none;"><?php echo $challenge_data["service"]; ?></div>
@@ -52,5 +52,18 @@ require "inc/head.php";
     <div id="footer">
         <?php require "inc/footer.php"; ?>
     </div>
+    <script>
+
+        function challenge_popup(elem){
+            if (elem.classList.contains("closed")) {
+                elem.classList.remove("closed");
+                elem.classList.add("open");
+            } else if (elem.classList.contains("open")){
+                elem.classList.remove("open");
+                elem.classList.add("closed");
+            }
+        }
+
+    </script>
 </body>
 </html>

@@ -17,17 +17,17 @@ require "inc/head.php";
         <?php require "inc/navbar.php"; ?>
     </nav>
     <div id="main" class="login">
-        <form method="POST" class="login-box">
+        <form method="POST" class="login__form">
             <h2>Login</h2>
-            <div class="user-box">
-                <input type="email" name="email" required> 
+            <div class="login__form__box">
+                <input type="email" name="email" placeholder="" required> 
                 <label>Email</label>
             </div>
-            <div class="user-box">
-                <input type="password" name="password" required>
+            <div class="login__form__box">
+                <input type="password" name="password" placeholder="" required>
                 <label>Password</label>
             </div>
-            <input type="submit" value="Login" class="submit">
+            <input type="submit" value="Login" class="login__form__submit">
         </form>
     </div>
     <footer id="footer">
