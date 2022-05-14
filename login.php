@@ -16,11 +16,18 @@ require "inc/head.php";
     <nav id="nav">
         <?php require "inc/navbar.php"; ?>
     </nav>
-    <div id="main">
-        <form method="POST">
-            <input type="email" name="email" placeholder="Email" required> 
-            <input type="password" name="password" placeholder="Password" required>
-            <input type="submit" value="Login">
+    <div id="main" class="login">
+        <form method="POST" class="login-box">
+            <h2>Login</h2>
+            <div class="user-box">
+                <input type="email" name="email" required> 
+                <label>Email</label>
+            </div>
+            <div class="user-box">
+                <input type="password" name="password" required>
+                <label>Password</label>
+            </div>
+            <input type="submit" value="Login" class="submit">
         </form>
     </div>
     <footer id="footer">

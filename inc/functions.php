@@ -322,7 +322,7 @@ function is_challenge_resource ($conn, $challenge_id, $filename) {
 }
 
 function get_challenge_data($conn, $challenge_id) {
-    $query = "SELECT challenge_name, flag, description, type, category, initial_points, minimum_points, points_decay FROM CTF_challenge WHERE challenge_id = ?";
+    $query = "SELECT challenge_name, flag, description, service, type, category, initial_points, minimum_points, points_decay FROM CTF_challenge WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $challenge_id);
     $stmt->execute();
@@ -435,12 +435,12 @@ function submit_flag($conn, $challenge_id, $flag) {
     return $row["points"];
 }
 
-function add_challenge($conn, $challenge_name, $flag, $description, $type, $category, $initial_points, $minimum_points, $points_decay) {
+function add_challenge($conn, $challenge_name, $flag, $description, $service, $type, $category, $initial_points, $minimum_points, $points_decay) {
     if($initial_points <= $minimum_points) return false;
 
-    $query = "INSERT INTO CTF_challenge (challenge_name, flag, description, type, category, initial_points, minimum_points, points_decay) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO CTF_challenge (challenge_name, flag, description, service, type, category, initial_points, minimum_points, points_decay) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("sssssiii", $challenge_name, $flag, $description, $type, $category, $initial_points, $minimum_points, $points_decay);
+    $stmt->bind_param("ssssssiii", $challenge_name, $flag, $description, $service, $type, $category, $initial_points, $minimum_points, $points_decay);
     
     if (!$stmt->execute()) return false;
     return $conn->insert_id;
@@ -495,12 +495,12 @@ function delete_challenge_resource($conn, $resource_id) {
     return true;
 }
 
-function edit_challenge_data($conn, $challenge_id, $description, $type, $initial_points, $minimum_points, $points_decay) {
+function edit_challenge_data($conn, $challenge_id, $description, $service, $type, $initial_points, $minimum_points, $points_decay) {
     if($initial_points <= $minimum_points) return false;
     
-    $query = "UPDATE CTF_challenge SET description = ?, type = ?, initial_points = ?, minimum_points = ?, points_decay = ? WHERE challenge_id = ?";
+    $query = "UPDATE CTF_challenge SET description = ?, service = ?, type = ?, initial_points = ?, minimum_points = ?, points_decay = ? WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssiiii", $description, $type, $initial_points, $minimum_points, $points_decay, $challenge_id);
+    $stmt->bind_param("sssiiii", $description, $service, $type, $initial_points, $minimum_points, $points_decay, $challenge_id);
     if(!$stmt->execute()) return false;
 
     return true;
