@@ -3,7 +3,7 @@ session_start();
 require "inc/functions.php";
 $conn = db_connect();
 
-if (!isset($_SESSION["user_id"])) header("Location: login.php");
+// if (!isset($_SESSION["user_id"])) header("Location: login.php");
 
 if (is_event_started($conn)) $challenge_type = "O";
 else $challenge_type = "T";
