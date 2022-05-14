@@ -10,7 +10,7 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
     $success = true;
     switch ($_POST["action"]) {
         case "add":
-            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["flag"], $_POST["description"], $_POST["type"], $_POST["category"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"]);
+            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["flag"], $_POST["description"], $_POST["service"], $_POST["type"], $_POST["category"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"]);
             if (!$challenge_id){
                 $success = false;
                 break;
@@ -33,7 +33,7 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
             break;
 
         case "edit":
-            if (!edit_challenge_data($conn, $challenge_id, $_POST["description"], $_POST["type"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"])) $success = false;
+            if (!edit_challenge_data($conn, $challenge_id, $_POST["description"], $_POST["service"], $_POST["type"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"])) $success = false;
 
             if(isset($_POST["delete_hint"]))
                 foreach ($_POST["delete_hint"] as $hint_id)
@@ -128,7 +128,8 @@ require "inc/head.php";
             <input type="text" name="challenge_name" value="<?php echo $challenge_name; ?>" readonly>
             <input type="text" name="category" value="<?php echo $category; ?>" readonly>
             <input type="text" name="flag" value="<?php echo $flag; ?>" readonly>
-            <input type="text" name="description" required>
+            <input type="text" name="description" maxlength="1024" required>
+            <input type="text" name="service" maxlength="256">
             <input type="number" name="initial_points" required>
             <input type="number" name="minimum_points" required>
             <input type="number" name="points_decay" required>
@@ -168,7 +169,8 @@ require "inc/head.php";
             <input type="text" name="challenge_name" value="<?php echo $challenge_name; ?>" readonly>
             <input type="text" name="category" value="<?php echo $challenge_data["category"]; ?>" readonly>
             <input type="text" name="flag" value="<?php echo $challenge_data["flag"]; ?>" readonly>
-            <input type="text" name="description" value="<?php echo $challenge_data["description"]; ?>" required>
+            <input type="text" name="description" value="<?php echo $challenge_data["description"]; ?>" maxlength="1024" required>
+            <input type="text" name="service" value="<?php echo $challenge_data["service"]; ?>" maxlength="256">
             <input type="number" name="initial_points" value="<?php echo $challenge_data["initial_points"]; ?>" required>
             <input type="number" name="minimum_points" value="<?php echo $challenge_data["minimum_points"]; ?>" required>
             <input type="number" name="points_decay" value="<?php echo $challenge_data["points_decay"]; ?>" required>

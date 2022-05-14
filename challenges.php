@@ -23,9 +23,10 @@ require "inc/head.php";
                     <?php foreach (get_challenges_from_category($conn, $category, $challenge_type) as $challenge_id) {
                         $challenge_data = get_challenge_data($conn, $challenge_id);
                     ?>
-                    <div class="challenge__box">
+                    <div class="challenge__box" onclick="challenge_popup()">
                         <div class="challenge_name"><?php echo $challenge_data["challenge_name"]; ?></div>
                         <div class="description" style="display: none;"><?php echo $challenge_data["description"]; ?></div>
+                        <div class="service" style="display: none;"><?php echo $challenge_data["service"]; ?></div>
                         <div class="solves"><?php echo get_challenge_solves($conn, $challenge_id) ?></div>
                         <div class="points"><?php echo compute_challenge_points($conn, $challenge_id); ?></div>
                         <?php foreach (get_challenge_hints($conn, $challenge_id) as $hint) { ?>

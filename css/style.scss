@@ -10,6 +10,7 @@ $clr-primary-dark: rgb(67, 108, 124);
 $clr-clock:  yellow;
 $clr-cross:  rgb(219, 0, 0);
 $clr-arrow:  rgb(0, 253, 0);
+$clr-login-form: #03e9f4;
 
 $clr-gray100: #f9fbff;
 $clr-gray150: #f4f6fb;
@@ -208,7 +209,86 @@ body {
 
 #main {
     color: $clr-gray300;
-    background-color: rgb(0, 0, 0);
+    background-color: black;
+
+    &.login {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        background: linear-gradient(#141e30, #243b55);
+
+        .login-box {
+            padding: 30px 50px;
+            background: rgba(0,0,0,.5);
+            box-shadow: 0 15px 25px rgba(0,0,0,.6);
+            border-radius: 10px;
+            text-align: center;
+        }
+          
+        .login-box h2 {
+            margin: 0 0 30px;
+            padding: 0;
+            color: #fff;
+            text-align: center;
+        }
+          
+        .user-box {
+            position: relative;
+        }
+          
+        .user-box input {
+            width: 100%;
+            padding: 10px 0;
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 30px;
+            border: none;
+            border-bottom: 1px solid #fff;
+            outline: none;
+            background: transparent;
+        }
+
+        .login-box .user-box label {
+            position: absolute;
+            top:0;
+            left: 0;
+            padding: 10px 0;
+            font-size: 16px;
+            color: #fff;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .user-box input:focus ~ label,
+        .user-box input:valid ~ label {
+            top: -20px;
+            left: 0;
+            color: $clr-login-form;
+            font-size: 12px;
+        }
+          
+        .submit {
+            margin-top: 25px;
+            padding: 10px 20px;
+            color: $clr-login-form;
+            background-color: transparent;
+            border: 0;
+            font-size: 16px;
+            text-decoration: none;
+            text-transform: uppercase;
+            overflow: hidden;
+            transition: 0.2s;
+            letter-spacing: 4px;
+            border-radius: 5px;
+        }
+          
+        .submit:hover {
+            background: $clr-login-form;
+            color: #fff;
+            border-radius: 5px;
+        }
+    }
 
     &.rules-main {
         color: $clr-gray300;
@@ -315,82 +395,6 @@ body {
             }
         } 
     }
-}
-
-#login_form {
-    .login-box {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 400px;
-        padding: 40px;
-        transform: translate(-50%, -50%);
-        background: rgba(0,0,0,.5);
-        box-sizing: border-box;
-        box-shadow: 0 15px 25px rgba(0,0,0,.6);
-        border-radius: 10px;
-      }
-      
-      .login-box h2 {
-        margin: 0 0 30px;
-        padding: 0;
-        color: #fff;
-        text-align: center;
-      }
-      
-      .login-box .user-box {
-        position: relative;
-      }
-      
-      .login-box .user-box input {
-        width: 100%;
-        padding: 10px 0;
-        font-size: 16px;
-        color: #fff;
-        margin-bottom: 30px;
-        border: none;
-        border-bottom: 1px solid #fff;
-        outline: none;
-        background: transparent;
-      }
-      .login-box .user-box label {
-        position: absolute;
-        top:0;
-        left: 0;
-        padding: 10px 0;
-        font-size: 16px;
-        color: #fff;
-        pointer-events: none;
-        transition: .5s;
-      }
-      
-      .login-box .user-box input:focus ~ label,
-      .login-box .user-box input:valid ~ label {
-        top: -20px;
-        left: 0;
-        color: #03e9f4;
-        font-size: 12px;
-      }
-      
-      .login-box form a {
-        position: relative;
-        display: inline-block;
-        padding: 10px 20px;
-        color: #03e9f4;
-        font-size: 16px;
-        text-decoration: none;
-        text-transform: uppercase;
-        overflow: hidden;
-        transition: .5s;
-        margin-top: 40px;
-        letter-spacing: 4px
-      }
-      
-      .login-box a:hover {
-        background: #03e9f4;
-        color: #fff;
-        border-radius: 5px;
-      }
 }
 
 #footer {
