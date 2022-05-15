@@ -39,7 +39,7 @@ function login($conn, $email, $password) {
 }
 
 function check_if_user_exists($conn, $user_id) {
-    $query = "SELECT user_id FROM CTF_user WHERE user_id = ?";
+    $query = "SELECT 1 FROM CTF_user WHERE user_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $user_id);
 
@@ -166,7 +166,7 @@ function register_team($conn, $team_name) {
     do {
         $token = bin2hex(random_bytes(16));
         
-        $query = "SELECT team_id FROM CTF_team WHERE token = ?";
+        $query = "SELECT 1 FROM CTF_team WHERE token = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $token);
         $stmt->execute();
@@ -323,7 +323,7 @@ function get_challenge_resource_path($challenge_name, $filename) {
 }
 
 function is_challenge_resource ($conn, $challenge_id, $filename) {
-    $query = "SELECT resource_id FROM CTF_resource WHERE challenge_id = ? AND filename = ?";
+    $query = "SELECT 1 FROM CTF_resource WHERE challenge_id = ? AND filename = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("is", $challenge_id, $filename);
     $stmt->execute();
@@ -359,7 +359,7 @@ function get_hints($conn, $challenge_id) {
 }
 
 function is_hint_unlocked($conn, $hint_id, $user_id) {
-    $query = "SELECT hint_id FROM CTF_unlocked_hint WHERE hint_id = ? AND user_id = ?";
+    $query = "SELECT 1 FROM CTF_unlocked_hint WHERE hint_id = ? AND user_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ii", $hint_id, $user_id);
     $stmt->execute();
@@ -484,7 +484,7 @@ function edit_hint($conn, $hint_id, $hint_description, $hint_cost) {
 }
 
 function is_challenge_name_used($conn, $challenge_name) {
-    $query = "SELECT challenge_name FROM CTF_challenge WHERE challenge_name = ?";
+    $query = "SELECT 1 FROM CTF_challenge WHERE challenge_name = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $challenge_name);
     $stmt->execute();
@@ -514,7 +514,7 @@ function get_current_event_end_date($conn) {
 }
 
 function is_event_started($conn) {
-    $query = "SELECT event_id FROM CTF_event WHERE start_date < NOW() AND end_date > NOW()";
+    $query = "SELECT 1 FROM CTF_event WHERE start_date < NOW() AND end_date > NOW()";
     $result = $conn->query($query);
     $row = $result->fetch_assoc();
 
@@ -580,11 +580,11 @@ function is_challenge_solved($conn, $challenge_id, $user_id) {
     if ($challenge_type == "O") {
         if (!$team_id) return false;
 
-        $query = "SELECT submit_id FROM CTF_submit WHERE challenge_id = ? AND team_id = ?";
+        $query = "SELECT 1 FROM CTF_submit WHERE challenge_id = ? AND team_id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ii", $challenge_id, $team_id);
     } else if($challenge_type == "T") {
-        $query = "SELECT submit_id FROM CTF_submit WHERE challenge_id = ? AND user_id = ?";
+        $query = "SELECT 1 FROM CTF_submit WHERE challenge_id = ? AND user_id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ii", $challenge_id, $user_id);
     } else return false;
@@ -661,20 +661,21 @@ function get_challenges_solves_and_points($conn, $user_id) {
         if (!$team_id) return false;
         
         $type = "O";
-        $query = "SELECT CTF_submit.challenge_id, challenge_name, COUNT(CTF_submit.challenge_id) AS solves, IF(team_id = $team_id, TRUE, FALSE) AS solved
-        FROM CTF_submit
-        INNER JOIN CTF_challenge ON CTF_submit.challenge_id = CTF_challenge.challenge_id
-        WHERE type = '$type'
-        GROUP BY CTF_submit.challenge_id";
+        $query = "SELECT submit.challenge_id, challenge_name, COUNT(submit.challenge_id) AS solves, 
+                IF (EXISTS (SELECT 1 FROM CTF_submit WHERE team_id = $team_id AND submit.challenge_id = challenge_id), TRUE, FALSE) AS solved
+            FROM CTF_submit AS submit
+            INNER JOIN CTF_challenge ON submit.challenge_id = CTF_challenge.challenge_id
+            WHERE type = '$type'
+            GROUP BY submit.challenge_id";
     }
     else {
         $type = "T";
-        $query = "SELECT CTF_submit.challenge_id, challenge_name, COUNT(CTF_submit.challenge_id) AS solves
-        -- , IF(user_id = $user_id, TRUE, FALSE) AS solved
-        FROM CTF_submit
-        INNER JOIN CTF_challenge ON CTF_submit.challenge_id = CTF_challenge.challenge_id
-        WHERE type = '$type'
-        GROUP BY CTF_submit.challenge_id";
+        $query = "SELECT submit.challenge_id, challenge_name, COUNT(submit.challenge_id) AS solves, 
+                IF (EXISTS (SELECT 1 FROM CTF_submit WHERE user_id = $user_id AND submit.challenge_id = challenge_id), TRUE, FALSE) AS solved
+            FROM CTF_submit AS submit
+            INNER JOIN CTF_challenge ON submit.challenge_id = CTF_challenge.challenge_id
+            WHERE type = '$type'
+            GROUP BY submit.challenge_id";
     }
     $result = $conn->query($query);
     $rows = $result->fetch_all(MYSQLI_ASSOC);

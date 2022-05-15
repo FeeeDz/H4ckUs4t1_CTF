@@ -1,7 +1,7 @@
 <?php 
 require "inc/init.php";
 
-if (!isset($_SESSION["user_id"])) header("Location: login.php");
+if (!isset($_SESSION["user_id"])) header("Location: login.php?redirect=challenges.php");
 if (is_event_started($conn) && !get_user_team_id($conn, $_SESSION["user_id"])) header("Location: team.php");
 
 if (is_event_started($conn)) $challenge_type = "O";
@@ -33,7 +33,10 @@ require "inc/head.php";
                         <a class="resource" href="<?php echo "api/get-challenge-file.php?challenge_name=".$challenge_data["challenge_name"]."&filename=".$resource["filename"]; ?>"><?php echo $resource["filename"]; ?><span class="material-icons">file_download</span></a>
                     <?php } ?>
                     <div class="flag">
-                        <input class="flag__input" type="text" placeholder="ITT{...}" onkeypress="if (event.keyCode == 13) submit_flag(event, this.parentElement)">
+                        <div class="flag__input-box">
+                            <input class="flag__input" type="text" placeholder=" " onkeypress="if (event.keyCode == 13) submit_flag(event, this.parentElement.parentElement)">
+                            <label>Flag ITT{...}</span>
+                        </div>
                         <span class="flag__submit material-icons" onclick="submit_flag(event, this.parentElement)">done</span>
                     </div>
                     <?php foreach (get_hints($conn, $challenge_id) as $index=>$hint) { ?>
@@ -96,7 +99,9 @@ require "inc/head.php";
         }
 
         function submit_flag(event, parent_elem) {
-            flag = parent_elem.querySelector('.flag__input').value;
+            flag_input = parent_elem.querySelector('.flag__input');
+            flag = flag_input.value
+            flag_input.value = "";
             challenge_name = parent_elem.parentElement.querySelector('.challenge-name').innerHTML;
             challenge_elem = parent_elem.parentElement;
 
@@ -123,7 +128,7 @@ require "inc/head.php";
 
                         solves_elem.innerHTML = chall.solves + solves_elem.innerHTML.substring(solves_elem.innerHTML.indexOf("<"));
                         points_elem.innerHTML = chall.points + points_elem.innerHTML.substring(points_elem.innerHTML.indexOf("<"));
-                        // if (chall.solved == "1") challenge_elem.classList.add("solved");
+                        if (chall.solved == "1") challenge_elem.classList.add("solved");
                     });
                 });
         }

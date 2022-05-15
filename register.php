@@ -16,26 +16,26 @@ require "inc/head.php";
     <nav id="nav">
         <?php require "inc/navbar.php"; ?>
     </nav>
-    <div id="main" class="login">
-        <form method="POST" class="login__form">
-            <h2>Register</h2>
-            <div class="login__form__box">
+    <div id="main" class="register-user">
+        <form method="POST" class="generic-form">
+            <h2 class="title">Register</h2>
+            <div class="generic-form__box">
                 <input type="text" name="username" placeholder=" " minlength="3" maxlength="16" pattern="[\x00-\x7F]+" required>
                 <label>Username</label>
             </div>
-            <div class="login__form__box">
+            <div class="generic-form__box">
                 <input type="email" name="email" placeholder=" " required>
                 <label>Email</label>
             </div>
-            <div class="login__form__box">
+            <div class="generic-form__box">
                 <input type="password" id="password" name="password" placeholder=" " minlength="8" maxlength="128" required>
                 <label>Password</label>
             </div>
-            <div class="login__form__box">
+            <div class="generic-form__box">
                 <input type="password" id="confirm_password" placeholder=" " required>
                 <label>Confirm Password</label>
             </div>
-            <input type="submit" value="Register" class="login__form__submit">
+            <input type="submit" value="Register" class="generic-form__submit">
         </form>
     </div>
     <div id="footer">
