@@ -47,6 +47,25 @@
   border: 0 !important;
 }
 
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -50px;
+  z-index: 101;
+}
+
+.blurred-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+}
+
 html {
   padding: 0;
   margin: 0;
@@ -71,6 +90,9 @@ body.index-body {
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
+}
+body.popup-body {
+  overflow: hidden;
 }
 
 #nav {
@@ -220,11 +242,11 @@ body.index-body {
 #main.challenges_main .challenges__grid {
   margin: 0rem 2.5rem 1rem 2.5rem;
 }
-#main.challenges_main .challenge__box {
+#main.challenges_main .challenge {
   display: inline-block;
   vertical-align: top;
   color: #2a324b;
-  border: 1px solid green;
+  border: 5px solid rgb(167, 0, 158);
   background-color: rgb(173, 173, 173);
   border-radius: 1rem;
   padding: 0.8rem 0.5rem 1.5rem 0.8rem;
@@ -237,11 +259,11 @@ body.index-body {
   word-wrap: break-word;
   text-align: center;
 }
-#main.challenges_main .challenge__box > * {
+#main.challenges_main .challenge > * {
   transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
   max-height: 70px;
 }
-#main.challenges_main .challenge__box .flexbox-info {
+#main.challenges_main .challenge .flexbox-info {
   display: flex;
   justify-content: space-between;
   text-align: center;
@@ -249,7 +271,7 @@ body.index-body {
   color: #f9fbff;
   font-size: 16px;
 }
-#main.challenges_main .challenge__box .flexbox-info .solves {
+#main.challenges_main .challenge .flexbox-info .solves {
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
@@ -259,7 +281,7 @@ body.index-body {
   min-width: 2rem;
   border-radius: 0.4rem;
 }
-#main.challenges_main .challenge__box .flexbox-info .points {
+#main.challenges_main .challenge .flexbox-info .points {
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
@@ -269,29 +291,29 @@ body.index-body {
   min-width: 2rem;
   border-radius: 0.4rem;
 }
-#main.challenges_main .challenge__box .flexbox-info .material-icons {
+#main.challenges_main .challenge .flexbox-info .material-icons {
   margin-bottom: 3px;
   font-size: 18px;
   vertical-align: middle;
 }
-#main.challenges_main .challenge__box .challenge_name {
+#main.challenges_main .challenge .challenge-name {
   display: block;
   font-size: 24px;
   color: #4c38ff;
   font-weight: bold;
   margin-top: 0.5rem;
 }
-#main.challenges_main .challenge__box .description {
+#main.challenges_main .challenge .description {
   display: block;
   text-align: center;
   margin-top: 1rem;
 }
-#main.challenges_main .challenge__box .service {
+#main.challenges_main .challenge .service {
   display: block;
   color: rgb(149, 66, 218);
   margin-top: 0.5rem;
 }
-#main.challenges_main .challenge__box .resource {
+#main.challenges_main .challenge .resource {
   display: inline-block;
   border: 1px solid green;
   text-decoration: none;
@@ -303,44 +325,58 @@ body.index-body {
   border-radius: 0.4rem;
   margin-top: 0.5rem;
 }
-#main.challenges_main .challenge__box .resource:active {
+#main.challenges_main .challenge .resource:active {
   color: #141e30;
 }
-#main.challenges_main .challenge__box .resource .material-icons {
+#main.challenges_main .challenge .resource .material-icons {
   margin-top: -3px;
   margin-left: 5px;
   font-size: 20px;
   vertical-align: middle;
 }
-#main.challenges_main .challenge__box .flag {
+#main.challenges_main .challenge .flag {
   display: flex;
   justify-content: center;
   margin-top: 0.3rem;
 }
-#main.challenges_main .challenge__box .flag__input {
+#main.challenges_main .challenge .flag__input {
   margin-right: 0.2rem;
 }
-#main.challenges_main .challenge__box .flag__submit {
+#main.challenges_main .challenge .flag__submit {
   margin-left: 0.2rem;
   cursor: pointer;
 }
-#main.challenges_main .challenge__box .flag__submit:hover {
+#main.challenges_main .challenge .flag__submit:hover {
   color: green;
 }
-#main.challenges_main .challenge__box .hint {
+#main.challenges_main .challenge .hint {
   display: inline-block;
   text-align: center;
   margin-top: 0.8rem;
 }
-#main.challenges_main .challenge__box .hint.locked {
+#main.challenges_main .challenge .hint__id {
+  display: none;
+}
+#main.challenges_main .challenge .hint__popup {
+  width: 100px;
+  height: 100px;
+  background-color: aqua;
+}
+#main.challenges_main .challenge .hint.locked {
   background-color: red;
   width: 4rem;
   height: 1.8rem;
 }
-#main.challenges_main .challenge__box .hint.unlocked {
+#main.challenges_main .challenge .hint.locked .hint__description {
+  display: none;
+}
+#main.challenges_main .challenge .hint.unlocked {
   background-color: green;
 }
-#main.challenges_main .challenge__box .close-button {
+#main.challenges_main .challenge .hint.unlocked .hint__unlock-button, #main.challenges_main .challenge .hint.unlocked .hint__cost {
+  display: none;
+}
+#main.challenges_main .challenge .close-button {
   display: block;
   text-align: center;
   cursor: pointer;
@@ -348,20 +384,20 @@ body.index-body {
   margin: 0.2rem auto -1rem auto;
   font-size: 40px;
 }
-#main.challenges_main .challenge__box .close-button:hover {
+#main.challenges_main .challenge .close-button:hover {
   color: red;
 }
-#main.challenges_main .challenge__box.open {
+#main.challenges_main .challenge.open {
   -webkit-user-select: unset;
      -moz-user-select: unset;
       -ms-user-select: unset;
           user-select: unset;
   cursor: unset;
 }
-#main.challenges_main .challenge__box.closed {
+#main.challenges_main .challenge.closed {
   font-size: 0;
 }
-#main.challenges_main .challenge__box.closed .description, #main.challenges_main .challenge__box.closed .service, #main.challenges_main .challenge__box.closed .resource, #main.challenges_main .challenge__box.closed .flag, #main.challenges_main .challenge__box.closed .hint, #main.challenges_main .challenge__box.closed .close-button {
+#main.challenges_main .challenge.closed .description, #main.challenges_main .challenge.closed .service, #main.challenges_main .challenge.closed .resource, #main.challenges_main .challenge.closed .flag, #main.challenges_main .challenge.closed .hint, #main.challenges_main .challenge.closed .close-button {
   opacity: 0;
   max-height: 0;
   overflow: hidden;
@@ -369,6 +405,9 @@ body.index-body {
   padding: 0;
   font-size: 0;
   border: 0;
+}
+#main.challenges_main .challenge.solved {
+  border-color: green;
 }
 #main.rules-main {
   color: #e1e5ee;

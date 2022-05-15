@@ -1,7 +1,5 @@
 <?php 
-session_start();
-require "inc/functions.php";
-$conn = db_connect();
+require "inc/init.php";
 
 $title = "CTF h4ckus4t1 Team";
 require "inc/head.php";
