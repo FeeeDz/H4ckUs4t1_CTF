@@ -20,11 +20,11 @@ require "inc/head.php";
         <form method="POST" class="login__form">
             <h2>Login</h2>
             <div class="login__form__box">
-                <input type="email" name="email" placeholder="" required> 
+                <input type="email" name="email" placeholder=" " required> 
                 <label>Email</label>
             </div>
             <div class="login__form__box">
-                <input type="password" name="password" placeholder="" required>
+                <input type="password" name="password" placeholder=" " required>
                 <label>Password</label>
             </div>
             <input type="submit" value="Login" class="login__form__submit">
