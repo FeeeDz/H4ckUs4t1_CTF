@@ -8,7 +8,7 @@ require "inc/head.php";
     <nav id="nav">
         <?php require "inc/navbar.php"; ?>
     </nav>
-    <div id="main">
+    <div id="main" class="team">
     <?php
     $team_name = get_user_team_name($conn, $_SESSION['user_id']);
     $token = get_team_token($conn, $team_name);
@@ -20,31 +20,32 @@ require "inc/head.php";
             if($_GET["action"] == "quit") quit_team($conn, $_SESSION['user_id']);
             header("Location: ".basename($_SERVER['PHP_SELF']));
         }
-
-        echo $team_name."<br>";
-        echo $token;
     ?>    
-        <form method="GET">
-            <input type="submit" value="Leave the team">
-            <input type="hidden" name="action" value="quit">
+        <form method="GET" class="generic-form">
+            <h2 class="title">Team</h2>
+            <br>
+            <h3 style="display: inline;">Team Name: </h3><h4 style="display: inline;"><?php echo $team_name; ?><h4>
+            <h3 style="display: inline;">Token: </h3><h4 style="display: inline;"><?php echo $token; ?><h4>
+            <button type="submit" name="action" value="quit" class="generic-form__submit">Leave</button><br>
         </form>
     <?php } elseif (!isset($_GET["action"])) { ?>
-        <form method="GET">
-            <input type="submit" value="Join team">
-            <input type="hidden" name="action" value="join">
-        </form>
-        <form method="GET">
-            <input type="submit" value="Create team">
-            <input type="hidden" name="action" value="create">
+        <form method="GET" class="generic-form">
+            <button type="submit" name="action" value="create" class="generic-form__submit no-margin">Create Team</button><br>
+            <button type="submit" name="action" value="join" class="generic-form__submit">Join Team</button>
         </form>
     <?php } elseif ($_GET["action"] == "join") {
         if (isset($_POST["token"])) { 
             if (join_team($conn, $_SESSION['user_id'], $_POST["token"])) header("Location: ".basename($_SERVER['PHP_SELF']));
-            echo "Invalid token";
+            $form_error = "Invalid token";
         } ?>
-        <form method="POST">
-            <input type="text" name="token" minlength="3" required>
-            <input type="submit" value="Join team">
+        <form method="POST" class="generic-form">
+            <h2 class="title">Join Team</h2>
+            <h3 class="error"><?php echo $form_error; ?></h3>
+            <div class="generic-form__box">
+                <input type="text" name="token" placeholder=" " minlength="3" required>
+                <label>Token</label>
+            </div>
+            <input type="submit" value="Join" class="generic-form__submit no-margin">
         </form>       
     <?php } elseif ($_GET["action"] == "create") {
         if (isset($_POST["team_name"])) { 
@@ -54,11 +55,16 @@ require "inc/head.php";
                 join_team($conn, $_SESSION['user_id'], $token);
                 header("Location: ".basename($_SERVER['PHP_SELF']));  
             }
-            echo "Team name already used!";
+            $form_error = "Team name already exists";
         } ?>
-        <form method="POST">
-            <input type="text" name="team_name" minlength="3" maxlength="32" pattern="[\x00-\x7F]+" required>
-            <input type="submit" value="Create team">
+        <form method="POST" class="generic-form">
+            <h2 class="title">Create Team</h2>
+            <h3 class="error"><?php echo $form_error; ?></h3>
+            <div class="generic-form__box">
+                <input type="text" name="team_name" placeholder=" " minlength="3" maxlength="32" pattern="[\x00-\x7F]+" required>
+                <label>Team Name</label>
+            </div>
+            <input type="submit" value="Create" class="generic-form__submit no-margin">
         </form>
     <?php } ?>
     </div>

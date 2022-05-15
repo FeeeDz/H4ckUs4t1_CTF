@@ -51,8 +51,7 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  margin-top: -50px;
-  margin-left: -50px;
+  transform: translateX(-50%) translateY(-50%);
   z-index: 101;
 }
 
@@ -236,13 +235,14 @@ body.popup-body {
   padding-top: 1rem;
 }
 #main.challenges_main .challenges__category {
-  margin: 0.5rem 2.5rem 0.5rem 2.5rem;
+  margin: 0.5rem 2.5rem 0 2.5rem;
   font-size: 22px;
 }
 #main.challenges_main .challenges__grid {
   margin: 0rem 2.5rem 1rem 2.5rem;
 }
 #main.challenges_main .challenge {
+  margin: 0.7rem 0 0 0;
   display: inline-block;
   vertical-align: top;
   color: #2a324b;
@@ -258,6 +258,7 @@ body.popup-body {
           user-select: none;
   word-wrap: break-word;
   text-align: center;
+  font-weight: 600;
 }
 #main.challenges_main .challenge > * {
   transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
@@ -315,15 +316,15 @@ body.popup-body {
 }
 #main.challenges_main .challenge .resource {
   display: inline-block;
-  border: 1px solid green;
+  background-color: rgb(55, 138, 233);
   text-decoration: none;
   color: #141e30;
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
-  padding: 0.5rem;
-  border-radius: 0.4rem;
-  margin-top: 0.5rem;
+  padding: 0.7rem;
+  border-radius: 0.6rem;
+  margin-top: 0.7rem;
 }
 #main.challenges_main .challenge .resource:active {
   color: #141e30;
@@ -337,35 +338,114 @@ body.popup-body {
 #main.challenges_main .challenge .flag {
   display: flex;
   justify-content: center;
-  margin-top: 0.3rem;
+  align-items: center;
+  margin-top: 1.6rem;
 }
-#main.challenges_main .challenge .flag__input {
+#main.challenges_main .challenge .flag__input-box {
+  position: relative;
   margin-right: 0.2rem;
+}
+#main.challenges_main .challenge .flag__input-box label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0 0.2rem;
+  margin: -0.5rem 0.4rem;
+  white-space: nowrap;
+  transform: translate(0, 0);
+  transform-origin: 0 0;
+  background-color: rgb(173, 173, 173);
+  transition: transform 120ms ease-in;
+  font-weight: bold;
+  line-height: 1.2;
+}
+#main.challenges_main .challenge .flag__input-box input {
+  box-sizing: border-box;
+  display: block;
+  border: 3px solid currentColor;
+  padding: 0.5rem 0.5rem;
+  color: currentColor;
+  background: transparent;
+  border-radius: 0.7rem;
+  font-weight: 600;
+}
+#main.challenges_main .challenge .flag__input-box input:not(:-moz-placeholder-shown) + label {
+  transform: translate(0.25rem, -55%) scale(0.8);
+}
+#main.challenges_main .challenge .flag__input-box input:not(:-ms-input-placeholder) + label {
+  transform: translate(0.25rem, -55%) scale(0.8);
+}
+#main.challenges_main .challenge .flag__input-box input:focus + label, #main.challenges_main .challenge .flag__input-box input:not(:placeholder-shown) + label {
+  transform: translate(0.25rem, -55%) scale(0.8);
 }
 #main.challenges_main .challenge .flag__submit {
   margin-left: 0.2rem;
   cursor: pointer;
+  color: currentColor;
+  padding: 0.5rem 1rem;
+  background-color: rgb(58, 58, 58);
+  border: none;
+  border-radius: 4px;
+  font-weight: 900;
+  color: #f9fbff;
 }
 #main.challenges_main .challenge .flag__submit:hover {
   color: green;
+}
+#main.challenges_main .challenge .flag .material-icons {
+  margin-bottom: 3px;
+  font-size: 18px;
+  vertical-align: middle;
 }
 #main.challenges_main .challenge .hint {
   display: inline-block;
   text-align: center;
   margin-top: 0.8rem;
+  padding: 0.7rem 0.8rem;
+  width: 5.5rem;
+  border-radius: 0.7rem;
+  vertical-align: middle;
+  cursor: pointer;
+}
+#main.challenges_main .challenge .hint__id-label {
+  cursor: inherit;
 }
 #main.challenges_main .challenge .hint__id {
   display: none;
 }
+#main.challenges_main .challenge .hint__cost {
+  padding-top: 0.3rem;
+}
+#main.challenges_main .challenge .hint .blurred-background {
+  cursor: auto;
+}
 #main.challenges_main .challenge .hint__popup {
-  width: 100px;
-  height: 100px;
-  background-color: aqua;
+  padding: 2rem;
+  background-color: rgb(0, 255, 149);
+  cursor: auto;
+  display: flex;
+  align-items: center;
+}
+#main.challenges_main .challenge .hint__popup .hint__unlock-button {
+  padding: 10px 20px;
+  border: 0;
+  font-size: 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: 0.2s;
+  letter-spacing: 4px;
+  border-radius: 5px;
+}
+#main.challenges_main .challenge .hint__popup .hint__unlock-button.no-margin {
+  margin: 0;
+}
+#main.challenges_main .challenge .hint__popup .hint__unlock-button:hover {
+  filter: brightness(85%);
+  border-radius: 5px;
 }
 #main.challenges_main .challenge .hint.locked {
   background-color: red;
-  width: 4rem;
-  height: 1.8rem;
 }
 #main.challenges_main .challenge .hint.locked .hint__description {
   display: none;
@@ -488,23 +568,44 @@ body.popup-body {
   height: 100%;
   background: linear-gradient(#141e30, #243b55);
 }
-.login__form {
+
+.register-user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: linear-gradient(#141e30, #243b55);
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: linear-gradient(#141e30, #243b55);
+}
+
+.generic-form {
   padding: 30px 50px;
   background: rgba(0, 0, 0, 0.5);
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
   border-radius: 10px;
   text-align: center;
+  margin: 2rem;
 }
-.login__form h2 {
+.generic-form .title {
   margin: 0 0 30px;
   padding: 0;
   color: #fff;
   text-align: center;
 }
-.login__form__box {
+.generic-form .error {
+  color: rgb(207, 0, 0);
+}
+.generic-form__box {
   position: relative;
 }
-.login__form__box input {
+.generic-form__box input {
   width: 100%;
   padding: 10px 0;
   font-size: 16px;
@@ -515,7 +616,7 @@ body.popup-body {
   outline: none;
   background: transparent;
 }
-.login__form__box label {
+.generic-form__box label {
   position: absolute;
   top: 0;
   left: 0;
@@ -525,26 +626,26 @@ body.popup-body {
   pointer-events: none;
   transition: 0.3s;
 }
-.login__form__box input:not(:-moz-placeholder-shown) ~ label {
+.generic-form__box input:not(:-moz-placeholder-shown) ~ label {
   top: -20px;
   left: 0;
   color: #03e9f4;
   font-size: 12px;
 }
-.login__form__box input:not(:-ms-input-placeholder) ~ label {
+.generic-form__box input:not(:-ms-input-placeholder) ~ label {
   top: -20px;
   left: 0;
   color: #03e9f4;
   font-size: 12px;
 }
-.login__form__box input:focus ~ label,
-.login__form__box input:not(:placeholder-shown) ~ label {
+.generic-form__box input:focus ~ label,
+.generic-form__box input:not(:placeholder-shown) ~ label {
   top: -20px;
   left: 0;
   color: #03e9f4;
   font-size: 12px;
 }
-.login__form__submit {
+.generic-form__submit {
   margin-top: 25px;
   padding: 10px 20px;
   color: #03e9f4;
@@ -558,7 +659,10 @@ body.popup-body {
   letter-spacing: 4px;
   border-radius: 5px;
 }
-.login__form__submit:hover {
+.generic-form__submit.no-margin {
+  margin: 0;
+}
+.generic-form__submit:hover {
   background: #03e9f4;
   color: #fff;
   border-radius: 5px;
