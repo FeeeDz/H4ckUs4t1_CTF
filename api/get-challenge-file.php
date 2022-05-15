@@ -1,11 +1,5 @@
 <?php
-session_start();
-require "../inc/functions.php";
-$conn = db_connect();
-
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
+require "../inc/init.php";
 
 if (!isset($_GET["challenge_name"]) || !isset($_GET["filename"])) return false;
  

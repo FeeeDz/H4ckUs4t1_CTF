@@ -1,11 +1,5 @@
 <?php 
-session_start();
-require "inc/functions.php";
-$conn = db_connect();
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+require "inc/init.php";
 
 redirect_if_not_admin();
 
@@ -22,7 +16,7 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
 
             if(isset($_POST["add_hint_description"]))
                 for($i = 0; $i < count($_POST["add_hint_description"]); $i++)
-                    if (!add_challenge_hint($conn, $challenge_id, $_POST["add_hint_description"][$i], $_POST["add_hint_cost"][$i])) $success = false;
+                    if (!add_hint($conn, $challenge_id, $_POST["add_hint_description"][$i], $_POST["add_hint_cost"][$i])) $success = false;
 
             if(isset($_POST["add_resource"]))
                 foreach ($_POST["add_resource"] as $resource_filename)
@@ -33,7 +27,7 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
             break;
 
         case "delete":
-            delete_challenge($conn, $challenge_id);
+            if (!delete_challenge($conn, $challenge_id)) $success = false;
             break;
 
         case "edit":
@@ -41,7 +35,7 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
 
             if(isset($_POST["delete_hint"]))
                 foreach ($_POST["delete_hint"] as $hint_id)
-                    if (!delete_challenge_hint($conn, $hint_id)) $success = false;
+                    if (!delete_hint($conn, $hint_id)) $success = false;
 
             if(isset($_POST["delete_resource"]))
                 foreach ($_POST["delete_resource"] as $resource_id)
@@ -49,7 +43,7 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
 
             if(isset($_POST["add_hint_description"]))
                 for($i = 0; $i < count($_POST["add_hint_description"]); $i++)
-                    if (!add_challenge_hint($conn, $challenge_id, $_POST["add_hint_description"][$i], $_POST["add_hint_cost"][$i])) $success = false;
+                    if (!add_hint($conn, $challenge_id, $_POST["add_hint_description"][$i], $_POST["add_hint_cost"][$i])) $success = false;
 
             if(isset($_POST["add_resource"]))
                 foreach ($_POST["add_resource"] as $resource_filename)
@@ -57,7 +51,7 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
 
             if(isset($_POST["edit_hint_id"]))
                 for($i = 0; $i < count($_POST["edit_hint_id"]); $i++)
-                    if (!edit_challenge_hint($conn, $_POST["edit_hint_id"][$i], $_POST["edit_hint_description"][$i], $_POST["edit_hint_cost"][$i])) $success = false;
+                    if (!edit_hint($conn, $_POST["edit_hint_id"][$i], $_POST["edit_hint_description"][$i], $_POST["edit_hint_cost"][$i])) $success = false;
 
             if (!$success) header("Refresh:0");
 
@@ -140,6 +134,7 @@ require "inc/head.php";
             <select name="type" required>
                 <option value="T">Training</option>
                 <option value="O">Official</option>
+                <option value="I">Inactive</option>
             </select>
             <div>
                 <span class="material-icons" id="add-hint" onclick="add_hint()">add</span>
@@ -164,7 +159,7 @@ require "inc/head.php";
         if(!$challenge_id) header("Location: ".basename($_SERVER['PHP_SELF']));
 
         $challenge_data = get_challenge_data($conn, $challenge_id);
-        $hints = get_challenge_hints($conn, $challenge_id);
+        $hints = get_hints($conn, $challenge_id);
         $resources = get_db_challenge_resources($conn, $challenge_id);
     ?>
         <form method="POST">
@@ -181,6 +176,7 @@ require "inc/head.php";
             <select name="type">
                 <option value="T" <?php if($challenge_data["type"] == "T") echo "selected=\"selected\""?>>Training</option>
                 <option value="O" <?php if($challenge_data["type"] == "O") echo "selected=\"selected\""?>>Official</option>
+                <option value="I" <?php if($challenge_data["type"] == "I") echo "selected=\"selected\""?>>Inactive</option>
             </select>
             <div>
             <?php if($hints) foreach($hints as $hint) : ?>

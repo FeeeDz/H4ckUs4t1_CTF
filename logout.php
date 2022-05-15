@@ -1,6 +1,5 @@
 <?php 
-session_start();
-require "inc/functions.php";
+require "inc/init.php";
 
 logout();
 header("Location: index.php");

@@ -1,7 +1,5 @@
 <?php 
-session_start();
-require "inc/functions.php";
-$conn = db_connect();
+require "inc/init.php";
 
 if(!isset($_SESSION["user_id"]) && isset($_POST["email"]) && isset($_POST["password"])) {
     login($conn, $_POST["email"], $_POST["password"]);

@@ -38,6 +38,19 @@ function login($conn, $email, $password) {
     return false;
 }
 
+function check_if_user_exists($conn, $user_id) {
+    $query = "SELECT user_id FROM CTF_user WHERE user_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $user_id);
+
+    if(!$stmt->execute()) return false;
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if (!$row) return false;
+    return true;
+}
+
 function logout() {
     $_SESSION = array();
 
@@ -333,7 +346,7 @@ function get_challenge_data($conn, $challenge_id) {
     return $row;
 }
 
-function get_challenge_hints($conn, $challenge_id) {
+function get_hints($conn, $challenge_id) {
     $query = "SELECT hint_id, description, cost FROM CTF_hint WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $challenge_id);
@@ -346,7 +359,7 @@ function get_challenge_hints($conn, $challenge_id) {
 }
 
 function is_hint_unlocked($conn, $hint_id, $user_id) {
-    $query = "SELECT hint_id FROM CTF_unlock_hint WHERE hint_id = ? AND user_id = ?";
+    $query = "SELECT hint_id FROM CTF_unlocked_hint WHERE hint_id = ? AND user_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ii", $hint_id, $user_id);
     $stmt->execute();
@@ -394,47 +407,6 @@ function get_challenges_from_category($conn, $category, $type) {
     return $challenges;
 }
 
-function compute_challenge_points($conn, $challenge_id) {
-    $query = "SELECT initial_points, minimum_points, points_decay FROM CTF_challenge WHERE challenge_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $challenge_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    if(!$row) return false;
-
-    $initial = $row["initial_points"];
-    $minimum = $row["minimum_points"];
-    $decay = $row["points_decay"];
-    $solve_count = get_challenge_solves($conn, $challenge_id);
-
-    return ceil(((($minimum - $initial)/($decay*2)) * ($solve_count*2)) + $initial);
-}
-
-function get_challenge_solves($conn, $challenge_id) {
-    $query = "SELECT COUNT(challenge_id) AS solve_count FROM CTF_submit WHERE challenge_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $challenge_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    if(!$row) return false;
-
-    return $row["solve_count"];
-}
-
-function submit_flag($conn, $challenge_id, $flag) {
-    $query = "SELECT points FROM CTF_challenge WHERE challenge_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $challenge_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    
-    if(!$row) return false;
-    return $row["points"];
-}
-
 function add_challenge($conn, $challenge_name, $flag, $description, $service, $type, $category, $initial_points, $minimum_points, $points_decay) {
     if($initial_points <= $minimum_points) return false;
 
@@ -446,7 +418,7 @@ function add_challenge($conn, $challenge_name, $flag, $description, $service, $t
     return $conn->insert_id;
 }
 
-function add_challenge_hint($conn, $challenge_id, $hint_description, $hint_cost) {
+function add_hint($conn, $challenge_id, $hint_description, $hint_cost) {
     $query = "INSERT INTO CTF_hint (challenge_id, description, cost) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("isi", $challenge_id, $hint_description, $hint_cost);
@@ -465,19 +437,15 @@ function add_challenge_resource($conn, $challenge_id, $filename) {
 }
 
 function delete_challenge($conn, $challenge_id) {
-    $query = "DELETE FROM CTF_challenge WHERE challenge_id = $challenge_id";
-    if (!$conn->query($query)) return false;
-
-    $query = "DELETE FROM CTF_hint WHERE challenge_id = $challenge_id";
-    if (!$conn->query($query)) return false;
-
-    $query = "DELETE FROM CTF_resource WHERE challenge_id = $challenge_id";
-    if (!$conn->query($query)) return false;
+    $query = "DELETE FROM CTF_challenge WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $challenge_id);
+    if (!$stmt->execute()) return false;
 
     return true;
 }
 
-function delete_challenge_hint($conn, $hint_id) {
+function delete_hint($conn, $hint_id) {
     $query = "DELETE FROM CTF_hint WHERE hint_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $hint_id);
@@ -506,7 +474,7 @@ function edit_challenge_data($conn, $challenge_id, $description, $service, $type
     return true;
 }
 
-function edit_challenge_hint($conn, $hint_id, $hint_description, $hint_cost) {
+function edit_hint($conn, $hint_id, $hint_description, $hint_cost) {
     $query = "UPDATE CTF_hint SET description = ?, cost = ? WHERE hint_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("sii", $hint_description, $hint_cost, $hint_id);
@@ -552,6 +520,172 @@ function is_event_started($conn) {
 
     if(!$row) return false;
     return true;
+}
+
+function get_hint_description($conn, $hint_id) {
+    $query = "SELECT description FROM CTF_hint WHERE hint_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $hint_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["description"];
+}
+
+function get_hint_challenge_id($conn, $hint_id) {
+    $query = "SELECT challenge_id FROM CTF_hint WHERE hint_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $hint_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["challenge_id"];
+}
+
+function get_challenge_type($conn, $challenge_id) {
+    $query = "SELECT type FROM CTF_challenge WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $challenge_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["type"];
+}
+
+function unlock_hint($conn, $hint_id, $user_id) {
+    if (is_hint_unlocked($conn, $hint_id, $user_id)) return true;
+    
+    $challenge_type = get_challenge_type($conn, get_hint_challenge_id($conn, $hint_id));
+    $team_id = get_user_team_id($conn, $user_id);
+    if ($challenge_type == "O" && !$team_id) return false;
+
+    $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, team_id, unlock_date) VALUES (?, ?, ?, NOW())";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("iii", $hint_id, $user_id, $team_id);
+    
+    if(!$stmt->execute()) return false;
+    return true;
+}
+
+function is_challenge_solved($conn, $challenge_id, $user_id) {
+    $challenge_type = get_challenge_type($conn, $challenge_id);
+    $team_id = get_user_team_id($conn, $user_id);
+
+    if ($challenge_type == "O") {
+        if (!$team_id) return false;
+
+        $query = "SELECT submit_id FROM CTF_submit WHERE challenge_id = ? AND team_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ii", $challenge_id, $team_id);
+    } else if($challenge_type == "T") {
+        $query = "SELECT submit_id FROM CTF_submit WHERE challenge_id = ? AND user_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ii", $challenge_id, $user_id);
+    } else return false;
+    
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return true;
+}
+
+function compute_challenge_points($conn, $challenge_id) {
+    $query = "SELECT initial_points, minimum_points, points_decay FROM CTF_challenge WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $challenge_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    if(!$row) return false;
+
+    $initial = $row["initial_points"];
+    $minimum = $row["minimum_points"];
+    $decay = $row["points_decay"];
+    $solves = get_challenge_solves($conn, $challenge_id);
+
+    return ceil(((($minimum - $initial)/($decay*2)) * ($solves*2)) + $initial);
+}
+
+function get_challenge_solves($conn, $challenge_id) {
+    $query = "SELECT COUNT(challenge_id) AS solves FROM CTF_submit WHERE challenge_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $challenge_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    if(!$row) return false;
+
+    return $row["solves"];
+}
+
+function check_flag($conn, $challenge_id, $flag) {
+    $query = "SELECT flag FROM CTF_challenge WHERE challenge_id = ? AND flag = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("is", $challenge_id, $flag);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if (!$row) return false;
+    return true;
+}
+
+function submit_flag($conn, $challenge_id, $user_id, $flag) {
+    if (!check_flag($conn, $challenge_id, $flag)) return false;
+    if (is_challenge_solved($conn, $challenge_id, $user_id)) return false;
+    
+    $challenge_type = get_challenge_type($conn, $challenge_id);
+    $team_id = get_user_team_id($conn, $user_id);
+    if ($challenge_type == "O" && !$team_id) return false;
+
+    $points = compute_challenge_points($conn, $challenge_id);
+    
+    $query = "INSERT INTO CTF_submit (user_id, team_id, challenge_id, points, submit_date) VALUES (?, ?, ?, ?, NOW())";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("iiii", $user_id, $team_id, $challenge_id, $points);
+    if (!$stmt->execute()) return false;
+    return true;
+}
+
+function get_challenges_solves_and_points($conn, $user_id) {
+    $team_id = get_user_team_id($conn, $user_id);
+    if (is_event_started($conn)) {
+        if (!$team_id) return false;
+        
+        $type = "O";
+        $query = "SELECT CTF_submit.challenge_id, challenge_name, COUNT(CTF_submit.challenge_id) AS solves, IF(team_id = $team_id, TRUE, FALSE) AS solved
+        FROM CTF_submit
+        INNER JOIN CTF_challenge ON CTF_submit.challenge_id = CTF_challenge.challenge_id
+        WHERE type = '$type'
+        GROUP BY CTF_submit.challenge_id";
+    }
+    else {
+        $type = "T";
+        $query = "SELECT CTF_submit.challenge_id, challenge_name, COUNT(CTF_submit.challenge_id) AS solves
+        -- , IF(user_id = $user_id, TRUE, FALSE) AS solved
+        FROM CTF_submit
+        INNER JOIN CTF_challenge ON CTF_submit.challenge_id = CTF_challenge.challenge_id
+        WHERE type = '$type'
+        GROUP BY CTF_submit.challenge_id";
+    }
+    $result = $conn->query($query);
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
+
+    foreach ($rows as &$row) {
+        $row["points"] = compute_challenge_points($conn, $row["challenge_id"]);
+        unset($row["challenge_id"]);
+    }
+    return $rows;
 }
 
 ?>
