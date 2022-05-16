@@ -2,7 +2,7 @@
 require "inc/init.php";
 
 if (!isset($_SESSION["user_id"])) header("Location: login.php?redirect=challenges.php");
-if (is_event_started($conn) && !get_user_team_id($conn, $_SESSION["user_id"])) header("Location: team.php");
+else if (is_event_started($conn) && !get_user_team_id($conn, $_SESSION["user_id"])) header("Location: team.php");
 
 if (is_event_started($conn)) $challenge_type = "O";
 else $challenge_type = "T";

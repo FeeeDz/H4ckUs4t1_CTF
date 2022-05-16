@@ -689,4 +689,8 @@ function get_challenges_solves_and_points($conn, $user_id) {
     return $rows;
 }
 
+function get_scoreboard() {
+
+}
+
 ?>

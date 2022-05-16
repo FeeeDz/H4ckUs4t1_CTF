@@ -20,15 +20,15 @@ require "inc/head.php";
         <form method="POST" class="generic-form">
             <h2 class="title">Register</h2>
             <div class="generic-form__box">
-                <input type="text" name="username" placeholder=" " minlength="3" maxlength="16" pattern="[\x00-\x7F]+" required>
+                <input type="text" name="username" placeholder=" " minlength="3" maxlength="16" pattern="[\x00-\x7F]+" autocomplete="username" required>
                 <label>Username</label>
             </div>
             <div class="generic-form__box">
-                <input type="email" name="email" placeholder=" " required>
+                <input type="email" name="email" placeholder=" " autocomplete="email" required>
                 <label>Email</label>
             </div>
             <div class="generic-form__box">
-                <input type="password" id="password" name="password" placeholder=" " minlength="8" maxlength="128" required>
+                <input type="password" id="password" name="password" placeholder=" " minlength="8" maxlength="128" autocomplete="new-password" required>
                 <label>Password</label>
             </div>
             <div class="generic-form__box">
