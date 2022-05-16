@@ -18,11 +18,11 @@ require "inc/head.php";
         <form method="POST" class="generic-form">
             <h2 class="title">Login</h2>
             <div class="generic-form__box">
-                <input type="email" name="email" placeholder=" " required> 
+                <input type="email" name="email" placeholder=" " autocomplete="email" required> 
                 <label>Email</label>
             </div>
             <div class="generic-form__box">
-                <input type="password" name="password" placeholder=" " required>
+                <input type="password" name="password" placeholder=" " autocomplete="current-password" required>
                 <label>Password</label>
             </div>
             <input type="submit" value="Login" class="generic-form__submit">
