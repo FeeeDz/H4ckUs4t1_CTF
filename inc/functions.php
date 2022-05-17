@@ -219,20 +219,6 @@ function get_base_url() {
     return $_SERVER['HTTP_HOST'];
 }
 
-function redirect_if_logged() {
-    if(isset($_SESSION["user_id"])) {
-        $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
-        header("Location: $redirect");
-    }
-}
-
-function redirect_if_not_admin() {
-    if($_SESSION["role"] != 'A') {
-        $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
-        header("Location: $redirect");
-    }
-}
-
 function get_challenge_id($conn, $challenge_name) {
     $query = "SELECT challenge_id FROM CTF_challenge WHERE challenge_name = ?";
     $stmt = $conn->prepare($query);
