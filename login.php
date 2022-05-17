@@ -5,7 +5,10 @@ if(!isset($_SESSION["user_id"]) && isset($_POST["email"]) && isset($_POST["passw
     login($conn, $_POST["email"], $_POST["password"]);
 }
 
-redirect_if_logged();
+if(isset($_SESSION["user_id"])) {
+    $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
+    header("Location: $redirect");
+}
 
 $title = "Login CTF h4ckus4t1";
 require "inc/head.php";

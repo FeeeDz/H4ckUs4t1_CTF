@@ -1,7 +1,10 @@
 <?php 
 require "inc/init.php";
 
-redirect_if_not_admin();
+if($_SESSION["role"] != 'A') {
+    $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
+    header("Location: $redirect");
+}
 
 if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST["challenge_name"])) {
     $challenge_id = get_challenge_id($conn, $_POST["challenge_name"]);

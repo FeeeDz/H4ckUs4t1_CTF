@@ -1,8 +1,16 @@
 <?php 
 require "inc/init.php";
 
+if (!isset($_SESSION["user_id"])) exit(header("Location: index.php"));
+
+$team_name = get_user_team_name($conn, $_SESSION['user_id']);
+$token = get_team_token($conn, $team_name);
+
+if ($team_name && isset($_GET["redirect"])) exit(header("Location: ".$_GET["redirect"]));
+
 $title = "CTF h4ckus4t1 Team";
 require "inc/head.php";
+
 ?>
 <body>
     <nav id="nav">
@@ -10,15 +18,10 @@ require "inc/head.php";
     </nav>
     <div id="main" class="team">
     <?php
-    $team_name = get_user_team_name($conn, $_SESSION['user_id']);
-    $token = get_team_token($conn, $team_name);
-
-    if (!isset($_SESSION["user_id"])) { 
-        header("Location: index.php");
-    } elseif ($team_name) { 
+    if ($team_name) { 
         if(isset($_GET["action"])) {
             if($_GET["action"] == "quit") quit_team($conn, $_SESSION['user_id']);
-            header("Location: ".basename($_SERVER['PHP_SELF']));
+            exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
         }
     ?>    
         <form method="GET" class="generic-form">
@@ -32,10 +35,11 @@ require "inc/head.php";
         <form method="GET" class="generic-form">
             <button type="submit" name="action" value="create" class="generic-form__submit no-margin">Create Team</button><br>
             <button type="submit" name="action" value="join" class="generic-form__submit">Join Team</button>
+            <?php if (isset($_GET["redirect"])) echo "<input type=\"hidden\" name=\"redirect\" value=\"".$_GET["redirect"]."\">" ?>
         </form>
     <?php } elseif ($_GET["action"] == "join") {
         if (isset($_POST["token"])) { 
-            if (join_team($conn, $_SESSION['user_id'], $_POST["token"])) header("Location: ".basename($_SERVER['PHP_SELF']));
+            if (join_team($conn, $_SESSION['user_id'], $_POST["token"])) exit(header("Location: ".basename($_SERVER['REQUEST_URI'])));
             $form_error = "Invalid token";
         } ?>
         <form method="POST" class="generic-form">
@@ -53,7 +57,7 @@ require "inc/head.php";
 
             if ($token) {
                 join_team($conn, $_SESSION['user_id'], $token);
-                header("Location: ".basename($_SERVER['PHP_SELF']));  
+                exit(header("Location: ".basename($_SERVER['REQUEST_URI'])));
             }
             $form_error = "Team name already exists";
         } ?>
