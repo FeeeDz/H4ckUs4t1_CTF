@@ -1,7 +1,7 @@
 <?php 
 require "inc/init.php";
 
-if($_SESSION["role"] != 'A') {
+if(!isset($_SESSION["user_id"]) || get_user_role($conn, $_SESSION["user_id"]) != 'A') {
     $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
     exit(header("Location: $redirect"));
 }

@@ -16,7 +16,7 @@ function db_connect() {
 }
 
 function check_credentials($conn, $email, $password) {
-    $query = "SELECT user_id, password_hash, role FROM CTF_user WHERE email = ?";
+    $query = "SELECT user_id, password_hash FROM CTF_user WHERE email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $email);
 
@@ -32,7 +32,6 @@ function check_credentials($conn, $email, $password) {
 function login($conn, $email, $password) {
     if ($row = check_credentials($conn, $email, $password)) {
         $_SESSION['user_id'] = $row["user_id"];
-        $_SESSION['role'] = $row['role'];
         return true;
     }
     return false;
@@ -122,6 +121,18 @@ function get_user_team_name($conn, $user_id) {
 
     if (!$row) return false;
     return $row['team_name'];
+}
+
+function get_user_role($conn, $user_id) {
+    $query = "SELECT role FROM CTF_user WHERE user_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if (!$row) return false;
+    return $row['role'];
 }
 
 function count_team_members($conn, $team_id) {

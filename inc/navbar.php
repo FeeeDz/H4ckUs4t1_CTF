@@ -41,7 +41,7 @@
             <span class="material-icons">group</span>
             <span>Team</span>
         </a>
-        <?php if ($_SESSION["role"] == 'A') { ?>
+        <?php if (get_user_role($conn, $_SESSION["user_id"]) == 'A') { ?>
         <a id="admin-panel-button" href="admin-panel.php">
             <span class="material-icons">admin_panel_settings</span>
             <span>Admin Panel</span>
