@@ -345,9 +345,17 @@ function get_hints($conn, $challenge_id) {
 }
 
 function is_hint_unlocked($conn, $hint_id, $user_id) {
-    $query = "SELECT 1 FROM CTF_unlocked_hint WHERE hint_id = ? AND user_id = ?";
+    $team_id = get_user_team_id($conn, $user_id);
+    if (is_event_started($conn)) {
+        if (!$team_id) return false;
+        
+        $query = "SELECT 1 FROM CTF_unlocked_hint WHERE hint_id = ? AND team_id = $team_id";
+    }
+    else {
+        $query = "SELECT 1 FROM CTF_unlocked_hint WHERE hint_id = ? AND user_id = $user_id";
+    }
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ii", $hint_id, $user_id);
+    $stmt->bind_param("i", $hint_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $rows = $result->fetch_assoc();
@@ -490,8 +498,35 @@ function get_upcoming_event_start_date($conn) {
     return $row["start_date"];
 }
 
+function get_current_event_start_date($conn) {
+    $query = "SELECT start_date FROM CTF_event WHERE start_date < NOW() AND end_date > NOW()";
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["start_date"];
+}
+
 function get_current_event_end_date($conn) {
     $query = "SELECT end_date FROM CTF_event WHERE start_date < NOW() AND end_date > NOW()";
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["end_date"];
+}
+
+function get_last_event_start_date($conn) {
+    $query = "SELECT start_date FROM CTF_event WHERE start_date < NOW() ORDER BY start_date DESC";
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["start_date"];
+}
+
+function get_last_event_end_date($conn) {
+    $query = "SELECT end_date FROM CTF_event WHERE start_date < NOW() ORDER BY start_date DESC";
     $result = $conn->query($query);
     $row = $result->fetch_assoc();
 
@@ -648,10 +683,10 @@ function get_challenges_solves_and_points($conn, $user_id) {
         
         $type = "O";
         $query = "SELECT submit.challenge_id, challenge_name, COUNT(submit.challenge_id) AS solves, 
-                IF (EXISTS (SELECT 1 FROM CTF_submit WHERE team_id = $team_id AND submit.challenge_id = challenge_id), TRUE, FALSE) AS solved
+                IF (EXISTS (SELECT 1 FROM CTF_submit WHERE team_id = $team_id AND submit.challenge_id = challenge_id AND submit_date >= \"".get_current_event_start_date($conn)."\"), TRUE, FALSE) AS solved
             FROM CTF_submit AS submit
             INNER JOIN CTF_challenge ON submit.challenge_id = CTF_challenge.challenge_id
-            WHERE type = '$type'
+            WHERE type = '$type' AND submit_date >= {get_current_event_start_date($conn)}
             GROUP BY submit.challenge_id";
     }
     else {
@@ -675,8 +710,52 @@ function get_challenges_solves_and_points($conn, $user_id) {
     return $rows;
 }
 
-function get_scoreboard() {
+function get_training_leaderboard($conn) {
+    $query = "SELECT username, 
+            (SELECT SUM(points) 
+            FROM CTF_submit 
+            WHERE team_id IS NULL 
+            AND CTF_submit.user_id = submit.user_id)
+            - 
+            IFNULL( (SELECT SUM(cost)
+            FROM CTF_unlocked_hint
+            INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
+            WHERE team_id IS NULL
+            AND CTF_unlocked_hint.user_id = submit.user_id), 0) AS score
+        FROM CTF_submit AS submit
+        INNER JOIN CTF_user ON submit.user_id = CTF_user.user_id
+        WHERE submit.team_id IS NULL
+        GROUP BY username
+        ORDER BY score DESC";
 
+    $result = $conn->query($query);
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
+    return $rows;
+}
+
+function get_official_leaderboard($conn) {
+    $query = "SELECT team_name, 
+            (SELECT SUM(points) 
+            FROM CTF_submit 
+            WHERE team_id IS NOT NULL AND CTF_submit.team_id = submit.team_id AND submit_date >= \"".get_last_event_start_date($conn)."\" AND submit_date <= \"".get_last_event_end_date($conn)."\")
+            - 
+            IFNULL( (SELECT SUM(cost)
+            FROM CTF_unlocked_hint
+            INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
+            WHERE team_id IS NOT NULL AND CTF_unlocked_hint.team_id = submit.team_id AND submit_date >= \"".get_last_event_start_date($conn)."\" AND submit_date <= \"".get_last_event_end_date($conn)."\"), 0) AS score
+        FROM CTF_submit AS submit
+        INNER JOIN CTF_team ON submit.team_id = CTF_team.team_id
+        WHERE submit.team_id IS NOT NULL AND submit_date >= \"".get_last_event_start_date($conn)."\" AND submit_date <= \"".get_last_event_end_date($conn)."\"
+        GROUP BY team_name
+        ORDER BY score DESC";
+
+    $result = $conn->query($query);
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
+    return $rows;
 }
 
 ?>

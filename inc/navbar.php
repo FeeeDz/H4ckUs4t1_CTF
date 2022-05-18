@@ -22,9 +22,9 @@
             <span class="material-icons">description</span>
             <span>Rules</span>
         </a>
-        <a href="scoreboard.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "scoreboard.php") echo "active"; ?>">
-            <span class="material-icons">scoreboard</span>
-            <span>Scoreboard</span>
+        <a href="leaderboard.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "leaderboard.php") echo "active"; ?>">
+            <span class="material-icons">leaderboard</span>
+            <span>Leaderboard</span>
         </a>
         <a href="challenges.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "challenges.php") echo "active"; ?>">
             <span class="material-icons">polymer</span>

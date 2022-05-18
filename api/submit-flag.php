@@ -1,8 +1,9 @@
 <?php
 require "../inc/init.php";
 
-if (!isset($_SESSION["user_id"]) || !isset($_GET["challenge_name"]) || !isset($_GET["flag"])) return false;
-if (!($challenge_id = get_challenge_id($conn, $_GET["challenge_name"]))) return false;
+if (!isset($_SESSION["user_id"]) || !isset($_GET["challenge_name"]) || !isset($_GET["flag"])) exit(json_encode(false));
+if (!($challenge_id = get_challenge_id($conn, $_GET["challenge_name"]))) exit(json_encode(false));
+if (!submit_flag($conn, $challenge_id, $_SESSION["user_id"], $_GET["flag"])) exit(json_encode(false));
 
-if (submit_flag($conn, $challenge_id, $_SESSION["user_id"], $_GET["flag"])) echo json_encode(true);
+exit(json_encode(true));
 ?>

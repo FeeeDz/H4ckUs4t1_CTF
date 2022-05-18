@@ -8,7 +8,7 @@ require "inc/head.php";
     <nav id="nav">
         <?php require "inc/navbar.php"; ?>
     </nav>  
-    <div id="main" class="rules-main">
+    <div id="main" class="rules">
         <div class="rules-container">
             <h1>Rules</h1>
             <h4><b>Do NOT:</b></h4>

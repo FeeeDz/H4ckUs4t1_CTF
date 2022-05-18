@@ -3,7 +3,7 @@ require "inc/init.php";
 
 if($_SESSION["role"] != 'A') {
     $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
-    header("Location: $redirect");
+    exit(header("Location: $redirect"));
 }
 
 if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST["challenge_name"])) {
@@ -25,7 +25,7 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
                 foreach ($_POST["add_resource"] as $resource_filename)
                     if (!add_challenge_resource($conn, $challenge_id, $resource_filename)) $success = false;
 
-            if (!$success) header("Refresh:0");
+            if (!$success) exit(header("Refresh:0"));
 
             break;
 
@@ -56,11 +56,11 @@ if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST[
                 for($i = 0; $i < count($_POST["edit_hint_id"]); $i++)
                     if (!edit_hint($conn, $_POST["edit_hint_id"][$i], $_POST["edit_hint_description"][$i], $_POST["edit_hint_cost"][$i])) $success = false;
 
-            if (!$success) header("Refresh:0");
+            if (!$success) exit(header("Refresh:0"));
 
             break;
         }
-    if ($success) header("Location: ".basename($_SERVER['PHP_SELF']));
+    if ($success) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
 }
 
 $title = "CTF h4ckus4t1";
@@ -121,7 +121,7 @@ require "inc/head.php";
         $challenge_name = $_GET["challenge_name"];
         $category = get_local_challenge_category($challenge_name);
         $flag = get_local_challenge_flag($challenge_name);
-        if (is_challenge_name_used($conn, $challenge_name) || !$category || !$flag ) header("Location: ".basename($_SERVER['PHP_SELF']));
+        if (is_challenge_name_used($conn, $challenge_name) || !$category || !$flag ) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
     ?>
         <form method="POST">
             <input type="hidden" name="action" value="add">
@@ -159,7 +159,7 @@ require "inc/head.php";
     <?php } elseif ($_GET["action"] == "edit") {
         $challenge_name = $_GET["challenge_name"];
         $challenge_id = get_challenge_id($conn, $challenge_name);
-        if(!$challenge_id) header("Location: ".basename($_SERVER['PHP_SELF']));
+        if(!$challenge_id) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
 
         $challenge_data = get_challenge_data($conn, $challenge_id);
         $hints = get_hints($conn, $challenge_id);

@@ -14,7 +14,7 @@ require "inc/head.php";
     <nav id="nav">
         <?php require "inc/navbar.php"; ?>
     </nav>
-    <div id="main" class="challenges_main">
+    <div id="main" class="challenges">
         <?php foreach (get_challenge_categories($conn) as $category) : ?>
             <span class="challenges__category"><?php echo $category?></span>
             <div class="challenges__grid">
@@ -92,25 +92,28 @@ require "inc/head.php";
                 .then(data => {
                     desc_elem.innerHTML = data;
 
-                    if (desc_elem.innerHTML) {
+                    if (desc_elem.innerHTML != "false") {
                         hint_elem.classList.replace("locked", "unlocked");
                     }   
                 });
         }
 
-        function submit_flag(event, parent_elem) {
-            flag_input = parent_elem.querySelector('.flag__input');
+        function submit_flag(event, flag_elem) {
+            flag_input = flag_elem.querySelector('.flag__input');
             flag = flag_input.value
             flag_input.value = "";
-            challenge_name = parent_elem.parentElement.querySelector('.challenge-name').innerHTML;
-            challenge_elem = parent_elem.parentElement;
+            challenge_name = flag_elem.parentElement.querySelector('.challenge-name').innerHTML;
+            challenge_elem = flag_elem.parentElement;
 
             fetch(web_server_url + "/api/submit-flag.php?challenge_name=" + challenge_name + "&flag=" + flag)
                 .then(response => response.json())
                 .then(data => {
                     if (data == true) {
                         challenge_elem.classList.add("solved");
+                        flag_elem.classList.add("right");
                         refresh_solves_and_points();
+                    } else {
+                        flag_elem.classList.add("wrong");
                     }
                 });
         }
@@ -126,9 +129,11 @@ require "inc/head.php";
 
                         let chall = data.find(chall => chall.challenge_name === chall_name);
 
-                        solves_elem.innerHTML = chall.solves + solves_elem.innerHTML.substring(solves_elem.innerHTML.indexOf("<"));
-                        points_elem.innerHTML = chall.points + points_elem.innerHTML.substring(points_elem.innerHTML.indexOf("<"));
-                        if (chall.solved == "1") challenge_elem.classList.add("solved");
+                        if (chall) {
+                            solves_elem.innerHTML = chall.solves + solves_elem.innerHTML.substring(solves_elem.innerHTML.indexOf("<"));
+                            points_elem.innerHTML = chall.points + points_elem.innerHTML.substring(points_elem.innerHTML.indexOf("<"));
+                            if (chall.solved == "1") challenge_elem.classList.add("solved");
+                        }
                     });
                 });
         }
