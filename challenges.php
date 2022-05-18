@@ -110,10 +110,20 @@ require "inc/head.php";
                 .then(data => {
                     if (data == true) {
                         challenge_elem.classList.add("solved");
+                        flag_elem.classList.remove("wrong");
                         flag_elem.classList.add("right");
+                        setTimeout(function(){
+                            flag_elem.classList.remove('right');
+                                //....and whatever else you need to do
+                        }, 3000);
                         refresh_solves_and_points();
                     } else {
+                        flag_elem.classList.remove("right");
                         flag_elem.classList.add("wrong");
+                        setTimeout(function(){
+                            flag_elem.classList.remove('wrong');
+                                //....and whatever else you need to do
+                        }, 3000);
                     }
                 });
         }
