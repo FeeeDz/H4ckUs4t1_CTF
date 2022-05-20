@@ -6,11 +6,11 @@
 <ul id="nav__menu">
     <?php if (basename($_SERVER['PHP_SELF']) == "index.php") : ?>
         <li><a id="nav__logo" href="index.php">
-            <img src="img/logo_montani2.png">
+            <img src="images/logo_montani.png">
         </a></li>
     <?php else : ?>
         <li><a id="nav__logo" href="index.php">
-            <img src="img/logo_h4ckus4t1_black_and_white.png">
+            <img src="images/logo_h4ckus4t1_black_and_white.png">
         </a></li>
     <?php endif; ?>
     <li><div id="nav__nav">

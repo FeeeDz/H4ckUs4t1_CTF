@@ -9,7 +9,13 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <!-- <link rel="icon" type="image/png" href="../img/logo_h4ckus4t1_white.png"> -->
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="shortcut icon" href="icons/favicon.ico">
+
+    <link rel="manifest" href="/icons/site.webmanifest">
 
     <script src="https://www.google.com/recaptcha/api.js"></script>
 </head>

@@ -9,7 +9,7 @@ require "inc/head.php";
         <?php require "inc/navbar.php"; ?>
     </nav>
     <div id="main" class="no-bg-color">
-        <img id="main__logo" src="img/logo_h4ckus4t1_white.png" width="300">
+        <img id="main__logo" src="images/logo_h4ckus4t1_white.png" width="300">
         <div id="countdown-timer">
             <?php if (!is_event_started($conn)) : ?>
                 <label>Starts in<label>

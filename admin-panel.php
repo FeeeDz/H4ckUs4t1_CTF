@@ -6,7 +6,7 @@ if(!isset($_SESSION["user_id"]) || get_user_role($conn, $_SESSION["user_id"]) !=
     exit(header("Location: $redirect"));
 }
 
-if (isset($_POST["submit"]) && isset($_POST["challenge_name"]) && !empty($_POST["challenge_name"])) {
+if (isset($_POST["action"]) && isset($_POST["challenge_name"]) && !empty($_POST["challenge_name"])) {
     $challenge_id = get_challenge_id($conn, $_POST["challenge_name"]);
     $success = true;
     switch ($_POST["action"]) {
@@ -70,27 +70,19 @@ require "inc/head.php";
     <nav id="nav">
         <?php require "inc/navbar.php"; ?>
     </nav>
-    <div id="main">
+    <div id="main" class="admin-panel">
     <?php if (!isset($_GET["action"])) { ?>
-        <form method="GET">
-            <input type="hidden" name="action" value="add">
-            <input type="submit" value="Add challenge">
-        </form>
-        <form method="GET">
-            <input type="hidden" name="action" value="edit">
-            <input type="submit" value="Edit challenge">
-        </form>
-        <form method="GET">
-            <input type="hidden" name="action" value="delete">
-            <input type="submit" value="Delete challenge">
+        <form method="GET" class="generic-form">
+            <button type="submit" name="action" value="add" class="generic-form__submit no-margin">Add challenge</button><br>
+            <button type="submit" name="action" value="edit" class="generic-form__submit">Edit challenge</button><br>
+            <button type="submit" name="action" value="delete" class="generic-form__submit">Delete challenge</button>
         </form>
     <?php } elseif (!isset($_GET["challenge_name"])) { ?>
         <?php if($_GET["action"] == "delete") : ?>
-            <form method="POST">
+            <form method="POST" class="generic-form">
         <?php else : ?>
-            <form method="GET">
+            <form method="GET" class="generic-form">
         <?php endif; ?>
-                <input type="hidden" name="action" value="<?php echo $_GET["action"]; ?>">
                 <select name="challenge_name">
                 <?php
                     if($_GET["action"] == "add") {
@@ -109,12 +101,11 @@ require "inc/head.php";
                 ?>
                 </select>
                 <?php if($_GET["action"] == "add") : ?>
-                    <input type="submit" value="Add challenge">
+                    <button type="submit" name="action" value="add" class="generic-form__submit">Add challenge</button>
                 <?php elseif($_GET["action"] == "edit") : ?>
-                    <input type="submit" value="Edit challenge">
+                    <button type="submit" name="action" value="edit" class="generic-form__submit">Edit challenge</button>
                 <?php elseif($_GET["action"] == "delete") : ?>
-                    <input type="hidden" name="submit">
-                    <input type="submit" value="Delete challenge">
+                    <button type="submit" name="action" value="delete" class="generic-form__submit">Delete challenge</button>
                 <?php endif; ?>
             </form>
     <?php } elseif ($_GET["action"] == "add") {
@@ -123,9 +114,7 @@ require "inc/head.php";
         $flag = get_local_challenge_flag($challenge_name);
         if (is_challenge_name_used($conn, $challenge_name) || !$category || !$flag ) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
     ?>
-        <form method="POST">
-            <input type="hidden" name="action" value="add">
-            <input type="hidden" name="sumbit">
+        <form method="POST" class="generic-form">
             <input type="text" name="challenge_name" value="<?php echo $challenge_name; ?>" readonly>
             <input type="text" name="category" value="<?php echo $category; ?>" readonly>
             <input type="text" name="flag" value="<?php echo $flag; ?>" readonly>
@@ -154,7 +143,7 @@ require "inc/head.php";
                     <span class="material-icons" onclick="add_resource()">add</span>
                 </div>
             </div>
-            <input type="submit" name="submit" value="Add challenge">
+            <button type="submit" name="action" value="add" class="generic-form__submit">Add challenge</button>
         </form>
     <?php } elseif ($_GET["action"] == "edit") {
         $challenge_name = $_GET["challenge_name"];
@@ -165,9 +154,7 @@ require "inc/head.php";
         $hints = get_hints($conn, $challenge_id);
         $resources = get_db_challenge_resources($conn, $challenge_id);
     ?>
-        <form method="POST">
-            <input type="hidden" name="action" value="edit">
-            <input type="hidden" name="sumbit">
+        <form method="POST" class="generic-form">
             <input type="text" name="challenge_name" value="<?php echo $challenge_name; ?>" readonly>
             <input type="text" name="category" value="<?php echo $challenge_data["category"]; ?>" readonly>
             <input type="text" name="flag" value="<?php echo $challenge_data["flag"]; ?>" readonly>
@@ -211,7 +198,7 @@ require "inc/head.php";
                     <span class="material-icons" onclick="add_resource()">add</span>
                 </div>
             </div>
-            <input type="submit" name="submit" value="Edit challenge">
+            <button type="submit" name="action" value="edit" class="generic-form__submit">Edit challenge</button>
         </form>
     <?php } ?>
     </div>

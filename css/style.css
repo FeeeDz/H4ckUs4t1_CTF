@@ -84,7 +84,7 @@ body {
   flex-direction: column;
 }
 body.index-body {
-  background-image: url("../img/background-index.jpg");
+  background-image: url("../images/background-index.jpg");
   background-position: bottom;
   background-repeat: no-repeat;
   background-size: cover;
@@ -363,7 +363,7 @@ body.popup-body {
   background-color: rgb(173, 173, 173);
   border-radius: 1rem;
   padding: 0.8rem 1.3rem 1.5rem 1.3rem;
-  min-width: 19rem;
+  width: 19rem;
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -374,7 +374,7 @@ body.popup-body {
   font-weight: 600;
 }
 .challenges .challenge > * {
-  transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  transition: all 0.25s cubic-bezier(0.08, 0.82, 0.17, 1);
   max-height: 70px;
 }
 .challenges .challenge .flexbox-info {
@@ -643,6 +643,14 @@ body.popup-body {
   background: linear-gradient(#141e30, #243b55);
 }
 
+.admin-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: linear-gradient(#141e30, #243b55);
+}
+
 .generic-form {
   padding: 30px 50px;
   background: rgba(0, 0, 0, 0.5);
@@ -731,6 +739,36 @@ body.popup-body {
   background: #03e9f4;
   color: #fff;
   border-radius: 5px;
+}
+.generic-form select {
+  display: block;
+  margin: 0 auto;
+  width: auto;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  padding: 1em 4em 1em 1em;
+  background: url(https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg) no-repeat right 0.8em center/1.4em, linear-gradient(to left, rgba(255, 255, 255, 0.3) 3em, rgba(255, 255, 255, 0.2) 3em);
+  color: white;
+  border-radius: 0.25em;
+  box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+.generic-form select option {
+  color: inherit;
+  background-color: #320a28;
+}
+.generic-form select:focus {
+  outline: none;
+}
+.generic-form select::-ms-expand {
+  display: none;
+}
+.generic-form select:hover {
+  filter: brightness(80%);
 }
 
 #footer {
