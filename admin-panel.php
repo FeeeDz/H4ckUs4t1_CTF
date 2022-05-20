@@ -73,9 +73,9 @@ require "inc/head.php";
     <div id="main" class="admin-panel">
     <?php if (!isset($_GET["action"])) { ?>
         <form method="GET" class="generic-form">
-            <button type="submit" name="action" value="add" class="generic-form__submit no-margin">Add challenge</button><br>
-            <button type="submit" name="action" value="edit" class="generic-form__submit">Edit challenge</button><br>
-            <button type="submit" name="action" value="delete" class="generic-form__submit">Delete challenge</button>
+            <button type="submit" name="action" value="add" class="generic-form__button no-margin">Add challenge</button><br>
+            <button type="submit" name="action" value="edit" class="generic-form__button">Edit challenge</button><br>
+            <button type="submit" name="action" value="delete" class="generic-form__button">Delete challenge</button>
         </form>
     <?php } elseif (!isset($_GET["challenge_name"])) { ?>
         <?php if($_GET["action"] == "delete") : ?>
@@ -101,11 +101,11 @@ require "inc/head.php";
                 ?>
                 </select>
                 <?php if($_GET["action"] == "add") : ?>
-                    <button type="submit" name="action" value="add" class="generic-form__submit">Add challenge</button>
+                    <button type="submit" name="action" value="add" class="generic-form__button">Add challenge</button>
                 <?php elseif($_GET["action"] == "edit") : ?>
-                    <button type="submit" name="action" value="edit" class="generic-form__submit">Edit challenge</button>
+                    <button type="submit" name="action" value="edit" class="generic-form__button">Edit challenge</button>
                 <?php elseif($_GET["action"] == "delete") : ?>
-                    <button type="submit" name="action" value="delete" class="generic-form__submit">Delete challenge</button>
+                    <button type="submit" name="action" value="delete" class="generic-form__button">Delete challenge</button>
                 <?php endif; ?>
             </form>
     <?php } elseif ($_GET["action"] == "add") {
@@ -114,24 +114,50 @@ require "inc/head.php";
         $flag = get_local_challenge_flag($challenge_name);
         if (is_challenge_name_used($conn, $challenge_name) || !$category || !$flag ) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
     ?>
-        <form method="POST" class="generic-form">
-            <input type="text" name="challenge_name" value="<?php echo $challenge_name; ?>" readonly>
-            <input type="text" name="category" value="<?php echo $category; ?>" readonly>
-            <input type="text" name="flag" value="<?php echo $flag; ?>" readonly>
-            <input type="text" name="description" maxlength="1024" required>
-            <input type="text" name="service" maxlength="256">
-            <input type="number" name="initial_points" required>
-            <input type="number" name="minimum_points" required>
-            <input type="number" name="points_decay" required>
-            <select name="type" required>
-                <option value="T">Training</option>
-                <option value="O">Official</option>
-                <option value="I">Inactive</option>
-            </select>
-            <div>
-                <span class="material-icons" id="add-hint" onclick="add_hint()">add</span>
+        <form method="POST" class="generic-form" style="min-width: 40%;">
+            <div class="generic-form__input-box">
+                <input type="text" name="challenge_name" placeholder=" " value="<?php echo $challenge_name; ?>" readonly>
+                <label>Challenge Name</label>
             </div>
-            <div>
+            <div class="generic-form__input-box">
+                <input type="text" name="category"  placeholder=" " value="<?php echo $category; ?>" readonly>
+                <label>Category</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="text" name="flag" placeholder=" " value="<?php echo $flag; ?>" readonly>
+                <label>Flag</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="text" name="description" placeholder=" " maxlength="1024" required>
+                <label>Description</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="text" name="service" placeholder=" " maxlength="256">
+                <label>Service</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="number" name="initial_points" placeholder=" " required>
+                <label>Initial Points</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="number" name="minimum_points" placeholder=" " required>
+                <label>Minimum Points</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="number" name="points_decay" placeholder=" " required>
+                <label>Points Decay</label>
+            </div>
+            <div class="generic-form__box">
+                <h3 style="margin-top: 0;">Challenge Type</h3>
+                <select name="type" required>
+                    <option value="T">Training</option>
+                    <option value="O">Official</option>
+                    <option value="I">Inactive</option>
+                </select>
+            </div>
+            <button type="button" class="generic-form__button" id="add-hint" onclick="add_hint()">Add Hint</button>
+            <div class="generic-form__box">
+                <h3 style="margin-top: 0;">Resources</h3>
                 <div id="add-resource">
                     <select id="select-resource">
                     <?php
@@ -140,10 +166,10 @@ require "inc/head.php";
                             echo "<option value='".$filename."'>".$filename."</option>";
                     ?>
                     </select>
-                    <span class="material-icons" onclick="add_resource()">add</span>
+                    <button type="button" class="generic-form__button" onclick="add_resource()">Add Resource</button>
                 </div>
             </div>
-            <button type="submit" name="action" value="add" class="generic-form__submit">Add challenge</button>
+            <button type="submit" name="action" value="add" class="generic-form__button">Add challenge</button>
         </form>
     <?php } elseif ($_GET["action"] == "edit") {
         $challenge_name = $_GET["challenge_name"];
@@ -154,51 +180,89 @@ require "inc/head.php";
         $hints = get_hints($conn, $challenge_id);
         $resources = get_db_challenge_resources($conn, $challenge_id);
     ?>
-        <form method="POST" class="generic-form">
-            <input type="text" name="challenge_name" value="<?php echo $challenge_name; ?>" readonly>
-            <input type="text" name="category" value="<?php echo $challenge_data["category"]; ?>" readonly>
-            <input type="text" name="flag" value="<?php echo $challenge_data["flag"]; ?>" readonly>
-            <input type="text" name="description" value="<?php echo $challenge_data["description"]; ?>" maxlength="1024" required>
-            <input type="text" name="service" value="<?php echo $challenge_data["service"]; ?>" maxlength="256">
-            <input type="number" name="initial_points" value="<?php echo $challenge_data["initial_points"]; ?>" required>
-            <input type="number" name="minimum_points" value="<?php echo $challenge_data["minimum_points"]; ?>" required>
-            <input type="number" name="points_decay" value="<?php echo $challenge_data["points_decay"]; ?>" required>
-            <select name="type">
-                <option value="T" <?php if($challenge_data["type"] == "T") echo "selected=\"selected\""?>>Training</option>
-                <option value="O" <?php if($challenge_data["type"] == "O") echo "selected=\"selected\""?>>Official</option>
-                <option value="I" <?php if($challenge_data["type"] == "I") echo "selected=\"selected\""?>>Inactive</option>
-            </select>
-            <div>
-            <?php if($hints) foreach($hints as $hint) : ?>
-                <span class="challenge-hint">
-                    <input type="hidden" name="edit_hint_id[]" value="<?php echo $hint["hint_id"]?>" required>
-                    <input type="text" name="edit_hint_description[]" value="<?php echo $hint["description"]?>" required>
-                    <input type="number" min="0" name="edit_hint_cost[]" value="<?php echo $hint["cost"]?>" required>
-                    <span class="material-icons" onclick="delete_hint(this.parentNode)">remove</span>
-                </span>
-            <?php endforeach; ?>
-                <span class="material-icons" id="add-hint" onclick="add_hint()">add</span>
+        <form method="POST" class="generic-form" style="min-width: 40%;">
+            <div class="generic-form__input-box">
+                <input type="text" name="challenge_name" placeholder=" " value="<?php echo $challenge_name; ?>" readonly>
+                <label>Challenge Name</label>
             </div>
-            <div>
+            <div class="generic-form__input-box">
+                <input type="text" name="category" placeholder=" " value="<?php echo $challenge_data["category"]; ?>" readonly>
+                <label>Category</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="text" name="flag" placeholder=" " value="<?php echo $challenge_data["flag"]; ?>" readonly>
+                <label>Flag</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="text" name="description" placeholder=" " value="<?php echo $challenge_data["description"]; ?>" maxlength="1024" required>
+                <label>Description</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="text" name="service" placeholder=" " value="<?php echo $challenge_data["service"]; ?>" maxlength="256">
+                <label>Service</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="number" name="initial_points" placeholder=" " value="<?php echo $challenge_data["initial_points"]; ?>" required>
+                <label>Initial Points</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="number" name="minimum_points" placeholder=" " value="<?php echo $challenge_data["minimum_points"]; ?>" required>
+                <label>Minimum Points</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="number" name="points_decay" placeholder=" " value="<?php echo $challenge_data["points_decay"]; ?>" required>
+                <label>Points Decay</label>
+            </div>
+            
+      
+            <div class="generic-form__box">
+                <h3 style="margin-top: 0;">Challenge Type</h3>
+                <select name="type" required>
+                    <option value="T" <?php if($challenge_data["type"] == "T") echo "selected=\"selected\""?>>Training</option>
+                    <option value="O" <?php if($challenge_data["type"] == "O") echo "selected=\"selected\""?>>Official</option>
+                    <option value="I" <?php if($challenge_data["type"] == "I") echo "selected=\"selected\""?>>Inactive</option>
+                </select>
+            </div>
+            <?php if($hints) foreach($hints as $hint) : ?>
+                <div class="challenge-hint generic-form__box">
+                    <h3 style="margin-top: 0;">Hint</h3>
+                    <input type="hidden" name="edit_hint_id[]" placeholder=" " value="<?php echo $hint["hint_id"]?>" required>
+                    <div class="generic-form__input-box">
+                        <input type="text" name="edit_hint_description[]" value="<?php echo $hint["description"]?>" required>
+                        <label>Hint Description</label>
+                    </div>
+                    <div class="generic-form__input-box">
+                        <input type="number" min="0" name="edit_hint_cost[]" placeholder=" " value="<?php echo $hint["cost"]?>" required>
+                        <label>Hint Cost</label>
+                    </div>
+                    <button type="button" class="generic-form__button no-margin" onclick="delete_hint(this.parentNode)">Remove Hint</button>
+                </div>
+            <?php endforeach; ?>
+            <button type="button" class="generic-form__button" id="add-hint" onclick="add_hint()">Add Hint</button>
+            <div class="generic-form__box">
+                <h3 style="margin-top: 0;">Resources</h3>
             <?php if($resources) foreach($resources as $resource) : ?>
-                <span class="challenge-resource">
-                    <input type="text" name="edit_resource_filename[]" value="<?php echo $resource["filename"]?>" readonly>
+                <div class="challenge-resource generic-form__box" style="margin: 10px 10px 30px 10px;">
+                    <div class="generic-form__input-box">
+                        <input type="text" name="edit_resource_filename[]" placeholder=" " value="<?php echo $resource["filename"]?>" readonly>
+                        <label>Filename</label>
+                    </div>
                     <input type="hidden" name="edit_resource_id[]" value="<?php echo $resource["resource_id"]?>">
-                    <span class="material-icons" onclick="delete_resource(this.parentNode)">remove</span>
-                </span>
+                    <button type="button" class="generic-form__button no-margin" onclick="delete_resource(this.parentNode)">Remove Resource</button>
+                </div>
             <?php endforeach; ?>
                 <div id="add-resource">
                     <select id="select-resource">
                     <?php
-                        $local_resources = get_local_challenge_resources($challenge_name);
-                        foreach ($local_resources as $filename)
+                        $filenames = get_local_challenge_resources($challenge_name);
+                        foreach ($filenames as $filename)
                             echo "<option value='".$filename."'>".$filename."</option>";
                     ?>
                     </select>
-                    <span class="material-icons" onclick="add_resource()">add</span>
+                    <button type="button" class="generic-form__button" onclick="add_resource()">Add Resource</button>
                 </div>
             </div>
-            <button type="submit" name="action" value="edit" class="generic-form__submit">Edit challenge</button>
+            <button type="submit" name="action" value="edit" class="generic-form__button">Edit challenge</button>            
         </form>
     <?php } ?>
     </div>
@@ -224,10 +288,20 @@ require "inc/head.php";
         }
 
         function add_hint() {
-            const elem = document.createElement("span");
+            const elem = document.createElement("div");
             elem.classList.add("challenge-hint");
+            elem.classList.add("generic-form__box");
 
-            elem.innerHTML = '<input type="text" name="add_hint_description[]" required><input type="number" min="0" name="add_hint_cost[]" required><span class="material-icons" onclick="delete_hint(this.parentNode)">remove</span>';
+            elem.innerHTML = `<h3 style="margin-top: 0;">Hint</h3>
+                <div class="generic-form__input-box">
+                    <input type="text" placeholder=" " name="add_hint_description[]" required>
+                    <label>Hint Description</label>
+                </div>
+                <div class="generic-form__input-box">
+                    <input type="number" min="0" name="add_hint_cost[]" placeholder=" " required>
+                    <label>Hint Cost</label>
+                </div>
+                <button type="button" class="generic-form__button no-margin" onclick="delete_hint(this.parentNode)">Remove Hint</button>`;
 
             const target = document.getElementById("add-hint");
             target.parentNode.insertBefore(elem, target);
@@ -254,10 +328,17 @@ require "inc/head.php";
             const select_resource = document.getElementById("select-resource");
             if(select_resource.options.length <= 0) return;
 
-            const elem = document.createElement("span");
+            const elem = document.createElement("div");
             elem.classList.add("challenge-resource");
+            elem.classList.add("generic-form__box");
+            elem.style.margin = "10px 10px 30px 10px";
 
-            elem.innerHTML = '<input type="text" name="add_resource[]" value="'+select_resource.value+'"><span class="material-icons" onclick="delete_resource(this.parentNode)">remove</span>';
+            elem.innerHTML = `
+                <div class="generic-form__input-box">
+                    <input type="text" name="add_resource[]" placeholder=" " value="`+select_resource.value+`" readonly>
+                    <label>Filename</label>
+                </div>
+                <button type="button" class="generic-form__button no-margin" onclick="delete_resource(this.parentNode)">Remove Resource</button>`;
 
             select_resource.removeChild(select_resource.options[select_resource.selectedIndex]);
 
@@ -270,7 +351,6 @@ require "inc/head.php";
             const inputs = parent_node.querySelectorAll("input");
 
             var option = document.createElement("option");
-            option.value = inputs[0].value;
             option.innerHTML = inputs[0].value;
 
             const select_resource = document.getElementById("select-resource");

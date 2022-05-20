@@ -1,7 +1,7 @@
 <?php 
 require "inc/init.php";
 
-if(!isset($_SESSION["user_id"]) && isset($_POST["email"]) && isset($_POST["password"])) {
+if(!isset($_SESSION["user_id"]) && isset($_POST["submit"])) {
     login($conn, $_POST["email"], $_POST["password"]);
 }
 
@@ -20,15 +20,15 @@ require "inc/head.php";
     <div id="main" class="login">
         <form method="POST" class="generic-form">
             <h2 class="title">Login</h2>
-            <div class="generic-form__box">
+            <div class="generic-form__input-box">
                 <input type="email" name="email" placeholder=" " autocomplete="email" required> 
                 <label>Email</label>
             </div>
-            <div class="generic-form__box">
+            <div class="generic-form__input-box">
                 <input type="password" name="password" placeholder=" " autocomplete="current-password" required>
                 <label>Password</label>
             </div>
-            <input type="submit" value="Login" class="generic-form__submit">
+            <button type="submit" name="submit" class="generic-form__button">Login</button>
         </form>
     </div>
     <footer id="footer">

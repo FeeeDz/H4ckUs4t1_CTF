@@ -35,38 +35,6 @@ $clr-gray700: #161d34;
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
-.no-bg-color {
-    background: inherit !important;
-}
-
-.hidden {
-    opacity: 0 !important;
-    max-height: 0 !important;
-    overflow: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: 0 !important;
-    border: 0 !important;
-}
-
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    z-index: 101;
-}
-
-.blurred-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, .6);
-    z-index: 100;
-}
-
 html {
     padding: 0;
     margin: 0;
@@ -737,7 +705,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
     background: linear-gradient(#141e30, #243b55);
 }
 
@@ -745,7 +712,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
     background: linear-gradient(#141e30, #243b55);
 }
 
@@ -753,7 +719,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
     background: linear-gradient(#141e30, #243b55);
 }
 
@@ -761,7 +726,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
     background: linear-gradient(#141e30, #243b55);
 }
 
@@ -785,26 +749,32 @@ body {
     }
 
     &__box {
-        position: relative;
+        margin: 30px 0 0 0;
+        padding: 15px;
+        outline: 5px solid rgb(84, 88, 84);
+    }
 
-        input {
-            width: 100%;
-            padding: 10px 0;
-            font-size: 16px;
-            color: #fff;
-            margin-bottom: 30px;
-            border: none;
-            border-bottom: 1px solid #fff;
-            outline: none;
-            background: transparent;
+    input {
+        width: 100%;
+        padding: 10px 0;
+        font-size: 16px;
+        color: #fff;
+        margin-bottom: 30px;
+        border: none;
+        border-bottom: 1px solid #fff;
+        outline: none;
+        background: transparent;
 
-            &:autofill,
-            &:hover,
-            &:focus,
-            &:active {
-                transition: all 0s 50000s;
-            }
+        &:autofill,
+        &:hover,
+        &:focus,
+        &:active {
+            transition: all 0s 50000s;
         }
+    }
+
+    &__input-box {
+        position: relative;
 
         label {
             position: absolute;
@@ -826,7 +796,8 @@ body {
         }
     }
 
-    &__submit {
+    &__button {
+        width: fit-content;
         margin-top: 25px;
         padding: 10px 20px;
         color: $clr-generic-form;
@@ -839,9 +810,12 @@ body {
         transition: 0.2s;
         letter-spacing: 4px;
         border-radius: 5px;
+        text-align: center;
 
-        &.no-margin {
-            margin: 0;
+        .material-icons {
+            margin-bottom: 3px;
+            font-size: 18px;
+            vertical-align:middle;
         }
 
         &:hover {
@@ -852,17 +826,16 @@ body {
     }
 
     select {
+        width: 100%;
         display: block;
         margin: 0 auto;
-        width: auto;
-
         appearance: none;
         border: 0;
         outline: 0;
         font: inherit;
         
         padding: 1em 4em 1em 1em;
-        background: url(https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg)
+        background: url(../images/arrow_down.png)
             no-repeat right 0.8em center / 1.4em,
             linear-gradient(to left, rgba(255, 255, 255, 0.3) 3em, rgba(255, 255, 255, 0.2) 3em);
         color: white;
@@ -926,4 +899,40 @@ body {
             }
         }
     }
+}
+
+.no-bg-color {
+    background: inherit !important;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.hidden {
+    opacity: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+    border: 0 !important;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 101;
+}
+
+.blurred-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .6);
+    z-index: 100;
 }
