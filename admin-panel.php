@@ -155,7 +155,10 @@ require "inc/head.php";
                     <option value="I">Inactive</option>
                 </select>
             </div>
-            <button type="button" class="generic-form__button" id="add-hint" onclick="add_hint()">Add Hint</button>
+            <div class="generic-form__box">
+                <h3 style="margin: 0;">Hints</h3>
+                <button type="button" class="generic-form__button no" id="add-hint" onclick="add_hint()">Add Hint</button>
+            </div>
             <div class="generic-form__box">
                 <h3 style="margin-top: 0;">Resources</h3>
                 <div id="add-resource">
@@ -213,8 +216,6 @@ require "inc/head.php";
                 <input type="number" name="points_decay" placeholder=" " value="<?php echo $challenge_data["points_decay"]; ?>" required>
                 <label>Points Decay</label>
             </div>
-            
-      
             <div class="generic-form__box">
                 <h3 style="margin-top: 0;">Challenge Type</h3>
                 <select name="type" required>
@@ -223,22 +224,26 @@ require "inc/head.php";
                     <option value="I" <?php if($challenge_data["type"] == "I") echo "selected=\"selected\""?>>Inactive</option>
                 </select>
             </div>
-            <?php if($hints) foreach($hints as $hint) : ?>
-                <div class="challenge-hint generic-form__box">
-                    <h3 style="margin-top: 0;">Hint</h3>
-                    <input type="hidden" name="edit_hint_id[]" placeholder=" " value="<?php echo $hint["hint_id"]?>" required>
-                    <div class="generic-form__input-box">
-                        <input type="text" name="edit_hint_description[]" value="<?php echo $hint["description"]?>" required>
-                        <label>Hint Description</label>
+
+            <div class="generic-form__box">
+                <h3 style="margin: 0;">Hints</h3>
+                <?php if($hints) foreach($hints as $hint) : ?>
+                    <div class="challenge-resource generic-form__box">
+                        <input type="hidden" name="edit_hint_id[]" placeholder=" " value="<?php echo $hint["hint_id"]?>" required>
+                        <div class="generic-form__input-box">
+                            <input type="text" name="edit_hint_description[]" value="<?php echo $hint["description"]?>" required>
+                            <label>Hint Description</label>
+                        </div>
+                        <div class="generic-form__input-box">
+                            <input type="number" min="0" name="edit_hint_cost[]" placeholder=" " value="<?php echo $hint["cost"]?>" required>
+                            <label>Hint Cost</label>
+                        </div>
+                        <button type="button" class="generic-form__button no-margin" onclick="delete_hint(this.parentNode)">Remove Hint</button>
                     </div>
-                    <div class="generic-form__input-box">
-                        <input type="number" min="0" name="edit_hint_cost[]" placeholder=" " value="<?php echo $hint["cost"]?>" required>
-                        <label>Hint Cost</label>
-                    </div>
-                    <button type="button" class="generic-form__button no-margin" onclick="delete_hint(this.parentNode)">Remove Hint</button>
-                </div>
-            <?php endforeach; ?>
-            <button type="button" class="generic-form__button" id="add-hint" onclick="add_hint()">Add Hint</button>
+                <?php endforeach; ?>
+                <button type="button" class="generic-form__button" id="add-hint" onclick="add_hint()">Add Hint</button>
+            </div>
+
             <div class="generic-form__box">
                 <h3 style="margin-top: 0;">Resources</h3>
             <?php if($resources) foreach($resources as $resource) : ?>
@@ -262,6 +267,7 @@ require "inc/head.php";
                     <button type="button" class="generic-form__button" onclick="add_resource()">Add Resource</button>
                 </div>
             </div>
+
             <button type="submit" name="action" value="edit" class="generic-form__button">Edit challenge</button>            
         </form>
     <?php } ?>
@@ -292,7 +298,7 @@ require "inc/head.php";
             elem.classList.add("challenge-hint");
             elem.classList.add("generic-form__box");
 
-            elem.innerHTML = `<h3 style="margin-top: 0;">Hint</h3>
+            elem.innerHTML = `
                 <div class="generic-form__input-box">
                     <input type="text" placeholder=" " name="add_hint_description[]" required>
                     <label>Hint Description</label>
