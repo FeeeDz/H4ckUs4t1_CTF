@@ -63,7 +63,7 @@ if (isset($_POST["action"]) && isset($_POST["challenge_name"]) && !empty($_POST[
     if ($success) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
 }
 
-$title = "CTF h4ckus4t1";
+$title = "Admin Panel";
 require "inc/head.php";
 ?>
 <body>

@@ -10,7 +10,7 @@ if(isset($_SESSION["user_id"])) {
     header("Location: $redirect");
 }
 
-$title = "Login CTF h4ckus4t1";
+$title = "Login";
 require "inc/head.php";
 ?>
 <body>

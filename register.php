@@ -9,10 +9,10 @@ if(!isset($_SESSION["user_id"]) && isset($_POST["submit"])) {
 
 if(isset($_SESSION["user_id"])) {
     $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
-    header("Location: $redirect");
+    exit(header("Location: $redirect"));
 }
 
-$title = "CTF h4ckus4t1";
+$title = "Register";
 require "inc/head.php";
 ?>
 <body>

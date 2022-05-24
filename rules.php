@@ -1,7 +1,7 @@
 <?php 
 require "inc/init.php";
 
-$title = "Rules h4ckus4t1";
+$title = "Rules";
 require "inc/head.php";
 ?>
 <body>

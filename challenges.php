@@ -1,13 +1,13 @@
 <?php 
 require "inc/init.php";
 
-if (!isset($_SESSION["user_id"])) header("Location: login.php?redirect=challenges.php");
-else if (is_event_started($conn) && !get_user_team_id($conn, $_SESSION["user_id"])) header("Location: team.php?redirect=challenges.php");
+if (!isset($_SESSION["user_id"])) exit(header("Location: login.php?redirect=challenges.php"));
+else if (is_event_started($conn) && !get_user_team_id($conn, $_SESSION["user_id"])) exit(header("Location: team.php?redirect=challenges.php"));
 
 if (is_event_started($conn)) $challenge_type = "O";
 else $challenge_type = "T";
 
-$title = "CTF h4ckus4t1";
+$title = "Challenges";
 require "inc/head.php";
 ?>
 <body>

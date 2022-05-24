@@ -94,7 +94,19 @@ function get_username_from_id($conn, $user_id) {
     $row = $result->fetch_assoc();
     
     if (!$row) return false;
-    return $row['username'];
+    return $row["username"];
+}
+
+function get_user_id_from_username($conn, $username) {
+    $query = "SELECT user_id FROM CTF_user WHERE username = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if (!$row) return false;
+    return $row["user_id"];
 }
 
 function get_team_token($conn, $team_name) {
@@ -106,7 +118,7 @@ function get_team_token($conn, $team_name) {
     $row = $result->fetch_assoc();
 
     if (!$row) return false;
-    return $row['token'];
+    return $row["token"];
 }
 
 function get_user_team_name($conn, $user_id) {
@@ -120,7 +132,7 @@ function get_user_team_name($conn, $user_id) {
     $row = $result->fetch_assoc();
 
     if (!$row) return false;
-    return $row['team_name'];
+    return $row["team_name"];
 }
 
 function get_user_role($conn, $user_id) {
@@ -132,7 +144,7 @@ function get_user_role($conn, $user_id) {
     $row = $result->fetch_assoc();
 
     if (!$row) return false;
-    return $row['role'];
+    return $row["role"];
 }
 
 function count_team_members($conn, $team_id) {
@@ -144,7 +156,7 @@ function count_team_members($conn, $team_id) {
     $row = $result->fetch_assoc();
 
     if (!$row) return false;
-    return $row['members'];
+    return $row["members"];
 }
 
 function get_user_team_id($conn, $user_id) {
@@ -156,7 +168,7 @@ function get_user_team_id($conn, $user_id) {
     $row = $result->fetch_assoc();
 
     if (!$row) return false;
-    return $row['team_id'];
+    return $row["team_id"];
 }
 
 function get_team_id($conn, $token) {
@@ -168,7 +180,7 @@ function get_team_id($conn, $token) {
     $row = $result->fetch_assoc();
 
     if(!$row) return false;
-    return $row['team_id'];
+    return $row["team_id"];
 }
 
 function register_team($conn, $team_name) {
@@ -227,7 +239,7 @@ function quit_team($conn, $user_id) {
 }
 
 function get_base_url() {
-    return $_SERVER['HTTP_HOST'];
+    return $_SERVER["HTTP_HOST"];
 }
 
 function get_challenge_id($conn, $challenge_name) {
@@ -413,7 +425,7 @@ function get_challenges_from_category($conn, $category, $type) {
 }
 
 function add_challenge($conn, $challenge_name, $flag, $description, $service, $type, $category, $initial_points, $minimum_points, $points_decay) {
-    if($initial_points <= $minimum_points) return false;
+    if($initial_points < $minimum_points) return false;
 
     $query = "INSERT INTO CTF_challenge (challenge_name, flag, description, service, type, category, initial_points, minimum_points, points_decay) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
@@ -469,7 +481,7 @@ function delete_challenge_resource($conn, $resource_id) {
 }
 
 function edit_challenge_data($conn, $challenge_id, $description, $service, $type, $initial_points, $minimum_points, $points_decay) {
-    if($initial_points <= $minimum_points) return false;
+    if($initial_points < $minimum_points) return false;
     if(get_challenge_type($conn, $challenge_id) != $type) {
         $challenge_data = get_challenge_data($conn, $challenge_id);
         $hints = get_hints($conn, $challenge_id);
