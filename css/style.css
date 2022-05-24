@@ -637,7 +637,7 @@ body.popup-body {
   padding: 15px;
   outline: 5px solid rgb(84, 88, 84);
 }
-.generic-form input {
+.generic-form input, .generic-form textarea {
   width: 100%;
   padding: 10px 0;
   font-size: 16px;
@@ -648,11 +648,11 @@ body.popup-body {
   outline: none;
   background: transparent;
 }
-.generic-form input:-webkit-autofill {
+.generic-form input:-webkit-autofill, .generic-form textarea:-webkit-autofill {
   -webkit-transition: all 0s 50000s;
   transition: all 0s 50000s;
 }
-.generic-form input:autofill, .generic-form input:hover, .generic-form input:focus, .generic-form input:active {
+.generic-form input:autofill, .generic-form input:hover, .generic-form input:focus, .generic-form input:active, .generic-form textarea:autofill, .generic-form textarea:hover, .generic-form textarea:focus, .generic-form textarea:active {
   transition: all 0s 50000s;
 }
 .generic-form__input-box {
@@ -668,20 +668,22 @@ body.popup-body {
   pointer-events: none;
   transition: 0.3s;
 }
-.generic-form__input-box input:not(:-moz-placeholder-shown) ~ label {
+.generic-form__input-box input:not(:-moz-placeholder-shown) ~ label, .generic-form__input-box textarea:not(:-moz-placeholder-shown) ~ label {
   top: -20px;
   left: 0;
   color: #03e9f4;
   font-size: 12px;
 }
-.generic-form__input-box input:not(:-ms-input-placeholder) ~ label {
+.generic-form__input-box input:not(:-ms-input-placeholder) ~ label, .generic-form__input-box textarea:not(:-ms-input-placeholder) ~ label {
   top: -20px;
   left: 0;
   color: #03e9f4;
   font-size: 12px;
 }
 .generic-form__input-box input:focus ~ label,
-.generic-form__input-box input:not(:placeholder-shown) ~ label {
+.generic-form__input-box input:not(:placeholder-shown) ~ label,
+.generic-form__input-box textarea:focus ~ label,
+.generic-form__input-box textarea:not(:placeholder-shown) ~ label {
   top: -20px;
   left: 0;
   color: #03e9f4;
@@ -734,7 +736,6 @@ body.popup-body {
 }
 .generic-form select option {
   color: inherit;
-  background-color: #320a28;
 }
 .generic-form select:focus {
   outline: none;
@@ -747,6 +748,7 @@ body.popup-body {
 }
 
 #footer {
+  text-shadow: 0 0 2px rgb(0, 0, 0);
   margin-top: auto;
   padding: 1rem 0rem 0rem 0rem;
   text-align: center;

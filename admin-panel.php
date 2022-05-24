@@ -128,7 +128,7 @@ require "inc/head.php";
                 <label>Flag</label>
             </div>
             <div class="generic-form__input-box">
-                <input type="text" name="description" placeholder=" " maxlength="1024" required>
+                <textarea type="text" name="description" placeholder=" " maxlength="1024" rows="5" required></textarea>
                 <label>Description</label>
             </div>
             <div class="generic-form__input-box">
@@ -197,7 +197,7 @@ require "inc/head.php";
                 <label>Flag</label>
             </div>
             <div class="generic-form__input-box">
-                <input type="text" name="description" placeholder=" " value="<?php echo $challenge_data["description"]; ?>" maxlength="1024" required>
+                <textarea type="text" name="description" placeholder=" " maxlength="1024" rows="5" required><?php echo $challenge_data["description"]; ?></textarea>
                 <label>Description</label>
             </div>
             <div class="generic-form__input-box">

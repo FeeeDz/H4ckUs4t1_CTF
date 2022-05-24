@@ -754,7 +754,7 @@ body {
         outline: 5px solid rgb(84, 88, 84);
     }
 
-    input {
+    input, textarea {
         width: 100%;
         padding: 10px 0;
         font-size: 16px;
@@ -788,7 +788,9 @@ body {
         }
 
         input:focus ~ label,
-        input:not(:placeholder-shown) ~ label {
+        input:not(:placeholder-shown) ~ label,
+        textarea:focus ~ label,
+        textarea:not(:placeholder-shown) ~ label {
             top: -20px;
             left: 0;
             color: $clr-generic-form;
@@ -845,7 +847,7 @@ body {
 
         option {
             color: inherit;
-            background-color: #320a28;
+            // background-color: #000000;
         }
 
         &:focus {
@@ -863,6 +865,8 @@ body {
 }
 
 #footer {
+    text-shadow: 0 0 2px rgb(0, 0, 0);
+
     margin-top: auto;
     padding: 1rem 0rem 0rem 0rem;
 

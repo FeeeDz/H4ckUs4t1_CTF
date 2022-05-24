@@ -470,6 +470,22 @@ function delete_challenge_resource($conn, $resource_id) {
 
 function edit_challenge_data($conn, $challenge_id, $description, $service, $type, $initial_points, $minimum_points, $points_decay) {
     if($initial_points <= $minimum_points) return false;
+    if(get_challenge_type($conn, $challenge_id) != $type) {
+        $challenge_data = get_challenge_data($conn, $challenge_id);
+        $hints = get_hints($conn, $challenge_id);
+        $resources = get_db_challenge_resources($conn, $challenge_id);
+        
+        delete_challenge($conn, $challenge_id);
+        $challenge_id = add_challenge($conn, $challenge_data["challenge_name"], $challenge_data["flag"], $description, $service, $type, $challenge_data["category"], $initial_points, $minimum_points, $points_decay);
+        foreach ($hints as $hint) {
+            add_hint($conn, $challenge_id, $hint["description"], $hint["cost"]);
+        }
+        foreach ($resources as $resource) {
+            add_challenge_resource($conn, $challenge_id, $resource["filename"]);
+        }
+
+        return true;
+    }
     
     $query = "UPDATE CTF_challenge SET description = ?, service = ?, type = ?, initial_points = ?, minimum_points = ?, points_decay = ? WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
@@ -509,6 +525,15 @@ function get_upcoming_event_start_date($conn) {
     return $row["start_date"];
 }
 
+function get_current_event_id($conn) {
+    $query = "SELECT event_id FROM CTF_event WHERE start_date < NOW() AND end_date > NOW()";
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return NULL;
+    return $row["event_id"];
+}
+
 function get_current_event_start_date($conn) {
     $query = "SELECT start_date FROM CTF_event WHERE start_date < NOW() AND end_date > NOW()";
     $result = $conn->query($query);
@@ -545,6 +570,15 @@ function get_last_event_end_date($conn) {
     return $row["end_date"];
 }
 
+function get_last_event_id($conn) {
+    $query = "SELECT event_id FROM CTF_event WHERE start_date < NOW() ORDER BY start_date DESC";
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["event_id"];
+}
+
 function is_event_started($conn) {
     $query = "SELECT 1 FROM CTF_event WHERE start_date < NOW() AND end_date > NOW()";
     $result = $conn->query($query);
@@ -564,6 +598,18 @@ function get_hint_description($conn, $hint_id) {
 
     if(!$row) return false;
     return $row["description"];
+}
+
+function get_hint_cost($conn, $hint_id) {
+    $query = "SELECT cost FROM CTF_hint WHERE hint_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $hint_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["cost"];
 }
 
 function get_hint_challenge_id($conn, $hint_id) {
@@ -590,18 +636,61 @@ function get_challenge_type($conn, $challenge_id) {
     return $row["type"];
 }
 
+function get_team_score($conn, $team_id) {
+    $query = "SELECT IFNULL( (SELECT SUM(points) 
+        FROM CTF_submit 
+        WHERE CTF_submit.team_id = $team_id AND CTF_submit.event_id = ".get_last_event_id($conn)."), 0)
+        - 
+        IFNULL( (SELECT SUM(cost)
+        FROM CTF_unlocked_hint
+        INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
+        WHERE CTF_unlocked_hint.team_id = $team_id), 0) AS score";
+    
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["score"];
+}
+
+function get_user_score($conn, $user_id) {
+    $query = "SELECT IFNULL( (SELECT points 
+        FROM CTF_submit 
+        WHERE team_id IS NULL 
+        AND CTF_submit.user_id = $user_id), 0)
+        - 
+        IFNULL( (SELECT cost
+        FROM CTF_unlocked_hint
+        INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
+        WHERE team_id IS NULL AND CTF_unlocked_hint.user_id = $user_id), 0) AS score";
+
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["score"];
+}
+
 function unlock_hint($conn, $hint_id, $user_id) {
     if (is_hint_unlocked($conn, $hint_id, $user_id)) return true;
     
     $challenge_type = get_challenge_type($conn, get_hint_challenge_id($conn, $hint_id));
     $team_id = get_user_team_id($conn, $user_id);
-    if ($challenge_type == "O" && !$team_id) return false;
-    if ($challenge_type == "T") $team_id = null;
-    
-    $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, team_id, unlock_date) VALUES (?, ?, ?, NOW())";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("iii", $hint_id, $user_id, $team_id);
-    
+    if ($challenge_type == "O") {
+        if (!$team_id) return false;
+        if (get_hint_cost($conn, $hint_id) > get_team_score($conn, $team_id)) return false;
+
+        $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, team_id, unlock_date) VALUES (?, ?, ?, NOW())";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("iii", $hint_id, $user_id, $team_id);
+    } else {
+        if (get_hint_cost($conn, $hint_id) > get_user_score($conn, $user_id)) return false;
+
+        $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, unlock_date) VALUES (?, ?, NOW())";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ii", $hint_id, $user_id);
+    }
+
     if(!$stmt->execute()) return false;
     return true;
 }
@@ -654,8 +743,8 @@ function get_challenge_solves($conn, $challenge_id) {
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-    if(!$row) return false;
 
+    if(!$row) return false;
     return $row["solves"];
 }
 
@@ -677,28 +766,40 @@ function submit_flag($conn, $challenge_id, $user_id, $flag) {
     
     $challenge_type = get_challenge_type($conn, $challenge_id);
     $team_id = get_user_team_id($conn, $user_id);
-    if ($challenge_type == "O" && !$team_id) return false;
-
+    $event_id = get_current_event_id($conn);
     $points = compute_challenge_points($conn, $challenge_id);
+
+    if ($event_id) {
+        if ($challenge_type != "O") return false;
+        if (!$team_id) return false;
+
+        $query = "INSERT INTO CTF_submit (user_id, team_id, challenge_id, event_id, points, submit_date) VALUES (?, ?, ?, ?, ?, NOW())";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("iiiii", $user_id, $team_id, $challenge_id, $event_id, $points);
+    } else {
+        if ($challenge_type != "T") return false;
+
+        $query = "INSERT INTO CTF_submit (user_id, challenge_id, points, submit_date) VALUES (?, ?, ?, NOW())";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("iii", $user_id, $challenge_id, $points);
+    }
     
-    $query = "INSERT INTO CTF_submit (user_id, team_id, challenge_id, points, submit_date) VALUES (?, ?, ?, ?, NOW())";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("iiii", $user_id, $team_id, $challenge_id, $points);
     if (!$stmt->execute()) return false;
     return true;
 }
 
-function get_challenges_solves_and_points($conn, $user_id) {
+function get_challenges_solves_and_points($conn, $user_id, $from_date) {
     $team_id = get_user_team_id($conn, $user_id);
+    
     if (is_event_started($conn)) {
         if (!$team_id) return false;
         
         $type = "O";
         $query = "SELECT submit.challenge_id, challenge_name, COUNT(submit.challenge_id) AS solves, 
-                IF (EXISTS (SELECT 1 FROM CTF_submit WHERE team_id = $team_id AND submit.challenge_id = challenge_id AND submit_date >= \"".get_current_event_start_date($conn)."\"), TRUE, FALSE) AS solved
+                IF (EXISTS (SELECT 1 FROM CTF_submit WHERE team_id = $team_id AND submit.event_id = ".get_current_event_id($conn)."), TRUE, FALSE) AS solved
             FROM CTF_submit AS submit
             INNER JOIN CTF_challenge ON submit.challenge_id = CTF_challenge.challenge_id
-            WHERE type = '$type' AND submit_date >= \"".get_current_event_start_date($conn)."\"
+            WHERE type = '$type' AND submit.event_id = ".get_current_event_id($conn)." AND submit_date >= '$from_date'
             GROUP BY submit.challenge_id";
     }
     else {
@@ -707,7 +808,7 @@ function get_challenges_solves_and_points($conn, $user_id) {
                 IF (EXISTS (SELECT 1 FROM CTF_submit WHERE user_id = $user_id AND submit.challenge_id = challenge_id), TRUE, FALSE) AS solved
             FROM CTF_submit AS submit
             INNER JOIN CTF_challenge ON submit.challenge_id = CTF_challenge.challenge_id
-            WHERE type = '$type'
+            WHERE type = '$type' AND submit_date >= '$from_date'
             GROUP BY submit.challenge_id";
     }
     $result = $conn->query($query);
@@ -719,6 +820,22 @@ function get_challenges_solves_and_points($conn, $user_id) {
         $row["points"] = compute_challenge_points($conn, $row["challenge_id"]);
         unset($row["challenge_id"]);
     }
+    return $rows;
+}
+
+function get_unlocked_hints($conn, $user_id, $from_date) {
+    $team_id = get_user_team_id($conn, $user_id);
+    if (!is_event_started($conn)) return false;
+    if (!$team_id) return false;
+        
+    $query = "SELECT CTF_hint.hint_id, CTF_hint.description 
+        FROM CTF_unlocked_hint
+        INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
+        WHERE team_id = $team_id AND unlock_date >= '$from_date'";
+    $result = $conn->query($query);
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
     return $rows;
 }
 
@@ -749,7 +866,7 @@ function get_official_leaderboard($conn) {
     $query = "SELECT team_name, 
             IFNULL( (SELECT SUM(points) 
             FROM CTF_submit 
-            WHERE CTF_submit.team_id = CTF_team.team_id AND submit_date >= \"".get_last_event_start_date($conn)."\" AND submit_date <= \"".get_last_event_end_date($conn)."\"), 0)
+            WHERE CTF_submit.team_id = CTF_team.team_id AND CTF_submit.event_id = ".get_last_event_id($conn)."), 0)
             - 
             IFNULL( (SELECT SUM(cost)
             FROM CTF_unlocked_hint

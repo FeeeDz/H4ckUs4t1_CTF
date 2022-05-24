@@ -27,7 +27,7 @@ require "inc/head.php";
                         <div class="points"><?php echo compute_challenge_points($conn, $challenge_id); ?><span class="material-icons">military_tech</span></div>
                     </div>
                     <div class="challenge-name"><?php echo $challenge_data["challenge_name"]; ?></div>
-                    <div class="description"><?php echo $challenge_data["description"]; ?></div>
+                    <div class="description"><?php echo nl2br($challenge_data["description"]); ?></div>
                     <div class="service"><?php echo $challenge_data["service"]; ?></div>
                     <?php foreach (get_db_challenge_resources($conn, $challenge_id) as $resource) { ?>
                         <a class="resource" href="<?php echo "api/get-challenge-file.php?challenge_name=".$challenge_data["challenge_name"]."&filename=".$resource["filename"]; ?>"><?php echo $resource["filename"]; ?><span class="material-icons">file_download</span></a>
@@ -62,9 +62,9 @@ require "inc/head.php";
     </div>
     <script>
 
-        web_server_url = window.location.origin + "/~quintaa2122/informatica/CTF_h4ckus4t1";
-
-        opened_challenge = null;
+        var datetime = new Date().toLocaleString("zh-CN");
+        var web_server_url = window.location.origin + "/~quintaa2122/informatica/CTF_h4ckus4t1";
+        var opened_challenge = null;
 
         function open_challenge(event, elem) {
             if (opened_challenge) close_challenge(event, opened_challenge);
@@ -85,8 +85,8 @@ require "inc/head.php";
 
         function unlock_hint(event, hint_elem){
             console.log(hint_elem)
-            desc_elem = hint_elem.querySelector(".hint__description");
-            id = hint_elem.querySelector(".hint__id").innerHTML;
+            var desc_elem = hint_elem.querySelector(".hint__description");
+            var id = hint_elem.querySelector(".hint__id").innerHTML;
             fetch(web_server_url + "/api/unlock-hint.php?hint_id=" + id)
                 .then(response => response.json())
                 .then(data => {
@@ -129,15 +129,16 @@ require "inc/head.php";
         }
 
         function refresh_solves_and_points() {
-            fetch(web_server_url + "/api/get-solves-and-points.php")
+            fetch(web_server_url + "/api/get-solves-and-points.php?from_date=" + encodeURIComponent(datetime))
                 .then(response => response.json())
                 .then(data => {
+                    if (!data) return;
                     document.querySelectorAll(".challenge").forEach(challenge_elem => {
-                        chall_name = challenge_elem.querySelector(".challenge-name").innerHTML;
-                        solves_elem = challenge_elem.querySelector(".solves");
-                        points_elem = challenge_elem.querySelector(".points");
+                        var chall_name = challenge_elem.querySelector(".challenge-name").innerHTML;
+                        var solves_elem = challenge_elem.querySelector(".solves");
+                        var points_elem = challenge_elem.querySelector(".points");
 
-                        let chall = data.find(chall => chall.challenge_name === chall_name);
+                        var chall = data.find(chall => chall.challenge_name === chall_name);
 
                         if (chall) {
                             solves_elem.innerHTML = chall.solves + solves_elem.innerHTML.substring(solves_elem.innerHTML.indexOf("<"));
@@ -148,7 +149,31 @@ require "inc/head.php";
                 });
         }
 
-        setInterval(refresh_solves_and_points, 1000);
+        function refresh_unlocked_hints() {
+            fetch(web_server_url + "/api/get-unlocked-hints.php?from_date=" + encodeURIComponent(datetime))
+                .then(response => response.json())
+                .then(data => {
+                    if (!data) return;
+                    document.querySelectorAll(".hint").forEach(hint_elem => {
+                        var hint_id = hint_elem.querySelector(".hint__id").innerHTML;
+                        var hint__description = hint_elem.querySelector(".hint__description");
+
+                        
+                        var hint = data.find(hint => hint.hint_id === hint_id);
+                        
+                        if (hint) {
+                            hint__description.innerHTML = hint.description;
+                            hint_elem.classList.replace("locked", "unlocked");
+                        }
+                    });
+                });
+        }
+
+        setInterval(function() { 
+            refresh_solves_and_points();
+            refresh_unlocked_hints();
+            datetime = new Date().toLocaleString("zh-CN");
+        } , 5000);
 
     </script>
 </body>
