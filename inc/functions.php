@@ -596,7 +596,8 @@ function unlock_hint($conn, $hint_id, $user_id) {
     $challenge_type = get_challenge_type($conn, get_hint_challenge_id($conn, $hint_id));
     $team_id = get_user_team_id($conn, $user_id);
     if ($challenge_type == "O" && !$team_id) return false;
-
+    if ($challenge_type == "T") $team_id = null;
+    
     $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, team_id, unlock_date) VALUES (?, ?, ?, NOW())";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("iii", $hint_id, $user_id, $team_id);
@@ -697,7 +698,7 @@ function get_challenges_solves_and_points($conn, $user_id) {
                 IF (EXISTS (SELECT 1 FROM CTF_submit WHERE team_id = $team_id AND submit.challenge_id = challenge_id AND submit_date >= \"".get_current_event_start_date($conn)."\"), TRUE, FALSE) AS solved
             FROM CTF_submit AS submit
             INNER JOIN CTF_challenge ON submit.challenge_id = CTF_challenge.challenge_id
-            WHERE type = '$type' AND submit_date >= {get_current_event_start_date($conn)}
+            WHERE type = '$type' AND submit_date >= \"".get_current_event_start_date($conn)."\"
             GROUP BY submit.challenge_id";
     }
     else {
@@ -723,19 +724,17 @@ function get_challenges_solves_and_points($conn, $user_id) {
 
 function get_training_leaderboard($conn) {
     $query = "SELECT username, 
-            (SELECT SUM(points) 
+            IFNULL( (SELECT SUM(points) 
             FROM CTF_submit 
             WHERE team_id IS NULL 
-            AND CTF_submit.user_id = submit.user_id)
+            AND CTF_submit.user_id = CTF_user.user_id), 0)
             - 
             IFNULL( (SELECT SUM(cost)
             FROM CTF_unlocked_hint
             INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
-            WHERE team_id IS NULL
-            AND CTF_unlocked_hint.user_id = submit.user_id), 0) AS score
-        FROM CTF_submit AS submit
-        INNER JOIN CTF_user ON submit.user_id = CTF_user.user_id
-        WHERE submit.team_id IS NULL
+            WHERE team_id IS NULL AND CTF_unlocked_hint.user_id = CTF_user.user_id), 0) AS score
+        FROM CTF_submit
+        RIGHT JOIN CTF_user ON CTF_submit.user_id = CTF_user.user_id
         GROUP BY username
         ORDER BY score DESC";
 
@@ -748,17 +747,16 @@ function get_training_leaderboard($conn) {
 
 function get_official_leaderboard($conn) {
     $query = "SELECT team_name, 
-            (SELECT SUM(points) 
+            IFNULL( (SELECT SUM(points) 
             FROM CTF_submit 
-            WHERE team_id IS NOT NULL AND CTF_submit.team_id = submit.team_id AND submit_date >= \"".get_last_event_start_date($conn)."\" AND submit_date <= \"".get_last_event_end_date($conn)."\")
+            WHERE CTF_submit.team_id = CTF_team.team_id AND submit_date >= \"".get_last_event_start_date($conn)."\" AND submit_date <= \"".get_last_event_end_date($conn)."\"), 0)
             - 
             IFNULL( (SELECT SUM(cost)
             FROM CTF_unlocked_hint
             INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
-            WHERE team_id IS NOT NULL AND CTF_unlocked_hint.team_id = submit.team_id AND submit_date >= \"".get_last_event_start_date($conn)."\" AND submit_date <= \"".get_last_event_end_date($conn)."\"), 0) AS score
-        FROM CTF_submit AS submit
-        INNER JOIN CTF_team ON submit.team_id = CTF_team.team_id
-        WHERE submit.team_id IS NOT NULL AND submit_date >= \"".get_last_event_start_date($conn)."\" AND submit_date <= \"".get_last_event_end_date($conn)."\"
+            WHERE CTF_unlocked_hint.team_id = CTF_team.team_id), 0) AS score
+        FROM CTF_submit
+        RIGHT JOIN CTF_team ON CTF_submit.team_id = CTF_team.team_id
         GROUP BY team_name
         ORDER BY score DESC";
 
