@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/alessioc/Scrivania/CTF_h4ckus4t1'
+make: Leaving directory '/home/alessioc/Scrivania/CTF_h4ckus4t1'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+
