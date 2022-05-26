@@ -101,4 +101,5 @@ Difronte ad una challenge è richiesto, studio, analisi e sicuramente inventiva.
 
 
 ## Risorse 
+Tips and Tricks utili per risolvere le challenge.
 https://wiki.bi0s.in/
