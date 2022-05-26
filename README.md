@@ -98,3 +98,7 @@ Anche se sei un neofita riuscirai sicuramente a catturare delle flag e scalare l
 **Quale approccio devo usare per risolvere le challenge?**
 
 Difronte ad una challenge è richiesto, studio, analisi e sicuramente inventiva. Sii creativo e pensa al di fuori dello schema , a volte si riescono a superare i limiti tecnici della materia che non si conosce anche con un'accurata ricerca Google.
+
+
+## Risorse 
+https://wiki.bi0s.in/
