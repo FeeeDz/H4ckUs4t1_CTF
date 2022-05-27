@@ -63,7 +63,8 @@ require "inc/head.php";
     <script>
 
         var datetime = new Date().toLocaleString("zh-CN");
-        var web_server_url = window.location.origin + "/~quintaa2122/informatica/CTF_h4ckus4t1";
+        // var web_server_url = window.location.origin + "/~quintaa2122/informatica/CTF_h4ckus4t1";
+        var web_server_url = window.location.origin + "<?php echo $site_directory; ?>";
         var opened_challenge = null;
 
         function open_challenge(event, elem) {

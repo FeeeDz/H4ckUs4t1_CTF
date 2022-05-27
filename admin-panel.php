@@ -1,17 +1,16 @@
 <?php 
 require "inc/init.php";
 
-if(!isset($_SESSION["user_id"]) || get_user_role($conn, $_SESSION["user_id"]) != 'A') {
+if (!isset($_SESSION["user_id"]) || get_user_role($conn, $_SESSION["user_id"]) != 'A') {
     $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
     exit(header("Location: $redirect"));
 }
 
-if (isset($_POST["action"]) && isset($_POST["challenge_name"]) && !empty($_POST["challenge_name"])) {
-    $challenge_id = get_challenge_id($conn, $_POST["challenge_name"]);
+if (isset($_POST["submit"])) {
     $success = true;
-    switch ($_POST["action"]) {
-        case "add":
-            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["flag"], $_POST["description"], $_POST["service"], $_POST["type"], $_POST["category"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"]);
+    switch ($_GET["action"]) {
+        case "add_challenge":
+            $challenge_id = add_challenge($conn, $_GET["challenge_name"], $_POST["flag"], $_POST["description"], $_POST["service"], $_POST["type"], $_POST["category"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"]);
             if (!$challenge_id){
                 $success = false;
                 break;
@@ -25,15 +24,11 @@ if (isset($_POST["action"]) && isset($_POST["challenge_name"]) && !empty($_POST[
                 foreach ($_POST["add_resource"] as $resource_filename)
                     if (!add_challenge_resource($conn, $challenge_id, $resource_filename)) $success = false;
 
-            if (!$success) exit(header("Refresh:0"));
-
             break;
 
-        case "delete":
-            if (!delete_challenge($conn, $challenge_id)) $success = false;
-            break;
+        case "edit_challenge":
+            $challenge_id = get_challenge_id($conn, $_GET["challenge_name"]);
 
-        case "edit":
             if (!edit_challenge_data($conn, $challenge_id, $_POST["description"], $_POST["service"], $_POST["type"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"])) $success = false;
 
             if(isset($_POST["delete_hint"]))
@@ -56,12 +51,44 @@ if (isset($_POST["action"]) && isset($_POST["challenge_name"]) && !empty($_POST[
                 for($i = 0; $i < count($_POST["edit_hint_id"]); $i++)
                     if (!edit_hint($conn, $_POST["edit_hint_id"][$i], $_POST["edit_hint_description"][$i], $_POST["edit_hint_cost"][$i])) $success = false;
 
-            if (!$success) exit(header("Refresh:0"));
+            break;
+
+        
+        case "delete_challenge":
+            $challenge_id = get_challenge_id($conn, $_GET["challenge_name"]);
+
+            if (!delete_challenge($conn, $challenge_id)) $success = false;
+            break;
+
+        case "reset_solves_hints":
+            if (!check_credentials($conn, get_email_from_user_id($conn, $_SESSION["user_id"]), $_POST["password"])) {
+                $success = false;
+                break;
+            }
+
+            reset_ctf_solves($conn);
+            reset_ctf_unlocked_hints($conn);
 
             break;
+
+        case "add_event":
+            if (!add_event($conn, $_POST["start_date"], $_POST["end_date"])) $success = false;
+            break;
+
+        case "edit_event":
+            if (!edit_event($conn, $_GET["event_id"], $_POST["start_date"], $_POST["end_date"])) $success = false;
+            break;
+
+        case "delete_event":
+            if (!delete_event($conn, $_GET["event_id"])) $success = false;
+            break;
+
         }
-    if ($success) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
+    if (!$success) exit(header("Refresh:0"));
+    exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
 }
+
+get_db_missing_challenges($conn);
 
 $title = "Admin Panel";
 require "inc/head.php";
@@ -73,48 +100,40 @@ require "inc/head.php";
     <div id="main" class="admin-panel">
     <?php if (!isset($_GET["action"])) { ?>
         <form method="GET" class="generic-form">
-            <button type="submit" name="action" value="add" class="generic-form__button no-margin">Add challenge</button><br>
-            <button type="submit" name="action" value="edit" class="generic-form__button">Edit challenge</button><br>
-            <button type="submit" name="action" value="delete" class="generic-form__button">Delete challenge</button>
+            <button type="submit" name="action" value="add_challenge" class="generic-form__button no-margin">Add challenge</button><br>
+            <button type="submit" name="action" value="edit_challenge" class="generic-form__button">Edit challenge</button><br>
+            <button type="submit" name="action" value="delete_challenge" class="generic-form__button">Delete challenge</button><br>
+            <button type="submit" name="action" value="add_event" class="generic-form__button">Add event</button><br>
+            <button type="submit" name="action" value="edit_event" class="generic-form__button">Edit event</button><br>
+            <button type="submit" name="action" value="delete_event" class="generic-form__button">Delete event</button><br>
+            <button type="submit" name="action" value="reset_solves_hints" class="generic-form__button">Reset CTF solves and hints</button><br>
+            <button type="submit" name="action" value="users" class="generic-form__button">View Users</button><br>
+            <button type="submit" name="action" value="teams" class="generic-form__button">View Teams</button>
         </form>
-    <?php } elseif (!isset($_GET["challenge_name"])) { ?>
-        <?php if($_GET["action"] == "delete") : ?>
-            <form method="POST" class="generic-form">
-        <?php else : ?>
+    <?php } elseif ($_GET["action"] == "add_challenge") {
+        if (!isset($_GET["challenge_name"])) { ?>
             <form method="GET" class="generic-form">
-        <?php endif; ?>
                 <select name="challenge_name">
                 <?php
-                    if($_GET["action"] == "add") {
-                        $challenges = get_db_missing_challenges($conn);
-                        if (!$challenges) {
-                            echo "<option value=''></option>";
-                        } else {
-                            foreach ($challenges as $challenge)
-                                echo "<option value='".$challenge."'>".$challenge."</option>";
-                        }
+                    $challenges = get_db_missing_challenges($conn);
+                    if (!$challenges) {
+                        echo "<option value=''></option>";
                     } else {
-                        $rows = get_challenge_list($conn);
-                        foreach ($rows as $row)
-                            echo "<option value='".$row["challenge_name"]."'>".$row["challenge_name"]."</option>";
+                        foreach ($challenges as $challenge)
+                            echo "<option value='".$challenge."'>".$challenge."</option>";
                     }
                 ?>
                 </select>
-                <?php if($_GET["action"] == "add") : ?>
-                    <button type="submit" name="action" value="add" class="generic-form__button">Add challenge</button>
-                <?php elseif($_GET["action"] == "edit") : ?>
-                    <button type="submit" name="action" value="edit" class="generic-form__button">Edit challenge</button>
-                <?php elseif($_GET["action"] == "delete") : ?>
-                    <button type="submit" name="action" value="delete" class="generic-form__button">Delete challenge</button>
-                <?php endif; ?>
+                <button type="submit" name="action" value="add_challenge" class="generic-form__button">Add challenge</button>
             </form>
-    <?php } elseif ($_GET["action"] == "add") {
-        $challenge_name = $_GET["challenge_name"];
-        $category = get_local_challenge_category($challenge_name);
-        $flag = get_local_challenge_flag($challenge_name);
-        if (is_challenge_name_used($conn, $challenge_name) || !$category || !$flag ) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
-    ?>
+        <?php } else {
+            $challenge_name = $_GET["challenge_name"];
+            $category = get_local_challenge_category($challenge_name);
+            $flag = get_local_challenge_flag($challenge_name);
+            if (is_challenge_name_used($conn, $challenge_name) || !$category || !$flag ) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
+        ?>
         <form method="POST" class="generic-form" style="min-width: 40%;">
+            <h2 class="title">Add challenge</h2>
             <div class="generic-form__input-box">
                 <input type="text" name="challenge_name" placeholder=" " value="<?php echo $challenge_name; ?>" readonly>
                 <label>Challenge Name</label>
@@ -136,11 +155,11 @@ require "inc/head.php";
                 <label>Service</label>
             </div>
             <div class="generic-form__input-box">
-                <input type="number" name="initial_points" placeholder=" " required>
+                <input type="number" name="initial_points" class="initial_points" placeholder=" " required>
                 <label>Initial Points</label>
             </div>
             <div class="generic-form__input-box">
-                <input type="number" name="minimum_points" placeholder=" " required>
+                <input type="number" name="minimum_points" class="minimum_points" placeholder=" " required>
                 <label>Minimum Points</label>
             </div>
             <div class="generic-form__input-box">
@@ -172,18 +191,32 @@ require "inc/head.php";
                     <button type="button" class="generic-form__button" onclick="add_resource()">Add Resource</button>
                 </div>
             </div>
-            <button type="submit" name="action" value="add" class="generic-form__button">Add challenge</button>
+            <button type="submit" name="submit" class="generic-form__button">Add challenge</button>
         </form>
-    <?php } elseif ($_GET["action"] == "edit") {
-        $challenge_name = $_GET["challenge_name"];
-        $challenge_id = get_challenge_id($conn, $challenge_name);
-        if(!$challenge_id) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
+        <?php } ?>
+    <?php } elseif ($_GET["action"] == "edit_challenge") {
+        if (!isset($_GET["challenge_name"])) { ?>
+            <form method="GET" class="generic-form">
+                <select name="challenge_name">
+                <?php
+                    $rows = get_challenge_list($conn);
+                    foreach ($rows as $row)
+                        echo "<option value='".$row["challenge_name"]."'>".$row["challenge_name"]."</option>";
+                ?>
+                </select>
+                <button type="submit" name="action" value="edit_challenge" class="generic-form__button">Edit challenge</button>
+            </form>
+        <?php } else {
+            $challenge_name = $_GET["challenge_name"];
+            $challenge_id = get_challenge_id($conn, $challenge_name);
+            if(!$challenge_id) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
 
-        $challenge_data = get_challenge_data($conn, $challenge_id);
-        $hints = get_hints($conn, $challenge_id);
-        $resources = get_db_challenge_resources($conn, $challenge_id);
-    ?>
+            $challenge_data = get_challenge_data($conn, $challenge_id);
+            $hints = get_hints($conn, $challenge_id);
+            $resources = get_db_challenge_resources($conn, $challenge_id);
+        ?>
         <form method="POST" class="generic-form" style="min-width: 40%;">
+            <h2 class="title">Edit challenge</h2>
             <div class="generic-form__input-box">
                 <input type="text" name="challenge_name" placeholder=" " value="<?php echo $challenge_name; ?>" readonly>
                 <label>Challenge Name</label>
@@ -205,11 +238,11 @@ require "inc/head.php";
                 <label>Service</label>
             </div>
             <div class="generic-form__input-box">
-                <input type="number" name="initial_points" placeholder=" " value="<?php echo $challenge_data["initial_points"]; ?>" required>
+                <input type="number" name="initial_points" class="initial_points" placeholder=" " value="<?php echo $challenge_data["initial_points"]; ?>" required>
                 <label>Initial Points</label>
             </div>
             <div class="generic-form__input-box">
-                <input type="number" name="minimum_points" placeholder=" " value="<?php echo $challenge_data["minimum_points"]; ?>" required>
+                <input type="number" name="minimum_points" class="minimum_points" placeholder=" " value="<?php echo $challenge_data["minimum_points"]; ?>" required>
                 <label>Minimum Points</label>
             </div>
             <div class="generic-form__input-box">
@@ -268,14 +301,107 @@ require "inc/head.php";
                 </div>
             </div>
 
-            <button type="submit" name="action" value="edit" class="generic-form__button">Edit challenge</button>            
+            <button type="submit" name="submit" class="generic-form__button">Edit challenge</button>            
         </form>
-    <?php } ?>
+        <?php } ?>
+    <?php } elseif ($_GET["action"] == "delete_challenge") { ?>
+        <form method="POST" class="generic-form">
+            <h2 class="title">Delete challenge</h2>
+            <select name="challenge_name">
+            <?php
+                $rows = get_challenge_list($conn);
+                foreach ($rows as $row)
+                    echo "<option value='".$row["challenge_name"]."'>".$row["challenge_name"]."</option>";
+            ?>
+            </select>
+            <button type="submit" name="submit" class="generic-form__button">Delete challenge</button>
+        </form>
+    <?php } elseif ($_GET["action"] == "add_event") {  ?>
+        <form method="POST" class="generic-form">
+            <h2 class="title">Add event</h2>
+            <div class="generic-form__input-box">
+                <input type="datetime-local" name="start_date" value="<?php echo date('Y-m-d H:i'); ?>" placeholder=" " required>
+                <label>Start Date</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="datetime-local" name="end_date" value="<?php echo date('Y-m-d H:i'); ?>" placeholder=" " required>
+                <label>End Date</label>
+            </div>
+            <button type="submit" name="submit" class="generic-form__button no-margin">Add event</button>
+        </form>
+    <?php } elseif ($_GET["action"] == "edit_event") {
+        if (!isset($_GET["event_id"])) { ?>
+           <form method="GET" class="generic-form">
+                <h2 class="title">Edit event</h2>
+                <select name="event_id">
+                <?php
+                    $rows = get_events($conn);
+                    foreach ($rows as $row)
+                        echo "<option value='" . $row["event_id"]."'>ID: " . $row["event_id"] . " (" . $row["start_date"] . ", " . $row["end_date"] . ")" . "</option>";
+                ?>
+                </select>
+                <button type="submit" name="action" value="edit_event" class="generic-form__button no-margin">Edit event</button>
+            </form>
+        <?php } else { 
+            $event_data = get_event_data($conn, $_GET["event_id"]);
+        ?>
+            <form method="POST" class="generic-form">
+                <h2 class="title">Edit event</h2>
+                <div class="generic-form__input-box">
+                    <input type="datetime-local" name="start_date" value="<?php echo $event_data["start_date"]; ?>" placeholder=" " required>
+                    <label>Start Date</label>
+                </div>
+                <div class="generic-form__input-box">
+                    <input type="datetime-local" name="end_date" value="<?php echo $event_data["end_date"]; ?>" placeholder=" " required>
+                    <label>End Date</label>
+                </div>
+                <button type="submit" name="submit" class="generic-form__button no-margin">Edit event</button>
+            </form>
+        <?php } ?>
+    <?php } elseif ($_GET["action"] == "delete_event") { ?>
+        <form method="POST" class="generic-form">
+            <h2 class="title">Edit event</h2>
+            <select name="event_id">
+            <?php
+                $rows = get_events($conn);
+                foreach ($rows as $row)
+                    echo "<option value='" . $row["event_id"]."'>ID: " . $row["event_id"] . " (" . $row["start_date"] . ", " . $row["end_date"] . ")" . "</option>";
+            ?>
+            </select>
+            <button type="submit" name="submit" class="generic-form__button no-margin">Delete event</button>
+        </form>
+    <?php } elseif ($_GET["action"] == "reset_solves_hints") { ?>
+        <form method="POST" class="generic-form">
+            <h2 class="title">Reset CTF solves and hints</h2>
+            <div class="generic-form__input-box">
+                <input type="password" name="password" placeholder=" " autocomplete="current-password" required>
+                <label>Password</label>
+            </div>
+            <button type="submit" name="submit" class="generic-form__button no-margin">Reset</button>
+        </form>
+    <?php } else exit(header("Location: ".basename($_SERVER['PHP_SELF']))); ?>
     </div>
     <div id="footer">
         <?php require "inc/footer.php"; ?>
     </div>
     <script>
+
+        var initial_points, minimum_points, start_date, end_date;
+
+        try {
+            initial_points = document.querySelector(".initial_points");
+            minimum_points = document.querySelector(".minimum_points");
+            // start_date = document.querySelector(".start_date");
+            // end_date = document.querySelector(".end_date");
+
+            initial_points.onchange = check_points_input;
+            minimum_points.onkeyup = check_points_input;
+            // start_date.onchange = check_date_input;
+            // end_date.onkeyup = check_date_input;
+        }
+        catch(err) {
+            // do nothing
+        }
 
         remove_duplicated_resources();
 
@@ -374,6 +500,20 @@ require "inc/head.php";
 
             parent_node.parentNode.appendChild(delete_resource);
             parent_node.remove();
+        }
+
+        function check_points_input(){
+            if(initial_points.value < minimum_points.value) 
+                minimum_points.setCustomValidity("Minimum points must be greater than the initial one");
+            else
+                minimum_points.setCustomValidity('');
+        }
+
+        function check_date_input(){
+            if(Date.parse(start_date.value) > Date.parse(end_date.value)) 
+                minimum_points.setCustomValidity("End date must be greater than the start one");
+            else
+                minimum_points.setCustomValidity('');
         }
 
     </script>

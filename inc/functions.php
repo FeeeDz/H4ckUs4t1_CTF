@@ -1,7 +1,6 @@
 <?php
 
-$site_directory = "~quintaa2122/informatica/CTF_h4ckus4t1";
-$private_dir = "/home/quintaa2122/informatica/CTF_h4ckus4t1_private";
+require __DIR__."/site-config.php";
 
 $hash_options = [
     'cost' => 10,
@@ -107,6 +106,18 @@ function get_user_id_from_username($conn, $username) {
     
     if (!$row) return false;
     return $row["user_id"];
+}
+
+function get_email_from_user_id($conn, $user_id) {
+    $query = "SELECT email FROM CTF_user WHERE user_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if (!$row) return false;
+    return $row["email"];
 }
 
 function get_team_token($conn, $team_name) {
@@ -274,15 +285,15 @@ function get_db_missing_challenges($conn) {
         array_push($db_challenge_list, array_values($item)[0]);
     }
 
-    $challenge_on_server = array();
+    $challenges_on_server = array();
     foreach (array_diff(scandir($challenges_dir), array('.', '..')) as $category) {
         $challenges = scandir($challenges_dir."/".$category);
         $challenges = array_diff($challenges, array('.', '..'));
         foreach ($challenges as $challenge) 
-            if(is_dir($challenges_dir."/".$category."/".$challenge)) array_push($challenge_on_server, $challenge);
+            if(is_dir($challenges_dir."/".$category."/".$challenge)) array_push($challenges_on_server, $challenge);
     }
 
-    return array_diff($challenge_on_server, $db_challenge_list);
+    return array_diff($challenges_on_server, $db_challenge_list);
 }
 
 function get_local_challenge_category($challenge_name) {
@@ -341,6 +352,27 @@ function is_challenge_resource ($conn, $challenge_id, $filename) {
     
     if(!$row) return false;
     return true;
+}
+
+function get_events($conn) {
+    $query = "SELECT event_id, start_date, end_date FROM CTF_event ORDER BY start_date";
+    $result = $conn->query($query);
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
+    return $rows;
+}
+
+function get_event_data($conn, $event_id) {
+    $query = "SELECT event_id, start_date, end_date FROM CTF_event WHERE event_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $event_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if(!$row) return false;
+    return $row;
 }
 
 function get_challenge_data($conn, $challenge_id) {
@@ -453,6 +485,19 @@ function add_challenge_resource($conn, $challenge_id, $filename) {
     return true;
 }
 
+function add_event($conn, $start_date, $end_date) {
+    if (strtotime($start_date) > strtotime($start_date)) return false;
+    echo $start_date;
+    var_dump(strtotime($start_date));
+
+    $query = "INSERT INTO CTF_event (start_date, end_date) VALUES (?, ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ss", $start_date, $end_date);
+
+    if (!$stmt->execute()) return false;
+    return true;
+}
+
 function delete_challenge($conn, $challenge_id) {
     $query = "DELETE FROM CTF_challenge WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
@@ -475,6 +520,15 @@ function delete_challenge_resource($conn, $resource_id) {
     $query = "DELETE FROM CTF_resource WHERE resource_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $resource_id);
+
+    if (!$stmt->execute()) return false;
+    return true;
+}
+
+function delete_event($conn, $event_id) {
+    $query = "DELETE FROM CTF_event WHERE event_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $event_id);
 
     if (!$stmt->execute()) return false;
     return true;
@@ -511,6 +565,17 @@ function edit_hint($conn, $hint_id, $hint_description, $hint_cost) {
     $query = "UPDATE CTF_hint SET description = ?, cost = ? WHERE hint_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("sii", $hint_description, $hint_cost, $hint_id);
+    if(!$stmt->execute()) return false;
+
+    return true;
+}
+
+function edit_event($conn, $event_id, $start_date, $end_date) {
+    if (strtotime($start_date) > strtotime($start_date)) return false;
+    
+    $query = "UPDATE CTF_event SET start_date = ?, end_date = ? WHERE event_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ssi", $start_date, $end_date, $event_id);
     if(!$stmt->execute()) return false;
 
     return true;
@@ -894,6 +959,22 @@ function get_official_leaderboard($conn) {
 
     if(!$rows) return false;
     return $rows;
+}
+
+function reset_ctf_solves($conn) {
+    $query = "DELETE FROM CTF_submit WHERE team_id IS NOT NULL";
+    $result = $conn->query($query);
+
+    if (!$result) return false;
+    return true;
+}
+
+function reset_ctf_unlocked_hints($conn) {
+    $query = "DELETE FROM CTF_unlocked_hint WHERE team_id IS NOT NULL";
+    $result = $conn->query($query);
+
+    if (!$result) return false;
+    return true;
 }
 
 ?>
