@@ -1,7 +1,7 @@
 <?php 
 require "inc/init.php";
 
-$title = "CTF h4ckus4t1";
+$title = "H4ckUs4t1 CTF";
 require "inc/head.php";
 ?>
 <body class="index-body">

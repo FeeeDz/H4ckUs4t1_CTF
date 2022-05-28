@@ -8,7 +8,7 @@ $token = get_team_token($conn, $team_name);
 
 if ($team_name && isset($_GET["redirect"])) exit(header("Location: ".$_GET["redirect"]));
 
-$title = "Team";
+$title = "Team - H4ckUs4t1 CTF";
 require "inc/head.php";
 
 ?>

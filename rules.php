@@ -1,7 +1,7 @@
 <?php 
 require "inc/init.php";
 
-$title = "Rules";
+$title = "Rules - H4ckUs4t1 CTF";
 require "inc/head.php";
 ?>
 <body>
@@ -25,7 +25,7 @@ require "inc/head.php";
                 <li class="arrow">The flag format is <code>ITT{example_flag}</code></li>
                 <li class="arrow">All flags are case sensitive unless specified.</li>
                 <li class="arrow">Scoring is dynamic and decreases in value as more participants solve the problem. Most challenges start at 500 points.</li>
-                <li class="arrow">Each problem has a tag telling you whether it's "Easy", "Medium", or "Hard" - these may not be perfect, but they are generally correct.</li>
+                <!-- <li class="arrow">Each problem has a tag telling you whether it's "Easy", "Medium", or "Hard" - these may not be perfect, but they are generally correct.</li> -->
                 <li class="arrow">If any challenges are broken, you feel the flag you have is correct, or you have any other questions, please reach out to an admin on our Discord.</li>
                 <li class="arrow">If you do anything that we believe to be directly against the spirit of the competition, we reserve the right to remove anyone at any point. Please don't make us do that. This is for your learning and benefit.</li>
             </ul>

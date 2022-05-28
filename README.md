@@ -1,4 +1,4 @@
-# CTF-h4ckUs4t1
+# CTF-H4ckUs4t1
 
 ## _Piattaforma CTF - Progetto fine anno Informatica_
 

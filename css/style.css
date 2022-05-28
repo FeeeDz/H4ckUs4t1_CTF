@@ -343,7 +343,7 @@ body.popup-body {
 }
 .challenges .challenge > * {
   transition: all 0.25s cubic-bezier(0.08, 0.82, 0.17, 1);
-  max-height: 70px;
+  max-height: 150px;
 }
 .challenges .challenge .flexbox-info {
   display: flex;

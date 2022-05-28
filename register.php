@@ -12,7 +12,7 @@ if(isset($_SESSION["user_id"])) {
     exit(header("Location: $redirect"));
 }
 
-$title = "Register";
+$title = "Register - H4ckUs4t1 CTF";
 require "inc/head.php";
 ?>
 <body>

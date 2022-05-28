@@ -1,13 +1,13 @@
 <?php
 
-require __DIR__."/site-config.php";
+require __DIR__."/../../config/site-config.php";
 
 $hash_options = [
     'cost' => 10,
 ];
 
 function db_connect() {
-    require __DIR__."/db-config.php";
+    require __DIR__."/../../config/db-config.php";
 
     if ($conn = mysqli_connect($db_hostname, $db_username, $db_password, $db_servername)) 
         return $conn;
@@ -929,6 +929,7 @@ function get_training_leaderboard($conn) {
             WHERE team_id IS NULL AND CTF_unlocked_hint.user_id = CTF_user.user_id), 0) AS score
         FROM CTF_submit
         RIGHT JOIN CTF_user ON CTF_submit.user_id = CTF_user.user_id
+        WHERE CTF_user.role != 'A'
         GROUP BY username
         ORDER BY score DESC";
 
@@ -951,8 +952,54 @@ function get_official_leaderboard($conn) {
             WHERE CTF_unlocked_hint.team_id = CTF_team.team_id), 0) AS score
         FROM CTF_submit
         RIGHT JOIN CTF_team ON CTF_submit.team_id = CTF_team.team_id
+        WHERE team_name != 'H4ckUs4t1'
         GROUP BY team_name
         ORDER BY score DESC";
+
+    $result = $conn->query($query);
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
+    return $rows;
+}
+
+function get_users_data($conn) {
+    $query = "SELECT CTF_user.user_id, username, email, 
+            IFNULL( (SELECT SUM(points) 
+            FROM CTF_submit 
+            WHERE team_id IS NULL 
+            AND CTF_submit.user_id = CTF_user.user_id), 0)
+            - 
+            IFNULL( (SELECT SUM(cost)
+            FROM CTF_unlocked_hint
+            INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
+            WHERE team_id IS NULL AND CTF_unlocked_hint.user_id = CTF_user.user_id), 0) AS score
+        FROM CTF_submit
+        RIGHT JOIN CTF_user ON CTF_submit.user_id = CTF_user.user_id
+        GROUP BY username
+        ORDER BY CTF_user.user_id";
+
+    $result = $conn->query($query);
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
+    return $rows;
+}
+
+function get_teams_data($conn) {
+    $query = "SELECT CTF_team.team_id, team_name, 
+            IFNULL( (SELECT SUM(points) 
+            FROM CTF_submit 
+            WHERE CTF_submit.team_id = CTF_team.team_id AND CTF_submit.event_id = ".get_last_event_id($conn)."), 0)
+            - 
+            IFNULL( (SELECT SUM(cost)
+            FROM CTF_unlocked_hint
+            INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
+            WHERE CTF_unlocked_hint.team_id = CTF_team.team_id), 0) AS score
+        FROM CTF_submit
+        RIGHT JOIN CTF_team ON CTF_submit.team_id = CTF_team.team_id
+        GROUP BY team_name
+        ORDER BY CTF_team.team_id";
 
     $result = $conn->query($query);
     $rows = $result->fetch_all(MYSQLI_ASSOC);

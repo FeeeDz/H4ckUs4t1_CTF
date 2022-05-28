@@ -1,7 +1,7 @@
 <?php 
 require "inc/init.php";
 
-$title = "Leaderboard";
+$title = "Leaderboard - H4ckUs4t1 CTF";
 require "inc/head.php";
 
 if (isset($_GET["type"])) $leaderboard_type = $_GET["type"];

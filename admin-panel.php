@@ -10,7 +10,7 @@ if (isset($_POST["submit"])) {
     $success = true;
     switch ($_GET["action"]) {
         case "add_challenge":
-            $challenge_id = add_challenge($conn, $_GET["challenge_name"], $_POST["flag"], $_POST["description"], $_POST["service"], $_POST["type"], $_POST["category"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"]);
+            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["flag"], $_POST["description"], $_POST["service"], $_POST["type"], $_POST["category"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"]);
             if (!$challenge_id){
                 $success = false;
                 break;
@@ -27,7 +27,7 @@ if (isset($_POST["submit"])) {
             break;
 
         case "edit_challenge":
-            $challenge_id = get_challenge_id($conn, $_GET["challenge_name"]);
+            $challenge_id = get_challenge_id($conn, $_POST["challenge_name"]);
 
             if (!edit_challenge_data($conn, $challenge_id, $_POST["description"], $_POST["service"], $_POST["type"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"])) $success = false;
 
@@ -55,7 +55,7 @@ if (isset($_POST["submit"])) {
 
         
         case "delete_challenge":
-            $challenge_id = get_challenge_id($conn, $_GET["challenge_name"]);
+            $challenge_id = get_challenge_id($conn, $_POST["challenge_name"]);
 
             if (!delete_challenge($conn, $challenge_id)) $success = false;
             break;
@@ -90,14 +90,14 @@ if (isset($_POST["submit"])) {
 
 get_db_missing_challenges($conn);
 
-$title = "Admin Panel";
+$title = "Admin Panel - H4ckUs4t1 CTF";
 require "inc/head.php";
 ?>
 <body>
     <nav id="nav">
         <?php require "inc/navbar.php"; ?>
     </nav>
-    <div id="main" class="admin-panel">
+    <div id="main" class="<?php if (strpos($_GET["action"], "view") === false) echo "admin-panel"; else echo "leaderboard"; ?>">
     <?php if (!isset($_GET["action"])) { ?>
         <form method="GET" class="generic-form">
             <button type="submit" name="action" value="add_challenge" class="generic-form__button no-margin">Add challenge</button><br>
@@ -107,8 +107,8 @@ require "inc/head.php";
             <button type="submit" name="action" value="edit_event" class="generic-form__button">Edit event</button><br>
             <button type="submit" name="action" value="delete_event" class="generic-form__button">Delete event</button><br>
             <button type="submit" name="action" value="reset_solves_hints" class="generic-form__button">Reset CTF solves and hints</button><br>
-            <button type="submit" name="action" value="users" class="generic-form__button">View Users</button><br>
-            <button type="submit" name="action" value="teams" class="generic-form__button">View Teams</button>
+            <button type="submit" name="action" value="view_users" class="generic-form__button">View Users</button><br>
+            <button type="submit" name="action" value="view_teams" class="generic-form__button">View Teams</button>
         </form>
     <?php } elseif ($_GET["action"] == "add_challenge") {
         if (!isset($_GET["challenge_name"])) { ?>
@@ -147,7 +147,7 @@ require "inc/head.php";
                 <label>Flag</label>
             </div>
             <div class="generic-form__input-box">
-                <textarea type="text" name="description" placeholder=" " maxlength="1024" rows="5" required></textarea>
+                <textarea type="text" name="description" placeholder=" " maxlength="1024" rows="5"></textarea>
                 <label>Description</label>
             </div>
             <div class="generic-form__input-box">
@@ -169,8 +169,8 @@ require "inc/head.php";
             <div class="generic-form__box">
                 <h3 style="margin-top: 0;">Challenge Type</h3>
                 <select name="type" required>
-                    <option value="T">Training</option>
                     <option value="O">Official</option>
+                    <option value="T">Training</option>
                     <option value="I">Inactive</option>
                 </select>
             </div>
@@ -230,7 +230,7 @@ require "inc/head.php";
                 <label>Flag</label>
             </div>
             <div class="generic-form__input-box">
-                <textarea type="text" name="description" placeholder=" " maxlength="1024" rows="5" required><?php echo $challenge_data["description"]; ?></textarea>
+                <textarea type="text" name="description" placeholder=" " maxlength="1024" rows="5"><?php echo $challenge_data["description"]; ?></textarea>
                 <label>Description</label>
             </div>
             <div class="generic-form__input-box">
@@ -252,8 +252,8 @@ require "inc/head.php";
             <div class="generic-form__box">
                 <h3 style="margin-top: 0;">Challenge Type</h3>
                 <select name="type" required>
-                    <option value="T" <?php if($challenge_data["type"] == "T") echo "selected=\"selected\""?>>Training</option>
                     <option value="O" <?php if($challenge_data["type"] == "O") echo "selected=\"selected\""?>>Official</option>
+                    <option value="T" <?php if($challenge_data["type"] == "T") echo "selected=\"selected\""?>>Training</option>
                     <option value="I" <?php if($challenge_data["type"] == "I") echo "selected=\"selected\""?>>Inactive</option>
                 </select>
             </div>
@@ -340,7 +340,7 @@ require "inc/head.php";
                         echo "<option value='" . $row["event_id"]."'>ID: " . $row["event_id"] . " (" . $row["start_date"] . ", " . $row["end_date"] . ")" . "</option>";
                 ?>
                 </select>
-                <button type="submit" name="action" value="edit_event" class="generic-form__button no-margin">Edit event</button>
+                <button type="submit" name="action" value="edit_event" class="generic-form__button">Edit event</button>
             </form>
         <?php } else { 
             $event_data = get_event_data($conn, $_GET["event_id"]);
@@ -355,7 +355,7 @@ require "inc/head.php";
                     <input type="datetime-local" name="end_date" value="<?php echo $event_data["end_date"]; ?>" placeholder=" " required>
                     <label>End Date</label>
                 </div>
-                <button type="submit" name="submit" class="generic-form__button no-margin">Edit event</button>
+                <button type="submit" name="submit" class="generic-form__button">Edit event</button>
             </form>
         <?php } ?>
     <?php } elseif ($_GET["action"] == "delete_event") { ?>
@@ -368,7 +368,7 @@ require "inc/head.php";
                     echo "<option value='" . $row["event_id"]."'>ID: " . $row["event_id"] . " (" . $row["start_date"] . ", " . $row["end_date"] . ")" . "</option>";
             ?>
             </select>
-            <button type="submit" name="submit" class="generic-form__button no-margin">Delete event</button>
+            <button type="submit" name="submit" class="generic-form__button">Delete event</button>
         </form>
     <?php } elseif ($_GET["action"] == "reset_solves_hints") { ?>
         <form method="POST" class="generic-form">
@@ -379,6 +379,40 @@ require "inc/head.php";
             </div>
             <button type="submit" name="submit" class="generic-form__button no-margin">Reset</button>
         </form>
+    <?php } elseif ($_GET["action"] == "view_users") { ?>
+        <table>
+            <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Score</th>
+            </tr>
+            <?php $users_data = get_users_data($conn);   
+                foreach ($users_data as $index => $row): ?>
+                <tr>
+                    <td><?php echo $row["user_id"];; ?></td>
+                    <td><?php echo $row["username"]; ?></td>
+                    <td><?php echo $row["email"]; ?></td>
+                    <td><?php echo $row["score"]; ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php } elseif ($_GET["action"] == "view_teams") { ?>
+        <table>
+            <tr>
+                <th>Team ID</th>
+                <th>Team Name</th>
+                <th>Score</th>
+            </tr>
+            <?php $teams_data = get_teams_data($conn);   
+                foreach ($teams_data as $index => $row): ?>
+                <tr>
+                    <td><?php echo $row["team_id"];; ?></td>
+                    <td><?php echo $row["team_name"]; ?></td>
+                    <td><?php echo $row["score"]; ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
     <?php } else exit(header("Location: ".basename($_SERVER['PHP_SELF']))); ?>
     </div>
     <div id="footer">

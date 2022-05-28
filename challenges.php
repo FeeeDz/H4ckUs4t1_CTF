@@ -7,7 +7,7 @@ else if (is_event_started($conn) && !get_user_team_id($conn, $_SESSION["user_id"
 if (is_event_started($conn)) $challenge_type = "O";
 else $challenge_type = "T";
 
-$title = "Challenges";
+$title = "Challenges - H4ckUs4t1 CTF";
 require "inc/head.php";
 ?>
 <body>
