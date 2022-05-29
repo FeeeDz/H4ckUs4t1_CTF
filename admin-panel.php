@@ -61,7 +61,7 @@ if (isset($_POST["submit"])) {
             break;
 
         case "reset_solves_hints":
-            if (!check_credentials($conn, get_email_from_user_id($conn, $_SESSION["user_id"]), $_POST["password"])) {
+            if (!check_credentials($conn, get_user_email($conn, $_SESSION["user_id"]), $_POST["password"])) {
                 $success = false;
                 break;
             }
@@ -80,7 +80,7 @@ if (isset($_POST["submit"])) {
             break;
 
         case "delete_event":
-            if (!delete_event($conn, $_GET["event_id"])) $success = false;
+            if (!delete_event($conn, $_POST["event_id"])) $success = false;
             break;
 
         }
@@ -163,7 +163,7 @@ require "inc/head.php";
                 <label>Minimum Points</label>
             </div>
             <div class="generic-form__input-box">
-                <input type="number" name="points_decay" placeholder=" " required>
+                <input type="number" name="points_decay" placeholder=" " min="1" required>
                 <label>Points Decay</label>
             </div>
             <div class="generic-form__box">
@@ -246,7 +246,7 @@ require "inc/head.php";
                 <label>Minimum Points</label>
             </div>
             <div class="generic-form__input-box">
-                <input type="number" name="points_decay" placeholder=" " value="<?php echo $challenge_data["points_decay"]; ?>" required>
+                <input type="number" name="points_decay" placeholder=" " value="<?php echo $challenge_data["points_decay"]; ?>" min="1" required>
                 <label>Points Decay</label>
             </div>
             <div class="generic-form__box">

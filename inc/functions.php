@@ -1,13 +1,20 @@
 <?php
 
-require __DIR__."/../../config/site-config.php";
+// Server scuola
+// $site_directory = "~quintaa2122/informatica/CTF_h4ckus4t1";
+// $private_dir = "/home/quintaa2122/informatica/CTF_h4ckus4t1_private";
+
+// Server privato
+$site_directory = "";
+$private_dir = "/var/www/CTF_h4ckus4t1_private";
 
 $hash_options = [
     'cost' => 10,
 ];
 
 function db_connect() {
-    require __DIR__."/../../config/db-config.php";
+    global $private_dir;
+    require $private_dir."/config/db-config.php";
 
     if ($conn = mysqli_connect($db_hostname, $db_username, $db_password, $db_servername)) 
         return $conn;
@@ -49,6 +56,19 @@ function check_if_user_exists($conn, $user_id) {
     return true;
 }
 
+function check_if_team_exists($conn, $team_id) {
+    $query = "SELECT 1 FROM CTF_team WHERE team_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $team_id);
+
+    if(!$stmt->execute()) return false;
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if (!$row) return false;
+    return true;
+}
+
 function logout() {
     $_SESSION = array();
 
@@ -67,6 +87,7 @@ function logout() {
 
 function register_user($conn, $username, $email, $password) {
     if(strlen($username) < 3 || strlen($username) > 16) return false;
+    if(strpos($username, ' ') !== false) return false;
     if(!filter_var($email, FILTER_VALIDATE_EMAIL)) return false;
     if(strlen($password) < 8 || strlen($password) > 128) return false;
 
@@ -108,7 +129,7 @@ function get_user_id_from_username($conn, $username) {
     return $row["user_id"];
 }
 
-function get_email_from_user_id($conn, $user_id) {
+function get_user_email($conn, $user_id) {
     $query = "SELECT email FROM CTF_user WHERE user_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $user_id);
@@ -120,10 +141,10 @@ function get_email_from_user_id($conn, $user_id) {
     return $row["email"];
 }
 
-function get_team_token($conn, $team_name) {
-    $query = "SELECT token FROM CTF_team WHERE team_name = ?";
+function get_team_token($conn, $team_id) {
+    $query = "SELECT token FROM CTF_team WHERE team_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $team_name);
+    $stmt->bind_param("i", $team_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -182,7 +203,7 @@ function get_user_team_id($conn, $user_id) {
     return $row["team_id"];
 }
 
-function get_team_id($conn, $token) {
+function get_team_id_from_token($conn, $token) {
     $query = "SELECT team_id FROM CTF_team WHERE token = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $token);
@@ -194,8 +215,33 @@ function get_team_id($conn, $token) {
     return $row["team_id"];
 }
 
+function get_team_id_from_team_name($conn, $team_name) {
+    $query = "SELECT team_id FROM CTF_team WHERE team_name = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $team_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["team_id"];
+}
+
+function get_team_name($conn, $team_id) {
+    $query = "SELECT team_name FROM CTF_team WHERE team_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $team_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["team_name"];
+}
+
 function register_team($conn, $team_name) {
     if(strlen($team_name) < 3 || strlen($team_name) > 32) return false;
+    if(strpos($team_name, ' ') !== false) return false;
 
     do {
         $token = bin2hex(random_bytes(16));
@@ -219,7 +265,7 @@ function register_team($conn, $team_name) {
 
 function join_team($conn, $user_id, $token) {
     if(get_user_team_id($conn, $user_id)) return false;
-    $team_id = get_team_id($conn, $token);
+    $team_id = get_team_id_from_token($conn, $token);
 
     if(count_team_members($conn, $team_id) > 3) return false;
 
@@ -444,7 +490,7 @@ function get_challenge_categories($conn) {
 }
 
 function get_challenges_from_category($conn, $category, $type) {
-    if ($type) $query = "SELECT challenge_id FROM CTF_challenge WHERE category = '$category' AND type = '$type'";
+    if ($type) $query = "SELECT challenge_id FROM CTF_challenge WHERE category = '$category' AND type = '$type' ORDER BY initial_points";
     else $query = "SELECT challenge_id FROM CTF_challenge WHERE category = '$category'";
     $result = $conn->query($query);
     $rows = $result->fetch_all();
@@ -731,12 +777,12 @@ function get_team_score($conn, $team_id) {
 }
 
 function get_user_score($conn, $user_id) {
-    $query = "SELECT IFNULL( (SELECT points 
+    $query = "SELECT IFNULL( (SELECT SUM(points) 
         FROM CTF_submit 
         WHERE team_id IS NULL 
         AND CTF_submit.user_id = $user_id), 0)
         - 
-        IFNULL( (SELECT cost
+        IFNULL( (SELECT SUM(cost)
         FROM CTF_unlocked_hint
         INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
         WHERE team_id IS NULL AND CTF_unlocked_hint.user_id = $user_id), 0) AS score";
@@ -1022,6 +1068,58 @@ function reset_ctf_unlocked_hints($conn) {
 
     if (!$result) return false;
     return true;
+}
+
+function get_user_solves($conn, $user_id) {
+    $query = "SELECT challenge_name, points 
+        FROM CTF_submit
+        INNER JOIN CTF_challenge ON CTF_submit.challenge_id = CTF_challenge.challenge_id
+        WHERE user_id = $user_id AND team_id IS NULL";
+
+    $result = $conn->query($query);
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
+    return $rows;
+}
+
+function get_team_solves($conn, $team_id) {
+    $query = "SELECT challenge_name, points 
+        FROM CTF_submit
+        INNER JOIN CTF_challenge ON CTF_submit.challenge_id = CTF_challenge.challenge_id
+        WHERE team_id = $team_id";
+
+    $result = $conn->query($query);
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
+    return $rows;
+}
+
+function get_num_user_solves($conn, $user_id) {
+    $query = "SELECT COUNT(challenge_name) AS solves
+        FROM CTF_submit
+        INNER JOIN CTF_challenge ON CTF_submit.challenge_id = CTF_challenge.challenge_id
+        WHERE user_id = $user_id AND team_id IS NULL";
+
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["solves"];
+}
+
+function get_num_team_solves($conn, $team_id) {
+    $query = "SELECT COUNT(challenge_name) AS solves
+        FROM CTF_submit
+        INNER JOIN CTF_challenge ON CTF_submit.challenge_id = CTF_challenge.challenge_id
+        WHERE team_id = $team_id";
+
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["solves"];
 }
 
 ?>

@@ -317,6 +317,35 @@ body {
     }  
 }  
 
+.get-started {
+    display: inline-block;
+    padding: 1rem 2rem 0rem 2rem;
+    text-align: left;
+}
+
+.solves-container {
+    max-width: 900px;
+    
+    .solve {
+        border: 1px solid rgb(0, 255, 34);
+        border-radius: 5px;
+        padding: 6px;
+        text-align: center;
+        display: inline-block;
+        min-width: 120px;
+
+        .challenge-name {
+            color: #aaaaaa;
+            padding: 1px;
+        }
+
+        .points {
+            padding: 1px;
+            color: #f76f00;
+        }
+    }
+}
+
 .leaderboard {
     // background: linear-gradient(#141e30, #243b55);
     display: flex;
@@ -362,6 +391,15 @@ body {
 
     td {
         font-size: 20px;
+    }
+
+    .user-team-link {
+        text-decoration: none;
+        color: #0262cf;
+
+        &:hover {
+            filter: brightness(65%);
+        }
     }
 }
 
@@ -722,6 +760,13 @@ body {
     background: linear-gradient(#141e30, #243b55);
 }
 
+.user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(#141e30, #243b55);
+}
+
 .admin-panel {
     display: flex;
     align-items: center;
@@ -897,13 +942,42 @@ body {
     }
 }
 
-@media only screen and (max-width: 1100px) {
-    #nav {
-        &__toggle {
+@media only screen and (max-width: 1300px) {
+    #nav.normal_user{
+        #nav__toggle {
             display: unset;
         }
     
-        &__menu {
+        #nav__menu {
+            flex-direction: column;
+    
+            li {
+                display: none;
+
+                &:first-child {
+                    display: block;
+                }
+                
+                #nav__nav {
+                    flex-direction: column;
+                    gap: 0.3rem;
+                }
+
+                #nav__account {
+                    gap: 0.5rem;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 1450px) {
+    #nav.admin{
+        #nav__toggle {
+            display: unset;
+        }
+    
+        #nav__menu {
             flex-direction: column;
     
             li {

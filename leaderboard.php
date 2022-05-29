@@ -29,7 +29,12 @@ if ($leaderboard_type != "training" && $leaderboard_type != "official") exit(hea
                 foreach ($leaderboard_data as $index => $row): ?>
                 <tr>
                     <td><?php echo $index+1; ?></td>
-                    <td><?php if ($leaderboard_type == "training") echo $row["username"]; else echo $row["team_name"]; ?></td>
+                    <td>
+                        <?php if ($leaderboard_type == "training"): ?>
+                            <a class="user-team-link" href="user.php?username=<?php echo $row["username"] ?>"><?php echo $row["username"] ?>
+                        <?php else: ?>
+                            <a class="user-team-link" href="team.php?team_name=<?php echo $row["team_name"] ?>"><?php echo $row["team_name"] ?>
+                        <?php endif; ?>
                     <td><?php echo $row["score"]; ?></td>
                 </tr>
             <?php endforeach; ?>

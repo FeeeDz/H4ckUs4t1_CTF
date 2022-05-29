@@ -269,6 +269,32 @@ body.popup-body {
   transform: rotate(45deg);
 }
 
+.get-started {
+  display: inline-block;
+  padding: 1rem 2rem 0rem 2rem;
+  text-align: left;
+}
+
+.solves-container {
+  max-width: 900px;
+}
+.solves-container .solve {
+  border: 1px solid rgb(0, 255, 34);
+  border-radius: 5px;
+  padding: 6px;
+  text-align: center;
+  display: inline-block;
+  min-width: 120px;
+}
+.solves-container .solve .challenge-name {
+  color: #aaaaaa;
+  padding: 1px;
+}
+.solves-container .solve .points {
+  padding: 1px;
+  color: #f76f00;
+}
+
 .leaderboard {
   display: flex;
   flex-direction: column;
@@ -307,6 +333,13 @@ body.popup-body {
 }
 .leaderboard td {
   font-size: 20px;
+}
+.leaderboard .user-team-link {
+  text-decoration: none;
+  color: #0262cf;
+}
+.leaderboard .user-team-link:hover {
+  filter: brightness(65%);
 }
 
 .challenges {
@@ -608,6 +641,13 @@ body.popup-body {
   background: linear-gradient(#141e30, #243b55);
 }
 
+.user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(#141e30, #243b55);
+}
+
 .admin-panel {
   display: flex;
   align-items: center;
@@ -773,24 +813,45 @@ body.popup-body {
   color: #f9fbff;
 }
 
-@media only screen and (max-width: 1100px) {
-  #nav__toggle {
+@media only screen and (max-width: 1300px) {
+  #nav.normal_user #nav__toggle {
     display: unset;
   }
-  #nav__menu {
+  #nav.normal_user #nav__menu {
     flex-direction: column;
   }
-  #nav__menu li {
+  #nav.normal_user #nav__menu li {
     display: none;
   }
-  #nav__menu li:first-child {
+  #nav.normal_user #nav__menu li:first-child {
     display: block;
   }
-  #nav__menu li #nav__nav {
+  #nav.normal_user #nav__menu li #nav__nav {
     flex-direction: column;
     gap: 0.3rem;
   }
-  #nav__menu li #nav__account {
+  #nav.normal_user #nav__menu li #nav__account {
+    gap: 0.5rem;
+  }
+}
+@media only screen and (max-width: 1450px) {
+  #nav.admin #nav__toggle {
+    display: unset;
+  }
+  #nav.admin #nav__menu {
+    flex-direction: column;
+  }
+  #nav.admin #nav__menu li {
+    display: none;
+  }
+  #nav.admin #nav__menu li:first-child {
+    display: block;
+  }
+  #nav.admin #nav__menu li #nav__nav {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  #nav.admin #nav__menu li #nav__account {
     gap: 0.5rem;
   }
 }

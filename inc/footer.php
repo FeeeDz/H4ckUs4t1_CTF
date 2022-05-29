@@ -2,7 +2,7 @@
 <!-- <h3>Ciccola Alessio</h3> -->
 <!-- <h3>Iena Alessandro</h3> -->
 <!-- <h3>Vagnarelli Beniamino</h3> -->
-<?php if (basename($_SERVER['PHP_SELF']) == "rules.php" || basename($_SERVER['PHP_SELF']) == "leaderboard.php" || basename($_SERVER['PHP_SELF']) == "challenges.php") : ?>
+<?php if (basename($_SERVER['PHP_SELF']) == "get-started.php" || basename($_SERVER['PHP_SELF']) == "rules.php" || basename($_SERVER['PHP_SELF']) == "leaderboard.php" || basename($_SERVER['PHP_SELF']) == "challenges.php") : ?>
 <div id="countdown-timer">
     <?php if (!is_event_started($conn)) : ?>
         <label>Starts in<label>

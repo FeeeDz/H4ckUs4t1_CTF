@@ -23,7 +23,7 @@ require "inc/head.php";
         <form method="POST" class="generic-form">
             <h2 class="title">Register</h2>
             <div class="generic-form__input-box">
-                <input type="text" name="username" placeholder=" " minlength="3" maxlength="16" pattern="[\x00-\x7F]+" autocomplete="username" required>
+                <input type="text" name="username" placeholder=" " minlength="3" maxlength="16" pattern="^(\d|\w)+$" autocomplete="username" title="string with 16 non-special characters and no spaces" required>
                 <label>Username</label>
             </div>
             <div class="generic-form__input-box">

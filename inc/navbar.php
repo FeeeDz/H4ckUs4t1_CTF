@@ -18,6 +18,10 @@
             <span class="material-icons">home</span>
             <span>Home</span>
         </a>
+        <a href="get-started.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "get-started.php") echo "active"; ?>">
+            <span class="material-icons">keyboard_double_arrow_right</span>
+            <span>Get Started</span>
+        </a>
         <a href="rules.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "rules.php") echo "active"; ?>">
             <span class="material-icons">description</span>
             <span>Rules</span>
@@ -33,7 +37,7 @@
     </div></li>
     <li><div id="nav__account">
     <?php if (isset($_SESSION["user_id"])) { ?>
-        <a id="account-button" href="account.php">
+        <a id="account-button" href="user.php">
             <span class="material-icons">person</span>
             <span><?php echo get_username_from_id($conn, $_SESSION["user_id"]); ?></span>
         </a>
@@ -42,10 +46,10 @@
             <span>Team</span>
         </a>
         <?php if (get_user_role($conn, $_SESSION["user_id"]) == 'A') { ?>
-        <a id="admin-panel-button" href="admin-panel.php">
-            <span class="material-icons">admin_panel_settings</span>
-            <span>Admin Panel</span>
-        </a>
+            <a id="admin-panel-button" href="admin-panel.php">
+                <span class="material-icons">admin_panel_settings</span>
+                <span>Admin Panel</span>
+            </a>
         <?php } ?>
         <a id="logout-button" href="logout.php">
             <span class="material-icons">logout</span>
@@ -63,3 +67,13 @@
     <?php } ?>
     </div></li>
 </ul>
+<script>
+
+    var role = "<?php echo get_user_role($conn, $_SESSION["user_id"]); ?>";
+
+    if (role == "A")
+        document.querySelector("#nav").classList.add("admin");
+    else
+        document.querySelector("#nav").classList.add("normal_user");
+
+</script>
