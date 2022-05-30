@@ -51,6 +51,9 @@ require "inc/head.php";
                             </div>
                         </div>
                     <?php } ?>
+                    <?php if (!empty($challenge_data["author"])): ?>
+                    <div class="author">Author: <?php echo $challenge_data["author"]; ?></div>
+                    <?php endif; ?>
                     <span class="close-button material-icons" onclick="close_challenge(event, this.parentElement)">expand_less</span>
                 </div>
                 <?php } ?>

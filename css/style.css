@@ -276,12 +276,13 @@ body.popup-body {
 }
 
 .solves-container {
-  max-width: 900px;
+  max-width: 800px;
 }
 .solves-container .solve {
   border: 1px solid rgb(0, 255, 34);
   border-radius: 5px;
   padding: 6px;
+  margin: 5px 0 5px 0;
   text-align: center;
   display: inline-block;
   min-width: 120px;
@@ -426,6 +427,11 @@ body.popup-body {
   color: rgb(149, 66, 218);
   margin-top: 0.5rem;
 }
+.challenges .challenge .author {
+  display: block;
+  color: rgb(43, 1, 228);
+  margin-top: 1.5rem;
+}
 .challenges .challenge .resource {
   display: inline-block;
   background-color: rgb(55, 138, 233);
@@ -535,6 +541,7 @@ body.popup-body {
   width: 5.5rem;
   border-radius: 0.7rem;
   vertical-align: middle;
+  color: #161d34;
   cursor: pointer;
 }
 .challenges .challenge .hint__id-label {
@@ -607,7 +614,7 @@ body.popup-body {
 .challenges .challenge.closed {
   font-size: 0;
 }
-.challenges .challenge.closed .description, .challenges .challenge.closed .service, .challenges .challenge.closed .resource, .challenges .challenge.closed .flag, .challenges .challenge.closed .hint, .challenges .challenge.closed .close-button {
+.challenges .challenge.closed .description, .challenges .challenge.closed .service, .challenges .challenge.closed .resource, .challenges .challenge.closed .flag, .challenges .challenge.closed .hint, .challenges .challenge.closed .close-button, .challenges .challenge.closed .author {
   opacity: 0;
   max-height: 0;
   overflow: hidden;

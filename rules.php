@@ -30,10 +30,16 @@ require "inc/head.php";
                 <li class="arrow">If you do anything that we believe to be directly against the spirit of the competition, we reserve the right to remove anyone at any point. Please don't make us do that. This is for your learning and benefit.</li>
             </ul>
         </div>
-        <iframe src="https://discord.com/widget?id=979304888112664667&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+        <!-- <iframe src="https://discord.com/widget?id=979304888112664667&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe> -->
     </div>
     <div id="footer">
         <?php require "inc/footer.php"; ?>
     </div>
+    <script src='https://cdn.jsdelivr.net/npm/@widgetbot/crate@3' async defer>
+    new Crate({
+        server: '979304888112664667', // Hackusati CTF
+        channel: '979306144348651541' // #📝write-up
+    })
+    </script>
 </body>
 </html>

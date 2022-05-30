@@ -324,12 +324,13 @@ body {
 }
 
 .solves-container {
-    max-width: 900px;
+    max-width: 800px;
     
     .solve {
         border: 1px solid rgb(0, 255, 34);
         border-radius: 5px;
         padding: 6px;
+        margin: 5px 0 5px 0;
         text-align: center;
         display: inline-block;
         min-width: 120px;
@@ -498,6 +499,12 @@ body {
             color: rgb(149, 66, 218);
             margin-top: 0.5rem;
         }
+
+        .author {
+            display: block;
+            color: rgb(43, 1, 228);
+            margin-top: 1.5rem;
+        }
             
         .resource {
             display: inline-block;
@@ -632,6 +639,7 @@ body {
             width: 5.5rem;
             border-radius: 0.7rem;
             vertical-align: middle;
+            color: $clr-gray700;
             cursor: pointer;
 
             &__id-label {
@@ -722,7 +730,7 @@ body {
         &.closed {
             font-size: 0;
 
-            .description, .service, .resource, .flag, .hint, .close-button {
+            .description, .service, .resource, .flag, .hint, .close-button, .author {
                 opacity: 0;
                 max-height: 0;
                 overflow: hidden;

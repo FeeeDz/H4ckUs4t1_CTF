@@ -422,7 +422,7 @@ function get_event_data($conn, $event_id) {
 }
 
 function get_challenge_data($conn, $challenge_id) {
-    $query = "SELECT challenge_name, flag, description, service, type, category, initial_points, minimum_points, points_decay FROM CTF_challenge WHERE challenge_id = ?";
+    $query = "SELECT challenge_name, flag, description, service, type, category, initial_points, minimum_points, points_decay, author FROM CTF_challenge WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $challenge_id);
     $stmt->execute();
@@ -502,12 +502,12 @@ function get_challenges_from_category($conn, $category, $type) {
     return $challenges;
 }
 
-function add_challenge($conn, $challenge_name, $flag, $description, $service, $type, $category, $initial_points, $minimum_points, $points_decay) {
+function add_challenge($conn, $challenge_name, $flag, $description, $service, $type, $category, $initial_points, $minimum_points, $points_decay, $author) {
     if($initial_points < $minimum_points) return false;
 
-    $query = "INSERT INTO CTF_challenge (challenge_name, flag, description, service, type, category, initial_points, minimum_points, points_decay) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO CTF_challenge (challenge_name, flag, description, service, type, category, initial_points, minimum_points, points_decay, author) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssssssiii", $challenge_name, $flag, $description, $service, $type, $category, $initial_points, $minimum_points, $points_decay);
+    $stmt->bind_param("ssssssiiis", $challenge_name, $flag, $description, $service, $type, $category, $initial_points, $minimum_points, $points_decay, $author);
     
     if (!$stmt->execute()) return false;
     return $conn->insert_id;
@@ -580,7 +580,7 @@ function delete_event($conn, $event_id) {
     return true;
 }
 
-function edit_challenge_data($conn, $challenge_id, $description, $service, $type, $initial_points, $minimum_points, $points_decay) {
+function edit_challenge_data($conn, $challenge_id, $description, $service, $type, $initial_points, $minimum_points, $points_decay, $author) {
     if($initial_points < $minimum_points) return false;
     if(get_challenge_type($conn, $challenge_id) != $type) {
         $challenge_data = get_challenge_data($conn, $challenge_id);
@@ -588,7 +588,7 @@ function edit_challenge_data($conn, $challenge_id, $description, $service, $type
         $resources = get_db_challenge_resources($conn, $challenge_id);
         
         delete_challenge($conn, $challenge_id);
-        $challenge_id = add_challenge($conn, $challenge_data["challenge_name"], $challenge_data["flag"], $description, $service, $type, $challenge_data["category"], $initial_points, $minimum_points, $points_decay);
+        $challenge_id = add_challenge($conn, $challenge_data["challenge_name"], $challenge_data["flag"], $description, $service, $type, $challenge_data["category"], $initial_points, $minimum_points, $points_decay, $author);
         foreach ($hints as $hint) {
             add_hint($conn, $challenge_id, $hint["description"], $hint["cost"]);
         }
@@ -599,9 +599,9 @@ function edit_challenge_data($conn, $challenge_id, $description, $service, $type
         return true;
     }
     
-    $query = "UPDATE CTF_challenge SET description = ?, service = ?, type = ?, initial_points = ?, minimum_points = ?, points_decay = ? WHERE challenge_id = ?";
+    $query = "UPDATE CTF_challenge SET description = ?, service = ?, type = ?, initial_points = ?, minimum_points = ?, points_decay = ?, author = ? WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("sssiiii", $description, $service, $type, $initial_points, $minimum_points, $points_decay, $challenge_id);
+    $stmt->bind_param("sssiiisi", $description, $service, $type, $initial_points, $minimum_points, $points_decay, $author, $challenge_id);
     if(!$stmt->execute()) return false;
 
     return true;
@@ -801,13 +801,13 @@ function unlock_hint($conn, $hint_id, $user_id) {
     $team_id = get_user_team_id($conn, $user_id);
     if ($challenge_type == "O") {
         if (!$team_id) return false;
-        if (get_hint_cost($conn, $hint_id) > get_team_score($conn, $team_id)) return false;
+        if (get_user_role($conn, $user_id) != "A" && get_hint_cost($conn, $hint_id) > get_team_score($conn, $team_id)) return false;
 
         $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, team_id, unlock_date) VALUES (?, ?, ?, NOW())";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("iii", $hint_id, $user_id, $team_id);
     } else {
-        if (get_hint_cost($conn, $hint_id) > get_user_score($conn, $user_id)) return false;
+        if (get_user_role($conn, $user_id) != "A" && get_hint_cost($conn, $hint_id) > get_user_score($conn, $user_id)) return false;
 
         $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, unlock_date) VALUES (?, ?, NOW())";
         $stmt = $conn->prepare($query);

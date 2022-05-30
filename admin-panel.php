@@ -10,7 +10,7 @@ if (isset($_POST["submit"])) {
     $success = true;
     switch ($_GET["action"]) {
         case "add_challenge":
-            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["flag"], $_POST["description"], $_POST["service"], $_POST["type"], $_POST["category"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"]);
+            $challenge_id = add_challenge($conn, $_POST["challenge_name"], $_POST["flag"], $_POST["description"], $_POST["service"], $_POST["type"], $_POST["category"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"], $_POST["author"]);
             if (!$challenge_id){
                 $success = false;
                 break;
@@ -29,7 +29,7 @@ if (isset($_POST["submit"])) {
         case "edit_challenge":
             $challenge_id = get_challenge_id($conn, $_POST["challenge_name"]);
 
-            if (!edit_challenge_data($conn, $challenge_id, $_POST["description"], $_POST["service"], $_POST["type"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"])) $success = false;
+            if (!edit_challenge_data($conn, $challenge_id, $_POST["description"], $_POST["service"], $_POST["type"], $_POST["initial_points"], $_POST["minimum_points"], $_POST["points_decay"], $_POST["author"])) $success = false;
 
             if(isset($_POST["delete_hint"]))
                 foreach ($_POST["delete_hint"] as $hint_id)
@@ -87,8 +87,6 @@ if (isset($_POST["submit"])) {
     if (!$success) exit(header("Refresh:0"));
     exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
 }
-
-get_db_missing_challenges($conn);
 
 $title = "Admin Panel - H4ckUs4t1 CTF";
 require "inc/head.php";
@@ -165,6 +163,10 @@ require "inc/head.php";
             <div class="generic-form__input-box">
                 <input type="number" name="points_decay" placeholder=" " min="1" required>
                 <label>Points Decay</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="text" name="author" placeholder=" " maxlength="64" pattern="[ -~]+" required>
+                <label>Author</label>
             </div>
             <div class="generic-form__box">
                 <h3 style="margin-top: 0;">Challenge Type</h3>
@@ -248,6 +250,10 @@ require "inc/head.php";
             <div class="generic-form__input-box">
                 <input type="number" name="points_decay" placeholder=" " value="<?php echo $challenge_data["points_decay"]; ?>" min="1" required>
                 <label>Points Decay</label>
+            </div>
+            <div class="generic-form__input-box">
+                <input type="text" name="author" placeholder=" " value="<?php echo $challenge_data["author"]; ?>" maxlength="64" pattern="[ -~]+" required>
+                <label>Author</label>
             </div>
             <div class="generic-form__box">
                 <h3 style="margin-top: 0;">Challenge Type</h3>
