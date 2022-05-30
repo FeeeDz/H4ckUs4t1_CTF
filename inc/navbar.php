@@ -18,10 +18,6 @@
             <span class="material-icons">home</span>
             <span>Home</span>
         </a>
-        <a href="get-started.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "get-started.php") echo "active"; ?>">
-            <span class="material-icons">keyboard_double_arrow_right</span>
-            <span>Get Started</span>
-        </a>
         <a href="rules.php" class="<?php if(basename($_SERVER['PHP_SELF']) == "rules.php") echo "active"; ?>">
             <span class="material-icons">description</span>
             <span>Rules</span>
