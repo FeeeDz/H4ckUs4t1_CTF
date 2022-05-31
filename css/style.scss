@@ -390,7 +390,7 @@ body {
 
     .user-team-link {
         text-decoration: none;
-        color: #0262cf;
+        color: #3292ff;
 
         &:hover {
             filter: brightness(65%);
@@ -944,8 +944,8 @@ body {
     }
 }
 
-@media only screen and (max-width: 1300px) {
-    #nav.normal_user{
+@media only screen and (max-width: 1130px) {
+    #nav.normal-user{
         #nav__toggle {
             display: unset;
         }
@@ -973,7 +973,7 @@ body {
     }
 }
 
-@media only screen and (max-width: 1450px) {
+@media only screen and (max-width: 1270px) {
     #nav.admin{
         #nav__toggle {
             display: unset;

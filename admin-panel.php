@@ -165,7 +165,7 @@ require "inc/head.php";
                 <label>Points Decay</label>
             </div>
             <div class="generic-form__input-box">
-                <input type="text" name="author" placeholder=" " maxlength="64" pattern="[ -~]+" required>
+                <input type="text" name="author" placeholder=" " maxlength="64" pattern="[ -~]+">
                 <label>Author</label>
             </div>
             <div class="generic-form__box">
@@ -252,7 +252,7 @@ require "inc/head.php";
                 <label>Points Decay</label>
             </div>
             <div class="generic-form__input-box">
-                <input type="text" name="author" placeholder=" " value="<?php echo $challenge_data["author"]; ?>" maxlength="64" pattern="[ -~]+" required>
+                <input type="text" name="author" placeholder=" " value="<?php echo $challenge_data["author"]; ?>" maxlength="64" pattern="[ -~]+">
                 <label>Author</label>
             </div>
             <div class="generic-form__box">

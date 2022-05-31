@@ -70,6 +70,6 @@
     if (role == "A")
         document.querySelector("#nav").classList.add("admin");
     else
-        document.querySelector("#nav").classList.add("normal_user");
+        document.querySelector("#nav").classList.add("normal-user");
 
 </script>

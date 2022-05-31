@@ -331,7 +331,7 @@ body.popup-body {
 }
 .leaderboard .user-team-link {
   text-decoration: none;
-  color: #0262cf;
+  color: #3292ff;
 }
 .leaderboard .user-team-link:hover {
   filter: brightness(65%);
@@ -814,28 +814,28 @@ body.popup-body {
   color: #f9fbff;
 }
 
-@media only screen and (max-width: 1300px) {
-  #nav.normal_user #nav__toggle {
+@media only screen and (max-width: 1130px) {
+  #nav.normal-user #nav__toggle {
     display: unset;
   }
-  #nav.normal_user #nav__menu {
+  #nav.normal-user #nav__menu {
     flex-direction: column;
   }
-  #nav.normal_user #nav__menu li {
+  #nav.normal-user #nav__menu li {
     display: none;
   }
-  #nav.normal_user #nav__menu li:first-child {
+  #nav.normal-user #nav__menu li:first-child {
     display: block;
   }
-  #nav.normal_user #nav__menu li #nav__nav {
+  #nav.normal-user #nav__menu li #nav__nav {
     flex-direction: column;
     gap: 0.3rem;
   }
-  #nav.normal_user #nav__menu li #nav__account {
+  #nav.normal-user #nav__menu li #nav__account {
     gap: 0.5rem;
   }
 }
-@media only screen and (max-width: 1450px) {
+@media only screen and (max-width: 1270px) {
   #nav.admin #nav__toggle {
     display: unset;
   }

@@ -38,7 +38,7 @@ require "inc/head.php";
     <script src='https://cdn.jsdelivr.net/npm/@widgetbot/crate@3' async defer>
     new Crate({
         server: '979304888112664667', // Hackusati CTF
-        channel: '979306144348651541' // #📝write-up
+        channel: '979307370868002866' // #rules
     })
     </script>
 </body>
