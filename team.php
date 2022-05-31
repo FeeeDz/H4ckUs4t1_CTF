@@ -1,15 +1,14 @@
 <?php 
 require "inc/init.php";
 
-if (!isset($_SESSION["user_id"])) exit(header("Location: index.php"));
 
 $team_id = isset($_GET["team_name"]) ? get_team_id_from_team_name($conn, $_GET["team_name"]) : (isset($_SESSION["user_id"]) ? get_user_team_id($conn, $_SESSION["user_id"]) : NULL);
 if (isset($_GET["team_name"]) && !check_if_team_exists($conn, $team_id)) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
-
 $team_name = get_team_name($conn, $team_id);
 $token = get_team_token($conn, $team_id);
 
-if ($team_name && isset($_GET["redirect"])) exit(header("Location: ".$_GET["redirect"]));
+if ($team_id != null && get_user_team_id($conn, $_SESSION["user_id"]) === $team_id && isset($_GET["redirect"])) exit(header("Location: ".$_GET["redirect"]));
+if (!$team_id && !isset($_SESSION["user_id"])) exit(header("Location: login.php"));
 
 $title = "Team - H4ckUs4t1 CTF";
 require "inc/head.php";
@@ -23,15 +22,30 @@ require "inc/head.php";
     <?php if (!isset($_GET["action"])) {
         if ($team_id) { ?>    
             <form method="GET" class="generic-form">
-                <h2 class="title">Team</h2><br>
-                <h3 style="display: inline;">Team Name: </h3><h4 style="display: inline;"><?php echo $team_name; ?><h4>
+                <h2 class="title">Team</h2>
+                <div class="info-box">
+                    <h3>Team Name: </h3>
+                    <h4><?php echo $team_name; ?></h4>
+                </div>
                 <?php if ($team_id == get_user_team_id($conn, $_SESSION["user_id"])): ?>
-                    <h3 style="display: inline;">Token: </h3><h4 style="display: inline;"><?php echo $token; ?><h4>
+                    <div class="info-box">
+                        <h3>Token: </h3>
+                        <h4><?php echo $token; ?></h4>
+                    </div>
                 <?php endif; ?>
-                <h3 style="display: inline;">Score: </h3><h4 style="display: inline;"><?php echo get_team_score($conn, $team_id); ?><h4>
+                <div class="info-box">
+                    <h3>Score: </h3>
+                    <h4><?php echo get_team_score($conn, $team_id); ?></h4>
+                </div>
+                <div class="members">
+                    <h3>Members: </h3>
+                    <?php foreach (get_team_members($conn, $team_id) as $member): ?>
+                        <a class="user-team-link" href="user.php?username=<?php echo $member["username"]; ?>"><?php echo $member["username"]; ?></a>
+                    <?php endforeach; ?>
+                </div>
                 <?php if (get_num_team_solves($conn, $team_id) != 0) : ?> 
                     <div class="solves-container">
-                        <h3 style="display: inline-block;">Solves: </h3><br>
+                        <h3>Solves: </h3>
                         <?php foreach (get_team_solves($conn, $team_id) as $solve) : ?>
                             <div class="solve">
                                 <div class="challenge-name"><?php echo $solve["challenge_name"]; ?></div>

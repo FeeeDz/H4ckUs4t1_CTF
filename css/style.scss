@@ -319,6 +319,11 @@ body {
 
 .solves-container {
     max-width: 800px;
+
+    h3 {
+        margin: 0;
+        margin-bottom: 10px;
+    }
     
     .solve {
         border: 1px solid rgb(0, 255, 34);
@@ -387,14 +392,14 @@ body {
     td {
         font-size: 20px;
     }
+}
 
-    .user-team-link {
-        text-decoration: none;
-        color: #3292ff;
+.user-team-link {
+    text-decoration: none;
+    color: #3292ff;
 
-        &:hover {
-            filter: brightness(65%);
-        }
+    &:hover {
+        filter: brightness(65%);
     }
 }
 
@@ -760,6 +765,21 @@ body {
     align-items: center;
     justify-content: center;
     background: linear-gradient(#141e30, #243b55);
+
+    .members {
+        margin: 15px 0;
+
+        h3 {
+            margin: 0;
+            padding-bottom: 7px;
+        }
+
+        h4 {
+            display: inline-block;
+            margin: 0;
+            color: rgb(0, 119, 255);
+        }
+    }
 }
 
 .user {
@@ -894,7 +914,7 @@ body {
 
         option {
             color: inherit;
-            // background-color: #000000;
+            background-color: #000000;
         }
 
         &:focus {
@@ -908,7 +928,26 @@ body {
         &:hover {
             filter: brightness(80%);
         }
-    }      
+    }
+
+    .info-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        gap: 10px;
+
+        margin: 15px 0;
+
+        h3 {
+            margin: 0;
+        }
+
+        h4 {
+            margin: 0;
+            color: $clr-gray400;
+        }
+    }
 }
 
 #footer {

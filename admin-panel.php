@@ -396,8 +396,8 @@ require "inc/head.php";
             <?php $users_data = get_users_data($conn);   
                 foreach ($users_data as $index => $row): ?>
                 <tr>
-                    <td><?php echo $row["user_id"];; ?></td>
-                    <td><?php echo $row["username"]; ?></td>
+                    <td><?php echo $row["user_id"]; ?></td>
+                    <td><a class="user-team-link" href="user.php?username=<?php echo $row["username"] ?>"><?php echo $row["username"] ?></a></td>
                     <td><?php echo $row["email"]; ?></td>
                     <td><?php echo $row["score"]; ?></td>
                 </tr>
@@ -414,7 +414,7 @@ require "inc/head.php";
                 foreach ($teams_data as $index => $row): ?>
                 <tr>
                     <td><?php echo $row["team_id"];; ?></td>
-                    <td><?php echo $row["team_name"]; ?></td>
+                    <td><a class="user-team-link" href="team.php?team_name=<?php echo $row["team_name"] ?>"><?php echo $row["team_name"] ?></a></td>
                     <td><?php echo $row["score"]; ?></td>
                 </tr>
             <?php endforeach; ?>

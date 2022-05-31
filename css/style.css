@@ -272,6 +272,10 @@ body.popup-body {
 .solves-container {
   max-width: 800px;
 }
+.solves-container h3 {
+  margin: 0;
+  margin-bottom: 10px;
+}
 .solves-container .solve {
   border: 1px solid rgb(0, 255, 34);
   border-radius: 5px;
@@ -329,11 +333,12 @@ body.popup-body {
 .leaderboard td {
   font-size: 20px;
 }
-.leaderboard .user-team-link {
+
+.user-team-link {
   text-decoration: none;
   color: #3292ff;
 }
-.leaderboard .user-team-link:hover {
+.user-team-link:hover {
   filter: brightness(65%);
 }
 
@@ -641,6 +646,18 @@ body.popup-body {
   justify-content: center;
   background: linear-gradient(#141e30, #243b55);
 }
+.team .members {
+  margin: 15px 0;
+}
+.team .members h3 {
+  margin: 0;
+  padding-bottom: 7px;
+}
+.team .members h4 {
+  display: inline-block;
+  margin: 0;
+  color: rgb(0, 119, 255);
+}
 
 .user {
   display: flex;
@@ -777,6 +794,7 @@ body.popup-body {
 }
 .generic-form select option {
   color: inherit;
+  background-color: #000000;
 }
 .generic-form select:focus {
   outline: none;
@@ -786,6 +804,20 @@ body.popup-body {
 }
 .generic-form select:hover {
   filter: brightness(80%);
+}
+.generic-form .info-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+.generic-form .info-box h3 {
+  margin: 0;
+}
+.generic-form .info-box h4 {
+  margin: 0;
+  color: #767b91;
 }
 
 #footer {

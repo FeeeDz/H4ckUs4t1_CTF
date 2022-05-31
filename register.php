@@ -2,8 +2,19 @@
 require "inc/init.php";
 
 if(!isset($_SESSION["user_id"]) && isset($_POST["submit"])) {
-    if(register_user($conn, $_POST["username"], $_POST["email"], $_POST["password"])) {
-        login($conn, $_POST["email"], $_POST["password"]);
+    $error = register_user($conn, $_POST["username"], $_POST["email"], $_POST["password"]);
+    switch($error) {
+        case -1:
+            $form_error = "Username already used";
+            break;
+
+        case -2:
+            $form_error = "Email already used";
+            break;
+
+        case 1:
+            login($conn, $_POST["email"], $_POST["password"]);
+            break;
     }
 }
 
@@ -22,6 +33,7 @@ require "inc/head.php";
     <div id="main" class="register-user">
         <form method="POST" class="generic-form">
             <h2 class="title">Register</h2>
+            <h3 class="error"><?php echo $form_error; ?></h3>
             <div class="generic-form__input-box">
                 <input type="text" name="username" placeholder=" " minlength="3" maxlength="16" pattern="^(\d|\w)+$" autocomplete="username" title="string with 16 non-special characters and no spaces" required>
                 <label>Username</label>

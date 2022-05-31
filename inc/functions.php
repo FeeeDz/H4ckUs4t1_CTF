@@ -86,10 +86,12 @@ function logout() {
 }
 
 function register_user($conn, $username, $email, $password) {
-    if(strlen($username) < 3 || strlen($username) > 16) return false;
-    if(strpos($username, ' ') !== false) return false;
-    if(!filter_var($email, FILTER_VALIDATE_EMAIL)) return false;
-    if(strlen($password) < 8 || strlen($password) > 128) return false;
+    if(check_if_username_is_used($conn, $username)) return -1;
+    if(check_if_email_is_used($conn, $email)) return -2;
+    if(strlen($username) < 3 || strlen($username) > 16) return -3;
+    if(strpos($username, ' ') !== false) return -4;
+    if(!filter_var($email, FILTER_VALIDATE_EMAIL)) return -5;
+    if(strlen($password) < 8 || strlen($password) > 128) return -6;
 
     global $hash_options;
 
@@ -101,7 +103,31 @@ function register_user($conn, $username, $email, $password) {
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ssss", $username, $password_hash, $email, $role);
 
-    if (!$stmt->execute()) return false;
+    if (!$stmt->execute()) return -7;
+    return 1;
+}
+
+function check_if_username_is_used($conn, $username) {
+    $query = "SELECT 1 FROM CTF_user WHERE username = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if (!$row) return false;
+    return true;
+}
+
+function check_if_email_is_used($conn, $email) {
+    $query = "SELECT 1 FROM CTF_user WHERE email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if (!$row) return false;
     return true;
 }
 
@@ -767,7 +793,7 @@ function get_team_score($conn, $team_id) {
         IFNULL( (SELECT SUM(cost)
         FROM CTF_unlocked_hint
         INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
-        WHERE CTF_unlocked_hint.team_id = $team_id), 0) AS score";
+        WHERE CTF_unlocked_hint.team_id = $team_id AND event_id = ".get_last_event_id($conn)."), 0) AS score";
     
     $result = $conn->query($query);
     $row = $result->fetch_assoc();
@@ -779,13 +805,13 @@ function get_team_score($conn, $team_id) {
 function get_user_score($conn, $user_id) {
     $query = "SELECT IFNULL( (SELECT SUM(points) 
         FROM CTF_submit 
-        WHERE team_id IS NULL 
+        WHERE event_id IS NULL 
         AND CTF_submit.user_id = $user_id), 0)
         - 
         IFNULL( (SELECT SUM(cost)
         FROM CTF_unlocked_hint
         INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
-        WHERE team_id IS NULL AND CTF_unlocked_hint.user_id = $user_id), 0) AS score";
+        WHERE event_id IS NULL AND CTF_unlocked_hint.user_id = $user_id), 0) AS score";
 
     $result = $conn->query($query);
     $row = $result->fetch_assoc();
@@ -803,9 +829,9 @@ function unlock_hint($conn, $hint_id, $user_id) {
         if (!$team_id) return false;
         if (get_user_role($conn, $user_id) != "A" && get_hint_cost($conn, $hint_id) > get_team_score($conn, $team_id)) return false;
 
-        $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, team_id, unlock_date) VALUES (?, ?, ?, NOW())";
+        $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, team_id, event_id, unlock_date) VALUES (?, ?, ?, ?, NOW())";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("iii", $hint_id, $user_id, $team_id);
+        $stmt->bind_param("iiii", $hint_id, $user_id, $team_id, get_last_event_id($conn));
     } else {
         if (get_user_role($conn, $user_id) != "A" && get_hint_cost($conn, $hint_id) > get_user_score($conn, $user_id)) return false;
 
@@ -954,7 +980,7 @@ function get_unlocked_hints($conn, $user_id, $from_date) {
     $query = "SELECT CTF_hint.hint_id, CTF_hint.description 
         FROM CTF_unlocked_hint
         INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
-        WHERE team_id = $team_id AND unlock_date >= '$from_date'";
+        WHERE team_id = $team_id AND unlock_date >= '$from_date' AND event_id = ".get_last_event_id($conn);
     $result = $conn->query($query);
     $rows = $result->fetch_all(MYSQLI_ASSOC);
 
@@ -966,13 +992,13 @@ function get_training_leaderboard($conn) {
     $query = "SELECT username, 
             IFNULL( (SELECT SUM(points) 
             FROM CTF_submit 
-            WHERE team_id IS NULL 
+            WHERE event_id IS NULL 
             AND CTF_submit.user_id = CTF_user.user_id), 0)
             - 
             IFNULL( (SELECT SUM(cost)
             FROM CTF_unlocked_hint
             INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
-            WHERE team_id IS NULL AND CTF_unlocked_hint.user_id = CTF_user.user_id), 0) AS score
+            WHERE event_id IS NULL AND CTF_unlocked_hint.user_id = CTF_user.user_id), 0) AS score
         FROM CTF_submit
         RIGHT JOIN CTF_user ON CTF_submit.user_id = CTF_user.user_id
         WHERE CTF_user.role != 'A'
@@ -995,7 +1021,7 @@ function get_official_leaderboard($conn) {
             IFNULL( (SELECT SUM(cost)
             FROM CTF_unlocked_hint
             INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
-            WHERE CTF_unlocked_hint.team_id = CTF_team.team_id), 0) AS score
+            WHERE CTF_unlocked_hint.team_id = CTF_team.team_id AND event_id = ".get_last_event_id($conn)."), 0) AS score
         FROM CTF_submit
         RIGHT JOIN CTF_team ON CTF_submit.team_id = CTF_team.team_id
         WHERE team_name != 'H4ckUs4t1'
@@ -1010,20 +1036,19 @@ function get_official_leaderboard($conn) {
 }
 
 function get_users_data($conn) {
-    $query = "SELECT CTF_user.user_id, username, email, 
+    $query = "SELECT CTF_user.user_id, username, email, team_name,
             IFNULL( (SELECT SUM(points) 
             FROM CTF_submit 
-            WHERE team_id IS NULL 
+            WHERE event_id IS NULL 
             AND CTF_submit.user_id = CTF_user.user_id), 0)
             - 
             IFNULL( (SELECT SUM(cost)
             FROM CTF_unlocked_hint
             INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
-            WHERE team_id IS NULL AND CTF_unlocked_hint.user_id = CTF_user.user_id), 0) AS score
-        FROM CTF_submit
-        RIGHT JOIN CTF_user ON CTF_submit.user_id = CTF_user.user_id
-        GROUP BY username
-        ORDER BY CTF_user.user_id";
+            WHERE event_id IS NULL AND CTF_unlocked_hint.user_id = CTF_user.user_id), 0) AS score
+        FROM CTF_user
+        INNER JOIN CTF_team ON CTF_user.team_id = CTF_team.team_id
+        ORDER BY user_id";
 
     $result = $conn->query($query);
     $rows = $result->fetch_all(MYSQLI_ASSOC);
@@ -1042,10 +1067,8 @@ function get_teams_data($conn) {
             FROM CTF_unlocked_hint
             INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
             WHERE CTF_unlocked_hint.team_id = CTF_team.team_id), 0) AS score
-        FROM CTF_submit
-        RIGHT JOIN CTF_team ON CTF_submit.team_id = CTF_team.team_id
-        GROUP BY team_name
-        ORDER BY CTF_team.team_id";
+        FROM CTF_team
+        ORDER BY team_id";
 
     $result = $conn->query($query);
     $rows = $result->fetch_all(MYSQLI_ASSOC);
@@ -1055,7 +1078,7 @@ function get_teams_data($conn) {
 }
 
 function reset_ctf_solves($conn) {
-    $query = "DELETE FROM CTF_submit WHERE team_id IS NOT NULL";
+    $query = "DELETE FROM CTF_submit WHERE event_id IS NOT NULL";
     $result = $conn->query($query);
 
     if (!$result) return false;
@@ -1063,7 +1086,7 @@ function reset_ctf_solves($conn) {
 }
 
 function reset_ctf_unlocked_hints($conn) {
-    $query = "DELETE FROM CTF_unlocked_hint WHERE team_id IS NOT NULL";
+    $query = "DELETE FROM CTF_unlocked_hint WHERE event_id IS NOT NULL";
     $result = $conn->query($query);
 
     if (!$result) return false;
@@ -1074,7 +1097,7 @@ function get_user_solves($conn, $user_id) {
     $query = "SELECT challenge_name, points 
         FROM CTF_submit
         INNER JOIN CTF_challenge ON CTF_submit.challenge_id = CTF_challenge.challenge_id
-        WHERE user_id = $user_id AND team_id IS NULL";
+        WHERE user_id = $user_id AND event_id IS NULL";
 
     $result = $conn->query($query);
     $rows = $result->fetch_all(MYSQLI_ASSOC);
@@ -1100,7 +1123,7 @@ function get_num_user_solves($conn, $user_id) {
     $query = "SELECT COUNT(challenge_name) AS solves
         FROM CTF_submit
         INNER JOIN CTF_challenge ON CTF_submit.challenge_id = CTF_challenge.challenge_id
-        WHERE user_id = $user_id AND team_id IS NULL";
+        WHERE user_id = $user_id AND event_id IS NULL";
 
     $result = $conn->query($query);
     $row = $result->fetch_assoc();
@@ -1120,6 +1143,18 @@ function get_num_team_solves($conn, $team_id) {
 
     if(!$row) return false;
     return $row["solves"];
+}
+
+function get_team_members($conn, $team_id) {
+    $query = "SELECT username
+        FROM CTF_user
+        WHERE team_id = $team_id";
+
+    $result = $conn->query($query);
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+    if(!$rows) return false;
+    return $rows;
 }
 
 ?>
