@@ -1,13 +1,5 @@
 <?php
 
-// Server scuola
-// $site_directory = "~quintaa2122/informatica/CTF_h4ckus4t1";
-// $private_dir = "/home/quintaa2122/informatica/CTF_h4ckus4t1_private";
-
-// Server privato
-$site_directory = "";
-$private_dir = "/var/www/CTF_h4ckus4t1_private";
-
 $hash_options = [
     'cost' => 10,
 ];
@@ -31,29 +23,31 @@ function check_credentials($conn, $email, $password) {
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
-    if ($row && password_verify($password, $row['password_hash'])) return $row;
+    if ($row && password_verify($password, $row['password_hash'])) return $row["user_id"];
     return false;
 }
 
-function login($conn, $email, $password) {
-    if ($row = check_credentials($conn, $email, $password)) {
-        $_SESSION['user_id'] = $row["user_id"];
-        return true;
-    }
-    return false;
-}
-
-function check_if_user_exists($conn, $user_id) {
-    $query = "SELECT 1 FROM CTF_user WHERE user_id = ?";
+function is_account_active($conn, $user_id) {
+    $query = "SELECT active FROM CTF_user WHERE user_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $user_id);
 
     if(!$stmt->execute()) return false;
+    
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
     if (!$row) return false;
-    return true;
+    return $row["active"];
+}
+
+function login($conn, $email, $password) {
+    $user_id = check_credentials($conn, $email, $password);
+    if (!$user_id) return -1;
+    if (!is_account_active($conn, $user_id)) return -2;
+
+    $_SESSION['user_id'] = $user_id;
+    return 1;
 }
 
 function check_if_team_exists($conn, $team_id) {
@@ -97,14 +91,55 @@ function register_user($conn, $username, $email, $password) {
 
     $role = 'U';
     $password_hash = password_hash($password, PASSWORD_DEFAULT, $hash_options);
+
+    do {
+        $activation_code = bin2hex(random_bytes(32));
+        
+        $query = "SELECT 1 FROM CTF_user WHERE activation_code = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $activation_code);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+    } while($row);
+
+    $activation_expiry = date('y-m-d h:i:s', strtotime("+1 day"));
     
-    $query = "INSERT INTO CTF_user (username, password_hash, email, registration_date, last_login, role, team_id)
-        VALUES (?, ?, ?, NOW(), NOW(), ?, NULL)";
+    $query = "INSERT INTO CTF_user (username, password_hash, email, role, activation_code, activation_expiry)
+        VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssss", $username, $password_hash, $email, $role);
+    $stmt->bind_param("ssssss", $username, $password_hash, $email, $role, $activation_code, $activation_expiry);
 
     if (!$stmt->execute()) return -7;
+
+    global $mail;
+    $mail->IsHTML(true);
+    $mail->AddAddress($email);
+    $mail->Subject = "H4ckUs4t1 CTF verification";
+    $content = "<pre>Welcome $username!
+Here is your link to activate your account: <a href=\"" . $_SERVER['SERVER_NAME']."/email-verification.php?activation_code=$activation_code" . "\">" . $_SERVER['SERVER_NAME']."/email-verification.php?activation_code=$activation_code" . "</a>
+The link will expire in 1 day</pre>";
+
+    $mail->MsgHTML($content); 
+    if(!$mail->Send()) return -8;
+
     return 1;
+}
+
+function activate_user($conn, $activation_code) {
+    $query = "SELECT username FROM CTF_user WHERE activation_code = ? AND active = 0";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $activation_code);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    if (!$row) return false;
+
+    $query = "UPDATE CTF_user SET active = 1 WHERE activation_code = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $activation_code);
+    if(!$stmt->execute()) return false;
+    return $row["username"];
 }
 
 function check_if_username_is_used($conn, $username) {
@@ -829,13 +864,13 @@ function unlock_hint($conn, $hint_id, $user_id) {
         if (!$team_id) return false;
         if (get_user_role($conn, $user_id) != "A" && get_hint_cost($conn, $hint_id) > get_team_score($conn, $team_id)) return false;
 
-        $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, team_id, event_id, unlock_date) VALUES (?, ?, ?, ?, NOW())";
+        $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, team_id, event_id) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("iiii", $hint_id, $user_id, $team_id, get_last_event_id($conn));
     } else {
         if (get_user_role($conn, $user_id) != "A" && get_hint_cost($conn, $hint_id) > get_user_score($conn, $user_id)) return false;
 
-        $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id, unlock_date) VALUES (?, ?, NOW())";
+        $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id) VALUES (?, ?)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ii", $hint_id, $user_id);
     }
@@ -980,7 +1015,7 @@ function get_unlocked_hints($conn, $user_id, $from_date) {
     $query = "SELECT CTF_hint.hint_id, CTF_hint.description 
         FROM CTF_unlocked_hint
         INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
-        WHERE team_id = $team_id AND unlock_date >= '$from_date' AND event_id = ".get_last_event_id($conn);
+        WHERE team_id = $team_id AND unlocked_at >= '$from_date' AND event_id = ".get_last_event_id($conn);
     $result = $conn->query($query);
     $rows = $result->fetch_all(MYSQLI_ASSOC);
 

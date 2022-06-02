@@ -666,6 +666,12 @@ body.popup-body {
   background: linear-gradient(#141e30, #243b55);
 }
 
+.activation-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .admin-panel {
   display: flex;
   align-items: center;

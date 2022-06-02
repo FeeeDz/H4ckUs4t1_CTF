@@ -3,6 +3,7 @@ require "inc/init.php";
 
 if(!isset($_SESSION["user_id"]) && isset($_POST["submit"])) {
     $error = register_user($conn, $_POST["username"], $_POST["email"], $_POST["password"]);
+    $registered = false;
     switch($error) {
         case -1:
             $form_error = "Username already used";
@@ -12,8 +13,14 @@ if(!isset($_SESSION["user_id"]) && isset($_POST["submit"])) {
             $form_error = "Email already used";
             break;
 
+        case -8:
+            $form_error = "Invalid email";
+            break;
+
         case 1:
-            login($conn, $_POST["email"], $_POST["password"]);
+            $registered = true;
+            // exit(header("Location: " . basename($_SERVER['PHP_SELF'])."?"));
+            // login($conn, $_POST["email"], $_POST["password"]);
             break;
     }
 }
@@ -31,6 +38,12 @@ require "inc/head.php";
         <?php require "inc/navbar.php"; ?>
     </nav>
     <div id="main" class="register-user">
+    <?php if($registered): ?>
+        <form method="POST" class="generic-form">
+            <h2 class="title">Account successfully registered!</h2>
+            <h3>Check your email to verify your account and be able to log in</h3>
+        </form>
+    <?php else: ?>
         <form method="POST" class="generic-form">
             <h2 class="title">Register</h2>
             <h3 class="error"><?php echo $form_error; ?></h3>
@@ -52,6 +65,7 @@ require "inc/head.php";
             </div>
             <button type="submit" name="submit" class="generic-form__button">Register</button>
         </form>
+    <?php endif; ?>
     </div>
     <div id="footer">
         <?php require "inc/footer.php"; ?>

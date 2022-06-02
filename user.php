@@ -6,7 +6,7 @@ $username = get_username_from_id($conn, $user_id);
 $team_name = get_user_team_name($conn, $user_id);
 
 if (!$user_id && !isset($_SESSION["user_id"])) exit(header("Location: login.php"));
-if (!check_if_user_exists($conn, $user_id)) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
+if (!is_account_active($conn, $user_id)) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
 
 $title = "Account - H4ckUs4t1 CTF";
 require "inc/head.php";
