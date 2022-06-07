@@ -29,9 +29,10 @@ if ($leaderboard_type != "training" && $leaderboard_type != "official") exit(hea
     <script>
 
         var web_server_url = window.location.origin + "<?php echo $site_directory; ?>";
+        var leaderboard_type = "<?php echo $leaderboard_type; ?>";
 
         function refresh_leaderboard() {
-            fetch(web_server_url + "/api/get-leaderboard-html.php")
+            fetch(web_server_url + "/api/get-leaderboard-html.php?type=" + encodeURIComponent(leaderboard_type))
             .then(response => response.text())
             .then((response) => {
                     document.querySelector('table').innerHTML = response;

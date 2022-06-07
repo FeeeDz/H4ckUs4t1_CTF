@@ -358,7 +358,7 @@ require "inc/head.php";
                     <input type="datetime-local" name="end_date" value="<?php echo $event_data["end_date"]; ?>" placeholder=" " required>
                     <label>End Date</label>
                 </div>
-                <button type="submit" name="submit" class="generic-form__button">Edit event</button>
+                <button type="submit" name="submit" class="generic-form__button no-margin">Edit event</button>
             </form>
         <?php } ?>
     <?php } elseif ($_GET["action"] == "delete_event") { ?>
@@ -373,7 +373,7 @@ require "inc/head.php";
             </select>
             <button type="submit" name="submit" class="generic-form__button">Delete event</button>
         </form>
-    <!-- <?php } elseif ($_GET["action"] == "reset_solves_hints") { ?>
+    <!-- <?php //} elseif ($_GET["action"] == "reset_solves_hints") { ?>
         <form method="POST" class="generic-form">
             <h2 class="title">Reset CTF solves and hints</h2>
             <div class="generic-form__input-box">
@@ -387,6 +387,7 @@ require "inc/head.php";
             <tr>
                 <th>User ID</th>
                 <th>Username</th>
+                <th>Team Name</th>
                 <th>Email</th>
                 <th>Score</th>
             </tr>
@@ -395,6 +396,7 @@ require "inc/head.php";
                 <tr>
                     <td><?php echo $row["user_id"]; ?></td>
                     <td><a class="user-team-link" href="user.php?username=<?php echo $row["username"]; ?>"><?php echo $row["username"]; ?></a></td>
+                    <td><a class="user-team-link" href="team.php?team_name=<?php echo $row["team_name"]; ?>"><?php echo $row["team_name"]; ?></a></td>
                     <td><?php echo $row["email"]; ?></td>
                     <td><?php echo $row["score"]; ?></td>
                 </tr>

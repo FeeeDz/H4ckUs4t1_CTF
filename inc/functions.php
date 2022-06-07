@@ -931,7 +931,7 @@ function compute_challenge_points($conn, $challenge_id) {
 function get_challenge_solves($conn, $challenge_id) {
     $query = "SELECT COUNT(challenge_id) AS solves 
         FROM CTF_submit 
-        INNER JOIN CTF_team ON CTF_submit.team_id = CTF_team.team_id
+        LEFT JOIN CTF_team ON CTF_submit.team_id = CTF_team.team_id
         INNER JOIN CTF_user ON CTF_submit.user_id = CTF_user.user_id
         WHERE team_name != 'H4ckUs4t1' AND role != 'A' AND challenge_id = ? AND CTF_submit.event_id = ".get_current_event_id($conn);
     $stmt = $conn->prepare($query);
@@ -1070,7 +1070,7 @@ function get_users_data($conn) {
             INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
             WHERE event_id IS NULL AND CTF_unlocked_hint.user_id = CTF_user.user_id), 0) AS score
         FROM CTF_user
-        INNER JOIN CTF_team ON CTF_user.team_id = CTF_team.team_id
+        LEFT JOIN CTF_team ON CTF_user.team_id = CTF_team.team_id
         ORDER BY user_id";
 
     $result = $conn->query($query);
@@ -1089,7 +1089,7 @@ function get_teams_data($conn) {
             IFNULL( (SELECT SUM(cost)
             FROM CTF_unlocked_hint
             INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
-            WHERE CTF_unlocked_hint.team_id = CTF_team.team_id), 0) AS score
+            WHERE CTF_unlocked_hint.team_id = CTF_team.team_id AND CTF_unlocked_hint.event_id = ".get_last_event_id($conn)."), 0) AS score
         FROM CTF_team
         ORDER BY team_id";
 

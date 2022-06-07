@@ -39,7 +39,7 @@
         </a>
         <a id="team-button" href="team.php">
             <span class="material-icons">group</span>
-            <span><?php if ($team_name = get_user_team_name($conn, $_SESSION["user_id"])) echo $team_name; else echo "Team"; ?></span>
+            <span><?php if ($nav_team_name = get_user_team_name($conn, $_SESSION["user_id"])) echo $nav_team_name; else echo "Team"; ?></span>
         </a>
         <?php if (get_user_role($conn, $_SESSION["user_id"]) == 'A') { ?>
             <a id="admin-panel-button" href="admin-panel.php">
