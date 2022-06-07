@@ -651,22 +651,22 @@ function delete_event($conn, $event_id) {
 
 function edit_challenge_data($conn, $challenge_id, $description, $service, $type, $initial_points, $minimum_points, $points_decay, $author) {
     if($initial_points < $minimum_points) return false;
-    if(get_challenge_type($conn, $challenge_id) != $type) {
-        $challenge_data = get_challenge_data($conn, $challenge_id);
-        $hints = get_hints($conn, $challenge_id);
-        $resources = get_db_challenge_resources($conn, $challenge_id);
+    // if(get_challenge_type($conn, $challenge_id) != $type) {
+    //     $challenge_data = get_challenge_data($conn, $challenge_id);
+    //     $hints = get_hints($conn, $challenge_id);
+    //     $resources = get_db_challenge_resources($conn, $challenge_id);
         
-        delete_challenge($conn, $challenge_id);
-        $challenge_id = add_challenge($conn, $challenge_data["challenge_name"], $challenge_data["flag"], $description, $service, $type, $challenge_data["category"], $initial_points, $minimum_points, $points_decay, $author);
-        foreach ($hints as $hint) {
-            add_hint($conn, $challenge_id, $hint["description"], $hint["cost"]);
-        }
-        foreach ($resources as $resource) {
-            add_challenge_resource($conn, $challenge_id, $resource["filename"]);
-        }
+    //     delete_challenge($conn, $challenge_id);
+    //     $challenge_id = add_challenge($conn, $challenge_data["challenge_name"], $challenge_data["flag"], $description, $service, $type, $challenge_data["category"], $initial_points, $minimum_points, $points_decay, $author);
+    //     foreach ($hints as $hint) {
+    //         add_hint($conn, $challenge_id, $hint["description"], $hint["cost"]);
+    //     }
+    //     foreach ($resources as $resource) {
+    //         add_challenge_resource($conn, $challenge_id, $resource["filename"]);
+    //     }
 
-        return true;
-    }
+    //     return true;
+    // }
     
     $query = "UPDATE CTF_challenge SET description = ?, service = ?, type = ?, initial_points = ?, minimum_points = ?, points_decay = ?, author = ? WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
