@@ -1,9 +1,8 @@
 <?php
 require_once "inc/init.php";
+delete_unverified_accounts($conn);
 
-// if (activate_user($conn, $_GET["activation_code"])) exit(header("refresh:5; url=index.php"));
-// else exit(header("refresh:5;url=index.php"));
-
+if (isset($_SESSION["user_id"])) exit(header("Location: index.php"));
 $username = activate_user($conn, $_GET["activation_code"]);
 
 $title = "Account - H4ckUs4t1 CTF";

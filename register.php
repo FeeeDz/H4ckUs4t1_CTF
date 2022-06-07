@@ -48,7 +48,7 @@ require "inc/head.php";
             <h2 class="title">Register</h2>
             <h3 class="error"><?php echo $form_error; ?></h3>
             <div class="generic-form__input-box">
-                <input type="text" name="username" placeholder=" " minlength="3" maxlength="16" pattern="^(\d|\w)+$" autocomplete="username" title="string with 16 non-special characters and no spaces" required>
+                <input type="text" name="username" placeholder=" " minlength="3" maxlength="16" pattern="^(\d|\w)+$" autocomplete="username" title="string with 3 to 16 non-special characters and no spaces" required>
                 <label>Username</label>
             </div>
             <div class="generic-form__input-box">

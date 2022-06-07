@@ -1,10 +1,7 @@
 <?php 
 require_once "inc/init.php";
 
-if (!isset($_SESSION["user_id"]) || get_user_role($conn, $_SESSION["user_id"]) != 'A') {
-    $redirect = isset($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
-    exit(header("Location: $redirect"));
-}
+if (get_user_role($conn, $_SESSION["user_id"]) != 'A') exit(header("Location: index.php"));
 
 if (isset($_POST["submit"])) {
     $success = true;

@@ -93,7 +93,7 @@ require "inc/head.php";
             <h2 class="title">Create Team</h2>
             <h3 class="error"><?php echo $form_error; ?></h3>
             <div class="generic-form__input-box">
-                <input type="text" name="team_name" placeholder=" " minlength="3" maxlength="32" pattern="^(\d|\w)+$" title="string with 32 non-special characters and no spaces" required>
+                <input type="text" name="team_name" placeholder=" " minlength="3" maxlength="16" pattern="^(\d|\w)+$" title="string with 3 to 16 non-special characters and no spaces" required>
                 <label>Team Name</label>
             </div>
             <button type="submit" name="submit" class="generic-form__button no-margin">Create</button>

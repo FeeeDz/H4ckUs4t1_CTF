@@ -80,6 +80,8 @@ function logout() {
 }
 
 function register_user($conn, $username, $email, $password) {
+    delete_unverified_accounts($conn);
+
     if(check_if_username_is_used($conn, $username)) return -1;
     if(check_if_email_is_used($conn, $email)) return -2;
     if(strlen($username) < 3 || strlen($username) > 16) return -3;
@@ -135,11 +137,17 @@ function activate_user($conn, $activation_code) {
     $row = $result->fetch_assoc();
     if (!$row) return false;
 
-    $query = "UPDATE CTF_user SET active = 1 WHERE activation_code = ?";
+    $query = "UPDATE CTF_user SET active = 1, activation_code = NULL, activation_expiry = NULL WHERE activation_code = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $activation_code);
     if(!$stmt->execute()) return false;
     return $row["username"];
+}
+
+function delete_unverified_accounts($conn) {
+    $query = "DELETE FROM CTF_user WHERE active = 0 AND activation_expiry IS NOT NULL AND activation_expiry < NOW()";
+    if (!$conn->query($query)) return false;
+    return true;
 }
 
 function check_if_username_is_used($conn, $username) {
@@ -301,7 +309,7 @@ function get_team_name($conn, $team_id) {
 }
 
 function register_team($conn, $team_name) {
-    if(strlen($team_name) < 3 || strlen($team_name) > 32) return false;
+    if(strlen($team_name) < 3 || strlen($team_name) > 16) return false;
     if(strpos($team_name, ' ') !== false) return false;
 
     do {
@@ -539,14 +547,14 @@ function get_db_challenge_resources($conn, $challenge_id) {
 }
 
 function get_challenge_categories($conn) {
-    $query = "SELECT category FROM CTF_challenge_category";
-    $result = $conn->query($query);
-    $rows = $result->fetch_all();
-
-    if(!$rows) return false;
-
+    global $private_dir;
+    $challenges_dir = $private_dir."/challenges";
     $categories = array();
-    foreach ($rows as $item) array_push($categories, array_values($item)[0]);
+
+    foreach (array_diff(scandir($challenges_dir), array('.', '..')) as $category) {
+        if (is_dir($challenges_dir . '/' . $category)) array_push($categories, $category);
+    }
+
     return $categories;
 }
 
