@@ -1,5 +1,5 @@
 <?php 
-require "inc/init.php";
+require_once "inc/init.php";
 
 if(!isset($_SESSION["user_id"]) && isset($_POST["submit"])) {
     $error = login($conn, $_POST["email"], $_POST["password"]);

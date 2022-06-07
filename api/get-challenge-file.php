@@ -1,5 +1,5 @@
 <?php
-require "../inc/init.php";
+require_once __DIR__ . "/../inc/init.php";
 
 if (!isset($_GET["challenge_name"]) || !isset($_GET["filename"])) return false;
  

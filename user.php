@@ -1,5 +1,5 @@
 <?php 
-require "inc/init.php";
+require_once "inc/init.php";
 
 $user_id = isset($_GET["username"]) ? get_user_id_from_username($conn, $_GET["username"]) : (isset($_SESSION["user_id"]) ? $_SESSION["user_id"] : NULL);
 $username = get_username_from_id($conn, $user_id);
@@ -34,10 +34,10 @@ require "inc/head.php";
                     <h3>Score: </h3>
                     <h4><?php echo get_user_score($conn, $user_id); ?></h4>
                 </div>
-                <?php if (get_num_user_solves($conn, $user_id) != 0) : ?> 
+                <?php if ($solves = get_user_solves($conn, $user_id)) : ?> 
                     <div class="solves-container">
                         <h3 style="display: inline-block;">Solves: </h3><br>
-                        <?php foreach (get_user_solves($conn, $user_id) as $solve) : ?>
+                        <?php foreach ($solves as $solve) : ?>
                             <div class="solve">
                                 <div class="challenge-name"><?php echo $solve["challenge_name"]; ?></div>
                                 <div class="points"><?php echo $solve["points"]; ?></div>

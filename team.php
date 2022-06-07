@@ -1,5 +1,5 @@
 <?php 
-require "inc/init.php";
+require_once "inc/init.php";
 
 
 $team_id = isset($_GET["team_name"]) ? get_team_id_from_team_name($conn, $_GET["team_name"]) : (isset($_SESSION["user_id"]) ? get_user_team_id($conn, $_SESSION["user_id"]) : NULL);
@@ -43,10 +43,10 @@ require "inc/head.php";
                         <a class="user-team-link" href="user.php?username=<?php echo $member["username"]; ?>"><?php echo $member["username"]; ?></a>
                     <?php endforeach; ?>
                 </div>
-                <?php if (get_num_team_solves($conn, $team_id) != 0) : ?> 
+                <?php if ($solves = get_team_solves($conn, $team_id)) : ?> 
                     <div class="solves-container">
                         <h3>Solves: </h3>
-                        <?php foreach (get_team_solves($conn, $team_id) as $solve) : ?>
+                        <?php foreach ($solves as $solve) : ?>
                             <div class="solve">
                                 <div class="challenge-name"><?php echo $solve["challenge_name"]; ?></div>
                                 <div class="points"><?php echo $solve["points"]; ?></div>

@@ -1,5 +1,5 @@
 <?php 
-require "inc/init.php";
+require_once "inc/init.php";
 
 $title = "H4ckUs4t1 CTF";
 require "inc/head.php";

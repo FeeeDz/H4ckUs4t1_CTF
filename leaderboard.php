@@ -1,5 +1,5 @@
 <?php 
-require "inc/init.php";
+require_once "inc/init.php";
 
 $title = "Leaderboard - H4ckUs4t1 CTF";
 require "inc/head.php";
@@ -20,28 +20,29 @@ if ($leaderboard_type != "training" && $leaderboard_type != "official") exit(hea
             <a href="leaderboard.php?type=official" class="<?php if ($leaderboard_type == "official") echo "selected"; ?>">Official</a>
         </div>
         <table>
-            <tr>
-                <th>Position</th>
-                <th><?php if ($leaderboard_type == "training") echo "Username"; else echo "Team Name"; ?></th>
-                <th>Score</th>
-            </tr>
-            <?php $leaderboard_data = $leaderboard_type == "training" ? get_training_leaderboard($conn) : get_official_leaderboard($conn);   
-                foreach ($leaderboard_data as $index => $row): ?>
-                <tr>
-                    <td><?php echo $index+1; ?></td>
-                    <td>
-                        <?php if ($leaderboard_type == "training"): ?>
-                            <a class="user-team-link" href="user.php?username=<?php echo $row["username"]; ?>"><?php echo $row["username"]; ?></a>
-                        <?php else: ?>
-                            <a class="user-team-link" href="team.php?team_name=<?php echo $row["team_name"]; ?>"><?php echo $row["team_name"]; ?></a>
-                        <?php endif; ?>
-                    <td><?php echo $row["score"]; ?></td>
-                </tr>
-            <?php endforeach; ?>
+            <?php require "api/get-leaderboard-html.php" ?>
         </table>
     </div>
     <div id="footer">
         <?php require "inc/footer.php"; ?>
     </div>
+    <script>
+
+        var web_server_url = window.location.origin + "<?php echo $site_directory; ?>";
+
+        function refresh_leaderboard() {
+            fetch(web_server_url + "/api/get-leaderboard-html.php")
+            .then(response => response.text())
+            .then((response) => {
+                    document.querySelector('table').innerHTML = response;
+                });
+            
+        }
+
+        setInterval(function() { 
+            refresh_leaderboard();
+        } , 5000);
+
+    </script>
 </body>
 </html>

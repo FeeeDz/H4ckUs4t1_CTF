@@ -1,5 +1,5 @@
 <?php
-require "inc/init.php";
+require_once "inc/init.php";
 
 // if (activate_user($conn, $_GET["activation_code"])) exit(header("refresh:5; url=index.php"));
 // else exit(header("refresh:5;url=index.php"));

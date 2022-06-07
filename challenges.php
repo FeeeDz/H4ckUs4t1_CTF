@@ -1,5 +1,5 @@
 <?php 
-require "inc/init.php";
+require_once "inc/init.php";
 
 if (!isset($_SESSION["user_id"])) exit(header("Location: login.php?redirect=challenges.php"));
 else if (is_event_started($conn) && !get_user_team_id($conn, $_SESSION["user_id"])) exit(header("Location: team.php?redirect=challenges.php"));
@@ -65,7 +65,7 @@ require "inc/head.php";
     </div>
     <script>
 
-        var datetime = new Date().toLocaleString("zh-CN");
+        var refresh_hints_from_date = new Date().toLocaleString("zh-CN");
         // var web_server_url = window.location.origin + "/~quintaa2122/informatica/CTF_h4ckus4t1";
         var web_server_url = window.location.origin + "<?php echo $site_directory; ?>";
         var opened_challenge = null;
@@ -88,18 +88,19 @@ require "inc/head.php";
         }
 
         function unlock_hint(event, hint_elem){
-            console.log(hint_elem)
             var desc_elem = hint_elem.querySelector(".hint__description");
             var id = hint_elem.querySelector(".hint__id").innerHTML;
             fetch(web_server_url + "/api/unlock-hint.php?hint_id=" + id)
-                .then(response => response.json())
-                .then(data => {
-                    desc_elem.innerHTML = data;
+                .then(() => { refresh_unlocked_hints(); })
+                .then(() => { refresh_hints_from_date = new Date().toLocaleString("zh-CN"); })
+                // .then(response => response.json())
+                // .then(data => {
+                //     desc_elem.innerHTML = data;
 
-                    if (desc_elem.innerHTML != "false") {
-                        hint_elem.classList.replace("locked", "unlocked");
-                    }   
-                });
+                //     if (desc_elem.innerHTML != "false") {
+                //         hint_elem.classList.replace("locked", "unlocked");
+                //     }   
+                // });
         }
 
         function submit_flag(event, flag_elem) {
@@ -110,30 +111,31 @@ require "inc/head.php";
             challenge_elem = flag_elem.parentElement;
 
             fetch(web_server_url + "/api/submit-flag.php?challenge_name=" + challenge_name + "&flag=" + flag)
-                .then(response => response.json())
-                .then(data => {
-                    if (data == true) {
-                        challenge_elem.classList.add("solved");
-                        flag_elem.classList.remove("wrong");
-                        flag_elem.classList.add("right");
-                        setTimeout(function(){
-                            flag_elem.classList.remove('right');
-                                //....and whatever else you need to do
-                        }, 3000);
-                        refresh_solves_and_points();
-                    } else {
-                        flag_elem.classList.remove("right");
-                        flag_elem.classList.add("wrong");
-                        setTimeout(function(){
-                            flag_elem.classList.remove('wrong');
-                                //....and whatever else you need to do
-                        }, 3000);
-                    }
-                });
+                .then(() => { refresh_solves_and_points(); })
+                // .then(response => response.json())
+                // .then(data => {
+                //     if (data == true) {
+                //         challenge_elem.classList.add("solved");
+                //         flag_elem.classList.remove("wrong");
+                //         flag_elem.classList.add("right");
+                //         setTimeout(function(){
+                //             flag_elem.classList.remove('right');
+                //                 //....and whatever else you need to do
+                //         }, 3000);
+                //         refresh_solves_and_points();
+                //     } else {
+                //         flag_elem.classList.remove("right");
+                //         flag_elem.classList.add("wrong");
+                //         setTimeout(function(){
+                //             flag_elem.classList.remove('wrong');
+                //                 //....and whatever else you need to do
+                //         }, 3000);
+                //     }
+                // });
         }
 
         function refresh_solves_and_points() {
-            fetch(web_server_url + "/api/get-solves-and-points.php?from_date=" + encodeURIComponent(datetime))
+            fetch(web_server_url + "/api/get-solves-and-points.php")
                 .then(response => response.json())
                 .then(data => {
                     if (!data) return;
@@ -148,13 +150,14 @@ require "inc/head.php";
                             solves_elem.innerHTML = chall.solves + solves_elem.innerHTML.substring(solves_elem.innerHTML.indexOf("<"));
                             points_elem.innerHTML = chall.points + points_elem.innerHTML.substring(points_elem.innerHTML.indexOf("<"));
                             if (chall.solved == "1") challenge_elem.classList.add("solved");
+                            else if (chall.solved == "0") challenge_elem.classList.remove("solved");
                         }
                     });
                 });
         }
 
         function refresh_unlocked_hints() {
-            fetch(web_server_url + "/api/get-unlocked-hints.php?from_date=" + encodeURIComponent(datetime))
+            fetch(web_server_url + "/api/get-unlocked-hints.php?from_date=" + encodeURIComponent(refresh_hints_from_date))
                 .then(response => response.json())
                 .then(data => {
                     if (!data) return;
@@ -176,7 +179,7 @@ require "inc/head.php";
         setInterval(function() { 
             refresh_solves_and_points();
             refresh_unlocked_hints();
-            datetime = new Date().toLocaleString("zh-CN");
+            refresh_hints_from_date = new Date().toLocaleString("zh-CN");
         } , 5000);
 
     </script>
