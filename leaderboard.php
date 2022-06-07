@@ -36,7 +36,6 @@ if ($leaderboard_type != "training" && $leaderboard_type != "official") exit(hea
             .then((response) => {
                     document.querySelector('table').innerHTML = response;
                 });
-            
         }
 
         setInterval(function() { 

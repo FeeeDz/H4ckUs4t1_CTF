@@ -26,6 +26,7 @@
                         document.getElementById("countdown-timer").classList.remove("hidden");
                         time_label.innerHTML = data.state;
                         ctfDate = new Date(data.date);
+                        updateTime();
                     } else {
                         document.getElementById("countdown-timer").classList.add("hidden");
                     }
