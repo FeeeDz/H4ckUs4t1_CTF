@@ -5,7 +5,7 @@
 </label>
 <ul id="nav__menu">
     <?php if (basename($_SERVER['PHP_SELF']) == "index.php") : ?>
-        <li><a id="nav__logo" href="index.php" style="width: fit-content;">
+        <li><a id="nav__logo" href="index.php">
             <img src="images/logo_montani.png">
         </a></li>
     <?php else : ?>

@@ -1,6 +1,6 @@
 $login-button-image-size: 18px;
 $login-button-padding: 8px;
-$nav-logo-width: 3rem;
+$nav-logo-height: 50px;
 
 //color variables
 $clr-primary:   skyblue;
@@ -151,7 +151,7 @@ body {
                 justify-content: flex-start;
 
                 img {
-                    width: $nav-logo-width;
+                    height: $nav-logo-height;
                 }
             }
 

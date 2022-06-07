@@ -126,6 +126,7 @@ body.popup-body {
 }
 #nav__menu li #nav__logo {
   justify-content: flex-start;
+  height: 50px;
 }
 #nav__menu li #nav__logo img {
   width: 3rem;
