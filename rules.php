@@ -26,7 +26,7 @@ require "inc/head.php";
                 <li class="arrow">All flags are case sensitive unless specified.</li>
                 <li class="arrow">Scoring is dynamic and decreases in value as more participants solve the problem. Most challenges start at 500 points.</li>
                 <!-- <li class="arrow">Each problem has a tag telling you whether it's "Easy", "Medium", or "Hard" - these may not be perfect, but they are generally correct.</li> -->
-                <li class="arrow">If any challenges are broken, you feel the flag you have is correct, or you have any other questions, please reach out to an admin on our <a href="https://discord.gg/dkZvT4exTV">Discord</a>.</li>
+                <li class="arrow">If any challenges are broken, you feel the flag you have is correct, or you have any other questions, please reach out to an admin on our <a class="link" href="https://discord.gg/dkZvT4exTV">Discord</a>.</li>
                 <li class="arrow">If you do anything that we believe to be directly against the spirit of the competition, we reserve the right to remove anyone at any point. Please don't make us do that. This is for your learning and benefit.</li>
             </ul>
         </div>

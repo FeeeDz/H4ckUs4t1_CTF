@@ -17,9 +17,9 @@ if ($leaderboard_type != "training" && $leaderboard_type != "official") exit(jso
         <td><?php echo $index+1; ?></td>
         <td>
             <?php if ($leaderboard_type == "training"): ?>
-                <a class="user-team-link" href="user.php?username=<?php echo $row["username"]; ?>"><?php echo $row["username"]; ?></a>
+                <a class="link" href="user.php?username=<?php echo $row["username"]; ?>"><?php echo $row["username"]; ?></a>
             <?php else: ?>
-                <a class="user-team-link" href="team.php?team_name=<?php echo $row["team_name"]; ?>"><?php echo $row["team_name"]; ?></a>
+                <a class="link" href="team.php?team_name=<?php echo $row["team_name"]; ?>"><?php echo $row["team_name"]; ?></a>
             <?php endif; ?>
         <td><?php echo $row["score"]; ?></td>
     </tr>

@@ -334,12 +334,13 @@ body.popup-body {
   font-size: 20px;
 }
 
-.user-team-link {
+.link {
   text-decoration: none;
   color: #3292ff;
 }
-.user-team-link:hover {
+.link:hover {
   filter: brightness(65%);
+  text-decoration: underline;
 }
 
 .challenges {

@@ -394,12 +394,13 @@ body {
     }
 }
 
-.user-team-link {
+.link {
     text-decoration: none;
     color: #3292ff;
 
     &:hover {
         filter: brightness(65%);
+        text-decoration: underline;
     }
 }
 

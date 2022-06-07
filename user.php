@@ -27,7 +27,7 @@ require "inc/head.php";
                 <?php if ($team_name): ?>
                     <div class="info-box">
                         <h3>Team: </h3>
-                        <a class="user-team-link" href="team.php?team_name=<?php echo $team_name; ?>"><?php echo $team_name; ?></a>
+                        <a class="link" href="team.php?team_name=<?php echo $team_name; ?>"><?php echo $team_name; ?></a>
                     </div>
                 <?php endif; ?>
                 <div class="info-box">

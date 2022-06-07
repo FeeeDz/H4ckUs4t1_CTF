@@ -40,7 +40,7 @@ require "inc/head.php";
                 <div class="members">
                     <h3>Members: </h3>
                     <?php foreach (get_team_members($conn, $team_id) as $member): ?>
-                        <a class="user-team-link" href="user.php?username=<?php echo $member["username"]; ?>"><?php echo $member["username"]; ?></a>
+                        <a class="link" href="user.php?username=<?php echo $member["username"]; ?>"><?php echo $member["username"]; ?></a>
                     <?php endforeach; ?>
                 </div>
                 <?php if ($solves = get_team_solves($conn, $team_id)) : ?> 
@@ -55,7 +55,7 @@ require "inc/head.php";
                     </div>
                 <?php endif; ?> 
                 <?php if ($team_id == get_user_team_id($conn, $_SESSION["user_id"])): ?>
-                <button type="submit" name="action" value="quit" class="generic-form__button">Leave</button><br>
+                <button type="submit" name="action" value="quit" class="generic-form__button" style="margin-top: 10px;">Leave</button><br>
                 <?php endif; ?>
             </form>
         <?php } else { ?>
