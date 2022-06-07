@@ -315,8 +315,8 @@ function register_team($conn, $team_name) {
         $row = $result->fetch_assoc();
     } while($row);
 
-    $query = "INSERT INTO CTF_team (team_name, token, registration_date)
-    VALUES (?, ?, NOW())";
+    $query = "INSERT INTO CTF_team (team_name, token)
+    VALUES (?, ?)";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ss", $team_name, $token);
     if(!$stmt->execute()) return false;
@@ -341,7 +341,7 @@ function join_team($conn, $user_id, $token) {
 function quit_team($conn, $user_id) {
     $team_id = get_user_team_id($conn, $user_id);
     
-    $query = "UPDATE CTF_user SET team_id = NULL WHERE user_id = ?";
+    $query = "UPDATE CTF_user SET team_id IS NULL WHERE user_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $user_id);
     $stmt->execute();
@@ -514,7 +514,7 @@ function is_hint_unlocked($conn, $hint_id, $user_id) {
         $query = "SELECT 1 FROM CTF_unlocked_hint WHERE hint_id = ? AND team_id = $team_id AND CTF_unlocked_hint.event_id = ".get_current_event_id($conn);
     }
     else {
-        $query = "SELECT 1 FROM CTF_unlocked_hint WHERE hint_id = ? AND user_id = $user_id AND CTF_unlocked_hint.event_id = ".get_current_event_id($conn);
+        $query = "SELECT 1 FROM CTF_unlocked_hint WHERE hint_id = ? AND user_id = $user_id AND CTF_unlocked_hint.event_id IS NULL";
     }
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $hint_id);
@@ -890,7 +890,7 @@ function is_challenge_solved($conn, $challenge_id, $user_id) {
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ii", $challenge_id, $team_id);
     } else if($challenge_type == "T") {
-        $query = "SELECT 1 FROM CTF_submit WHERE challenge_id = ? AND user_id = ? AND CTF_submit.event_id = ".get_current_event_id($conn);
+        $query = "SELECT 1 FROM CTF_submit WHERE challenge_id = ? AND user_id = ? AND CTF_submit.event_id IS NULL";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ii", $challenge_id, $user_id);
     } else return false;
@@ -924,7 +924,8 @@ function get_challenge_solves($conn, $challenge_id) {
     $query = "SELECT COUNT(challenge_id) AS solves 
         FROM CTF_submit 
         INNER JOIN CTF_team ON CTF_submit.team_id = CTF_team.team_id
-        WHERE team_name != 'H4ckUs4t1' AND challenge_id = ? AND CTF_submit.event_id = ".get_current_event_id($conn);
+        INNER JOIN CTF_user ON CTF_submit.user_id = CTF_user.user_id
+        WHERE team_name != 'H4ckUs4t1' AND role != 'A' AND challenge_id = ? AND CTF_submit.event_id = ".get_current_event_id($conn);
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $challenge_id);
     $stmt->execute();
@@ -960,13 +961,13 @@ function submit_flag($conn, $challenge_id, $user_id, $flag) {
         if ($challenge_type != "O") return false;
         if (!$team_id) return false;
 
-        $query = "INSERT INTO CTF_submit (user_id, team_id, challenge_id, event_id, points, submit_date) VALUES (?, ?, ?, ?, ?)";
+        $query = "INSERT INTO CTF_submit (user_id, team_id, challenge_id, event_id, points) VALUES (?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("iiiii", $user_id, $team_id, $challenge_id, $event_id, $points);
     } else {
         if ($challenge_type != "T") return false;
 
-        $query = "INSERT INTO CTF_submit (user_id, challenge_id, points, submit_date) VALUES (?, ?, ?, NOW())";
+        $query = "INSERT INTO CTF_submit (user_id, challenge_id, points) VALUES (?, ?, ?)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("iii", $user_id, $challenge_id, $points);
     }

@@ -93,14 +93,6 @@ require "inc/head.php";
             fetch(web_server_url + "/api/unlock-hint.php?hint_id=" + id)
                 .then(() => { refresh_unlocked_hints(); })
                 .then(() => { refresh_hints_from_date = new Date().toLocaleString("zh-CN"); })
-                // .then(response => response.json())
-                // .then(data => {
-                //     desc_elem.innerHTML = data;
-
-                //     if (desc_elem.innerHTML != "false") {
-                //         hint_elem.classList.replace("locked", "unlocked");
-                //     }   
-                // });
         }
 
         function submit_flag(event, flag_elem) {
@@ -112,26 +104,6 @@ require "inc/head.php";
 
             fetch(web_server_url + "/api/submit-flag.php?challenge_name=" + challenge_name + "&flag=" + flag)
                 .then(() => { refresh_solves_and_points(); })
-                // .then(response => response.json())
-                // .then(data => {
-                //     if (data == true) {
-                //         challenge_elem.classList.add("solved");
-                //         flag_elem.classList.remove("wrong");
-                //         flag_elem.classList.add("right");
-                //         setTimeout(function(){
-                //             flag_elem.classList.remove('right');
-                //                 //....and whatever else you need to do
-                //         }, 3000);
-                //         refresh_solves_and_points();
-                //     } else {
-                //         flag_elem.classList.remove("right");
-                //         flag_elem.classList.add("wrong");
-                //         setTimeout(function(){
-                //             flag_elem.classList.remove('wrong');
-                //                 //....and whatever else you need to do
-                //         }, 3000);
-                //     }
-                // });
         }
 
         function refresh_solves_and_points() {
