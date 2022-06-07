@@ -84,7 +84,7 @@ body.popup-body {
   cursor: pointer;
   margin: 0rem 1rem;
   right: 0;
-  top: 2rem;
+  top: 31px;
   color: #e1e5ee;
 }
 #nav__toggle__menu {
@@ -126,10 +126,9 @@ body.popup-body {
 }
 #nav__menu li #nav__logo {
   justify-content: flex-start;
-  height: 50px;
 }
 #nav__menu li #nav__logo img {
-  width: 3rem;
+  height: 50px;
 }
 #nav__menu li #nav__nav {
   display: flex;
@@ -853,7 +852,7 @@ body.popup-body {
   color: #f9fbff;
 }
 
-@media only screen and (max-width: 1130px) {
+@media only screen and (max-width: 1230px) {
   #nav.normal-user #nav__toggle {
     display: unset;
   }
@@ -874,7 +873,7 @@ body.popup-body {
     gap: 0.5rem;
   }
 }
-@media only screen and (max-width: 1270px) {
+@media only screen and (max-width: 1400px) {
   #nav.admin #nav__toggle {
     display: unset;
   }

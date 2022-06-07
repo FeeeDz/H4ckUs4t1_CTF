@@ -108,7 +108,7 @@ body {
         cursor: pointer;
         margin: 0rem 1rem;
         right: 0;
-        top: calc(($nav-logo-width + 1rem) / 2);
+        top: calc(($nav-logo-height + 12px) / 2);
         color: $clr-gray300;
 
         &__menu {
@@ -989,7 +989,7 @@ body {
     }
 }
 
-@media only screen and (max-width: 1130px) {
+@media only screen and (max-width: 1230px) {
     #nav.normal-user{
         #nav__toggle {
             display: unset;
@@ -1018,7 +1018,7 @@ body {
     }
 }
 
-@media only screen and (max-width: 1270px) {
+@media only screen and (max-width: 1400px) {
     #nav.admin{
         #nav__toggle {
             display: unset;
