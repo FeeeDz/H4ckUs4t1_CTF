@@ -57,16 +57,16 @@ if (isset($_POST["submit"])) {
             if (!delete_challenge($conn, $challenge_id)) $success = false;
             break;
 
-        case "reset_solves_hints":
-            if (!check_credentials($conn, get_user_email($conn, $_SESSION["user_id"]), $_POST["password"])) {
-                $success = false;
-                break;
-            }
+        // case "reset_solves_hints":
+        //     if (!check_credentials($conn, get_user_email($conn, $_SESSION["user_id"]), $_POST["password"])) {
+        //         $success = false;
+        //         break;
+        //     }
 
-            reset_ctf_solves($conn);
-            reset_ctf_unlocked_hints($conn);
+        //     reset_ctf_solves($conn);
+        //     reset_ctf_unlocked_hints($conn);
 
-            break;
+        //     break;
 
         case "add_event":
             if (!add_event($conn, $_POST["start_date"], $_POST["end_date"])) $success = false;
@@ -101,7 +101,7 @@ require "inc/head.php";
             <button type="submit" name="action" value="add_event" class="generic-form__button">Add event</button><br>
             <button type="submit" name="action" value="edit_event" class="generic-form__button">Edit event</button><br>
             <button type="submit" name="action" value="delete_event" class="generic-form__button">Delete event</button><br>
-            <button type="submit" name="action" value="reset_solves_hints" class="generic-form__button">Reset CTF solves and hints</button><br>
+            <!-- <button type="submit" name="action" value="reset_solves_hints" class="generic-form__button">Reset CTF solves and hints</button><br> -->
             <button type="submit" name="action" value="view_users" class="generic-form__button">View Users</button><br>
             <button type="submit" name="action" value="view_teams" class="generic-form__button">View Teams</button>
         </form>
@@ -373,7 +373,7 @@ require "inc/head.php";
             </select>
             <button type="submit" name="submit" class="generic-form__button">Delete event</button>
         </form>
-    <?php } elseif ($_GET["action"] == "reset_solves_hints") { ?>
+    <!-- <?php } elseif ($_GET["action"] == "reset_solves_hints") { ?>
         <form method="POST" class="generic-form">
             <h2 class="title">Reset CTF solves and hints</h2>
             <div class="generic-form__input-box">
@@ -381,7 +381,7 @@ require "inc/head.php";
                 <label>Password</label>
             </div>
             <button type="submit" name="submit" class="generic-form__button no-margin">Reset</button>
-        </form>
+        </form> -->
     <?php } elseif ($_GET["action"] == "view_users") { ?>
         <table>
             <tr>
