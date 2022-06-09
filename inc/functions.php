@@ -882,6 +882,7 @@ function unlock_hint($conn, $hint_id, $user_id) {
     $challenge_type = get_challenge_type($conn, get_hint_challenge_id($conn, $hint_id));
     $team_id = get_user_team_id($conn, $user_id);
     if ($challenge_type == "O") {
+        if (!is_event_started($conn)) return false;
         if (!$team_id) return false;
         if (get_user_role($conn, $user_id) != "A" && get_hint_cost($conn, $hint_id) > get_team_score($conn, $team_id)) return false;
 
@@ -889,6 +890,7 @@ function unlock_hint($conn, $hint_id, $user_id) {
         $stmt = $conn->prepare($query);
         $stmt->bind_param("iiii", $hint_id, $user_id, $team_id, get_current_event_id($conn));
     } else {
+        if (is_event_started($conn)) return false;
         if (get_user_role($conn, $user_id) != "A" && get_hint_cost($conn, $hint_id) > get_user_score($conn, $user_id)) return false;
 
         $query = "INSERT INTO CTF_unlocked_hint (hint_id, user_id) VALUES (?, ?)";
@@ -905,9 +907,10 @@ function is_challenge_solved($conn, $challenge_id, $user_id) {
     $team_id = get_user_team_id($conn, $user_id);
 
     if ($challenge_type == "O") {
+        if (!get_last_event_id($conn)) return false;
         if (!$team_id) return false;
 
-        $query = "SELECT 1 FROM CTF_submit WHERE challenge_id = ? AND team_id = ? AND CTF_submit.event_id = ".get_current_event_id($conn);
+        $query = "SELECT 1 FROM CTF_submit WHERE challenge_id = ? AND team_id = ? AND CTF_submit.event_id = ".get_last_event_id($conn);
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ii", $challenge_id, $team_id);
     } else if($challenge_type == "T") {
@@ -946,7 +949,7 @@ function get_challenge_solves($conn, $challenge_id) {
         FROM CTF_submit 
         LEFT JOIN CTF_team ON CTF_submit.team_id = CTF_team.team_id
         INNER JOIN CTF_user ON CTF_submit.user_id = CTF_user.user_id
-        WHERE team_name != 'H4ckUs4t1' AND role != 'A' AND challenge_id = ? AND CTF_submit.event_id = ".get_current_event_id($conn);
+        WHERE team_name != 'H4ckUs4t1' AND role != 'A' AND challenge_id = ? AND CTF_submit.event_id = " . (get_current_event_id($conn) == NULL ? "NULL" : get_current_event_id($conn));
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $challenge_id);
     $stmt->execute();

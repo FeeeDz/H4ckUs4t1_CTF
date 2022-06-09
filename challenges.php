@@ -67,6 +67,7 @@ require "inc/head.php";
 
         var refresh_hints_from_date = new Date().toLocaleString("zh-CN");
         var opened_challenge = null;
+        var timeout_flag_box_color = null;
 
         function open_challenge(event, elem) {
             if (opened_challenge) close_challenge(event, opened_challenge);
@@ -101,7 +102,27 @@ require "inc/head.php";
             challenge_elem = flag_elem.parentElement;
 
             fetch(web_server_url + "/api/submit-flag.php?challenge_name=" + challenge_name + "&flag=" + flag)
-                .then(() => { refresh_solves_and_points(); })
+                .then(response => response.json())
+                .then(data => {
+                    clearTimeout(timeout_flag_box_color);
+                    if (data == true) {
+                        challenge_elem.classList.add("solved");
+                        flag_elem.classList.remove("wrong");
+                        flag_elem.classList.add("right");
+                        timeout_flag_box_color = setTimeout(function(){
+                            flag_elem.classList.remove('right');
+                        }, 3000);
+                        refresh_solves_and_points();
+                    } else {
+                        challenge_elem.classList.remove("solved");
+                        flag_elem.classList.remove("right");
+                        flag_elem.classList.add("wrong");
+                        timeout_flag_box_color = setTimeout(function(){
+                            flag_elem.classList.remove('wrong');
+                        }, 3000);
+                    }
+                })
+                .then(() => { refresh_solves_and_points(); });
         }
 
         function refresh_solves_and_points() {
