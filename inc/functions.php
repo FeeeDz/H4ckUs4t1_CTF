@@ -470,7 +470,7 @@ function is_challenge_resource ($conn, $challenge_id, $filename) {
 }
 
 function get_events($conn) {
-    $query = "SELECT event_id, start_date, end_date FROM CTF_event ORDER BY start_date";
+    $query = "SELECT event_id, event_name, start_date, end_date FROM CTF_event ORDER BY start_date DESC";
     $result = $conn->query($query);
     $rows = $result->fetch_all(MYSQLI_ASSOC);
 
@@ -479,7 +479,7 @@ function get_events($conn) {
 }
 
 function get_event_data($conn, $event_id) {
-    $query = "SELECT event_id, start_date, end_date FROM CTF_event WHERE event_id = ?";
+    $query = "SELECT event_id, event_name, start_date, end_date FROM CTF_event WHERE event_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $event_id);
     $stmt->execute();
@@ -600,14 +600,14 @@ function add_challenge_resource($conn, $challenge_id, $filename) {
     return true;
 }
 
-function add_event($conn, $start_date, $end_date) {
-    if (strtotime($start_date) > strtotime($start_date)) return false;
-    echo $start_date;
-    var_dump(strtotime($start_date));
+function add_event($conn, $event_name, $start_date, $end_date) {
+    if (is_event_name_used($conn, $event_name)) return false;
+    if (strlen($event_name) < 2 || strlen($event_name) > 64) return false;
+    if (strtotime($start_date) >= strtotime($end_date)) return false;
 
-    $query = "INSERT INTO CTF_event (start_date, end_date) VALUES (?, ?)";
+    $query = "INSERT INTO CTF_event (event_name, start_date, end_date) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ss", $start_date, $end_date);
+    $stmt->bind_param("sss", $event_name, $start_date, $end_date);
 
     if (!$stmt->execute()) return false;
     return true;
@@ -685,14 +685,27 @@ function edit_hint($conn, $hint_id, $hint_description, $hint_cost) {
     return true;
 }
 
-function edit_event($conn, $event_id, $start_date, $end_date) {
-    if (strtotime($start_date) > strtotime($start_date)) return false;
+function edit_event($conn, $event_id, $event_name, $start_date, $end_date) {
+    if (strlen($event_name) < 2 || strlen($event_name) > 64) return false;
+    if (strtotime($start_date) >= strtotime($end_date)) return false;
     
-    $query = "UPDATE CTF_event SET start_date = ?, end_date = ? WHERE event_id = ?";
+    $query = "UPDATE CTF_event SET event_name = ?, start_date = ?, end_date = ? WHERE event_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssi", $start_date, $end_date, $event_id);
+    $stmt->bind_param("sssi", $event_name, $start_date, $end_date, $event_id);
     if(!$stmt->execute()) return false;
 
+    return true;
+}
+
+function is_event_name_used($conn, $event_name) {
+    $query = "SELECT 1 FROM CTF_event WHERE event_name = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $event_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if(!$row) return false;
     return true;
 }
 
@@ -1035,16 +1048,17 @@ function get_training_leaderboard($conn) {
     return $rows;
 }
 
-function get_official_leaderboard($conn) {
+function get_official_leaderboard($conn, $event_id = NULL) {
+    if (!$event_id) $event_id = get_last_event_id($conn);
     $query = "SELECT team_name, 
             IFNULL( (SELECT SUM(points) 
             FROM CTF_submit 
-            WHERE CTF_submit.team_id = CTF_team.team_id AND CTF_submit.event_id = ".get_last_event_id($conn)."), 0)
+            WHERE CTF_submit.team_id = CTF_team.team_id AND CTF_submit.event_id = ". $event_id ."), 0)
             - 
             IFNULL( (SELECT SUM(cost)
             FROM CTF_unlocked_hint
             INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
-            WHERE CTF_unlocked_hint.team_id = CTF_team.team_id AND event_id = ".get_last_event_id($conn)."), 0) AS score
+            WHERE CTF_unlocked_hint.team_id = CTF_team.team_id AND event_id = ". $event_id ."), 0) AS score
         FROM CTF_submit
         RIGHT JOIN CTF_team ON CTF_submit.team_id = CTF_team.team_id
         WHERE team_name != 'H4ckUs4t1'

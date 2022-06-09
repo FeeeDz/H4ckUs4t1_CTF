@@ -367,6 +367,19 @@ body {
                 background-color: $clr-gray300;
             }
         }
+
+        button {
+            color: $clr-gray300;
+            background-color: black;
+            border: white solid 1px;
+            padding: 1rem;
+            border-radius: 0.4rem;
+
+            &:hover, &.selected {
+                color: $clr-gray700;
+                background-color: $clr-gray300;
+            }
+        }
     }
 
     table {
@@ -391,6 +404,52 @@ body {
 
     td {
         font-size: 20px;
+    }
+
+    #choose_event {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        label {
+            font: inherit;
+            font-size: 18px;
+            margin: 2em 0 0.5em 0;
+        }
+    
+        select {
+            display: block;
+            appearance: none;
+            border: 0;
+            outline: 0;
+            font: inherit;
+            
+            padding: 1em 4em 1em 1em;
+            background: url(../images/arrow_down.png)
+                no-repeat right 0.8em center / 1.4em,
+                linear-gradient(to left, rgba(255, 255, 255, 0.3) 3em, rgba(255, 255, 255, 0.2) 3em);
+            color: white;
+            border-radius: 0.25em;
+            box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        
+            option {
+                color: inherit;
+                background-color: #000000;
+            }
+        
+            &:focus {
+                outline: none;
+            }
+        
+            &::-ms-expand {
+                display: none;
+            }
+        
+            &:hover {
+                filter: brightness(80%);
+            }
+        }
     }
 }
 

@@ -314,6 +314,17 @@ body.popup-body {
   color: #161d34;
   background-color: #e1e5ee;
 }
+.leaderboard__buttons button {
+  color: #e1e5ee;
+  background-color: black;
+  border: white solid 1px;
+  padding: 1rem;
+  border-radius: 0.4rem;
+}
+.leaderboard__buttons button:hover, .leaderboard__buttons button.selected {
+  color: #161d34;
+  background-color: #e1e5ee;
+}
 .leaderboard table {
   margin: 4rem 0 0 0;
   width: 50%;
@@ -332,6 +343,44 @@ body.popup-body {
 }
 .leaderboard td {
   font-size: 20px;
+}
+.leaderboard #choose_event {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.leaderboard #choose_event label {
+  font: inherit;
+  font-size: 18px;
+  margin: 2em 0 0.5em 0;
+}
+.leaderboard #choose_event select {
+  display: block;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  padding: 1em 4em 1em 1em;
+  background: url(../images/arrow_down.png) no-repeat right 0.8em center/1.4em, linear-gradient(to left, rgba(255, 255, 255, 0.3) 3em, rgba(255, 255, 255, 0.2) 3em);
+  color: white;
+  border-radius: 0.25em;
+  box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+.leaderboard #choose_event select option {
+  color: inherit;
+  background-color: #000000;
+}
+.leaderboard #choose_event select:focus {
+  outline: none;
+}
+.leaderboard #choose_event select::-ms-expand {
+  display: none;
+}
+.leaderboard #choose_event select:hover {
+  filter: brightness(80%);
 }
 
 .link {

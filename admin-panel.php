@@ -69,11 +69,11 @@ if (isset($_POST["submit"])) {
         //     break;
 
         case "add_event":
-            if (!add_event($conn, $_POST["start_date"], $_POST["end_date"])) $success = false;
+            if (!add_event($conn, $_POST["event_name"], $_POST["start_date"], $_POST["end_date"])) $success = false;
             break;
 
         case "edit_event":
-            if (!edit_event($conn, $_GET["event_id"], $_POST["start_date"], $_POST["end_date"])) $success = false;
+            if (!edit_event($conn, $_GET["event_id"], $_POST["event_name"], $_POST["start_date"], $_POST["end_date"])) $success = false;
             break;
 
         case "delete_event":
@@ -323,6 +323,10 @@ require "inc/head.php";
         <form method="POST" class="generic-form">
             <h2 class="title">Add event</h2>
             <div class="generic-form__input-box">
+                    <input type="text" name="event_name" placeholder=" " maxlength="64">
+                    <label>Event Name</label>
+                </div>
+            <div class="generic-form__input-box">
                 <input type="datetime-local" name="start_date" value="<?php echo date('Y-m-d H:i'); ?>" placeholder=" " required>
                 <label>Start Date</label>
             </div>
@@ -340,7 +344,7 @@ require "inc/head.php";
                 <?php
                     $rows = get_events($conn);
                     foreach ($rows as $row)
-                        echo "<option value='" . $row["event_id"]."'>ID: " . $row["event_id"] . " (" . $row["start_date"] . ", " . $row["end_date"] . ")" . "</option>";
+                        echo "<option value='" . $row["event_id"]."'>" . $row["event_name"] . "</option>";
                 ?>
                 </select>
                 <button type="submit" name="action" value="edit_event" class="generic-form__button">Edit event</button>
@@ -350,6 +354,10 @@ require "inc/head.php";
         ?>
             <form method="POST" class="generic-form">
                 <h2 class="title">Edit event</h2>
+                <div class="generic-form__input-box">
+                    <input type="text" name="event_name" placeholder=" " value="<?php echo $event_data["event_name"]; ?>" maxlength="64">
+                    <label>Event Name</label>
+                </div>
                 <div class="generic-form__input-box">
                     <input type="datetime-local" name="start_date" value="<?php echo $event_data["start_date"]; ?>" placeholder=" " required>
                     <label>Start Date</label>
@@ -368,7 +376,7 @@ require "inc/head.php";
             <?php
                 $rows = get_events($conn);
                 foreach ($rows as $row)
-                    echo "<option value='" . $row["event_id"]."'>ID: " . $row["event_id"] . " (" . $row["start_date"] . ", " . $row["end_date"] . ")" . "</option>";
+                    echo "<option value='" . $row["event_id"]."'>" . $row["event_name"] . "</option>";
             ?>
             </select>
             <button type="submit" name="submit" class="generic-form__button">Delete event</button>

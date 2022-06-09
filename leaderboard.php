@@ -9,6 +9,7 @@ else $leaderboard_type = is_event_started($conn) ? "official" : "training";
 
 if ($leaderboard_type != "training" && $leaderboard_type != "official") exit(header("Location: ".basename($_SERVER["PHP_SELF"])));
 
+$events = get_events($conn);
 ?>
 <body>
     <nav id="nav">
@@ -16,11 +17,19 @@ if ($leaderboard_type != "training" && $leaderboard_type != "official") exit(hea
     </nav>  
     <div id="main" class="leaderboard">
         <div class="leaderboard__buttons">
-            <a href="leaderboard.php?type=training" class="<?php if ($leaderboard_type == "training") echo "selected"; ?>">Training</a>
-            <a href="leaderboard.php?type=official" class="<?php if ($leaderboard_type == "official") echo "selected"; ?>">Official</a>
+            <a id="training_type_button" onclick="leaderboard_type='training'; refresh_leaderboard(true);" class="<?php if ($leaderboard_type == "training") echo "selected"; ?>">Training</a>
+            <a id="official_type_button" onclick="leaderboard_type='official'; refresh_leaderboard(true);" class="<?php if ($leaderboard_type == "official") echo "selected"; ?>">Official</a>
+        </div>
+        <div id="choose_event">
+            <label>Choose event</label>
+            <select name="challenge_name" onchange="refresh_leaderboard(true)">
+                <?php
+                foreach ($events as $key => $event) : ?>
+                    <option value="<?php echo $event["event_id"]; ?>"><?php echo $event["event_name"]; ?></option>";
+                <?php endforeach; ?>
+            </select>
         </div>
         <table>
-            <?php require "api/get-leaderboard-html.php" ?>
         </table>
     </div>
     <div id="footer">
@@ -28,11 +37,30 @@ if ($leaderboard_type != "training" && $leaderboard_type != "official") exit(hea
     </div>
     <script>
 
-        var web_server_url = window.location.origin + "<?php echo $site_directory; ?>";
         var leaderboard_type = "<?php echo $leaderboard_type; ?>";
+        var select = document.querySelector("select");
 
-        function refresh_leaderboard() {
-            fetch(web_server_url + "/api/get-leaderboard-html.php?type=" + encodeURIComponent(leaderboard_type))
+        function refresh_leaderboard(force_update = false) {
+            if (force_update) {
+                if (leaderboard_type == "training") {
+                    document.querySelector("#official_type_button").classList.remove("selected");
+                    document.querySelector("#training_type_button").classList.add("selected");
+                    document.querySelector("#choose_event").classList.add("hidden");
+                    select.selectedIndex = 0;
+
+                    history.replaceState(null, '', "?type=" + encodeURIComponent(leaderboard_type));    
+                } else if (leaderboard_type == "official") {
+                    document.querySelector("#training_type_button").classList.remove("selected");
+                    document.querySelector("#official_type_button").classList.add("selected");
+                    document.querySelector("#choose_event").classList.remove("hidden");
+                    
+                    history.replaceState(null, '', "?type=" + encodeURIComponent(leaderboard_type) + "&event_id=" + encodeURIComponent(select.value));    
+                }
+            }
+            var refresh_url;
+            if (leaderboard_type == "training") refresh_url = web_server_url + "/api/get-leaderboard-html.php?type=" + encodeURIComponent(leaderboard_type)
+            else if (leaderboard_type == "official") refresh_url = web_server_url + "/api/get-leaderboard-html.php?type=" + encodeURIComponent(leaderboard_type) + "&event_id=" + encodeURIComponent(select.value)
+            fetch(refresh_url)
             .then(response => response.text())
             .then((response) => {
                     document.querySelector('table').innerHTML = response;
@@ -42,6 +70,8 @@ if ($leaderboard_type != "training" && $leaderboard_type != "official") exit(hea
         setInterval(function() { 
             refresh_leaderboard();
         } , 5000);
+
+        refresh_leaderboard(true);
 
     </script>
 </body>

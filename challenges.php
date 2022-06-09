@@ -66,8 +66,6 @@ require "inc/head.php";
     <script>
 
         var refresh_hints_from_date = new Date().toLocaleString("zh-CN");
-        // var web_server_url = window.location.origin + "/~quintaa2122/informatica/CTF_h4ckus4t1";
-        var web_server_url = window.location.origin + "<?php echo $site_directory; ?>";
         var opened_challenge = null;
 
         function open_challenge(event, elem) {
@@ -153,6 +151,10 @@ require "inc/head.php";
             refresh_unlocked_hints();
             refresh_hints_from_date = new Date().toLocaleString("zh-CN");
         } , 5000);
+
+        setInterval(function() {
+            if (ctfDate && parseInt(ctfDate.getTime() / 1000) == parseInt(new Date().getTime() / 1000)) window.location.href = 'leaderboard.php?type=official';
+        } , 1000);
 
     </script>
 </body>
