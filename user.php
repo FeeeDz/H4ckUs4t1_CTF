@@ -24,6 +24,12 @@ require "inc/head.php";
                     <h3>Username: </h3>
                     <h4><?php echo $username; ?></h4>
                 </div>
+                <?php if ($user_id == $_SESSION["user_id"]): ?>
+                    <div class="info-box">
+                        <h3>Email address: </h3>
+                        <h4><?php echo get_user_email($conn, $user_id); ?></h4>
+                    </div>
+                <?php endif; ?>
                 <?php if ($team_name): ?>
                     <div class="info-box">
                         <h3>Team: </h3>
