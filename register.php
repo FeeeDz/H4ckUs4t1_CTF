@@ -13,7 +13,7 @@ if(!isset($_SESSION["user_id"]) && isset($_POST["submit"])) {
             $form_error = "Email already used";
             break;
 
-        case -8:
+        case -5: case -8:
             $form_error = "Invalid email";
             break;
 
@@ -47,6 +47,7 @@ require "inc/head.php";
         <form method="POST" class="generic-form">
             <h2 class="title">Register</h2>
             <h3 class="error"><?php echo $form_error; ?></h3>
+            <div style="margin-bottom: 30px;">Already Registered? <a href="login.php" class="link">Login</a></div>
             <div class="generic-form__input-box">
                 <input type="text" name="username" placeholder=" " minlength="3" maxlength="16" pattern="^(\d|\w)+$" autocomplete="username" title="string with 3 to 16 non-special characters and no spaces" required>
                 <label>Username</label>

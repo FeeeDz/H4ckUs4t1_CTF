@@ -460,6 +460,7 @@ body {
     &:hover {
         filter: brightness(65%);
         text-decoration: underline;
+        cursor: pointer;
     }
 }
 
@@ -871,7 +872,7 @@ body {
     margin: 2rem;
 
     .title {
-        margin: 0 0 30px;
+        margin: 0 0 30px 0;
         padding: 0;
         color: #fff;
         text-align: center;
@@ -879,6 +880,7 @@ body {
 
     .error {
         color: rgb(207, 0, 0);
+        margin-bottom: 30px;
     }
 
     &__box {
@@ -933,7 +935,7 @@ body {
 
     &__button {
         width: fit-content;
-        margin-top: 25px;
+        margin-top: 15px;
         padding: 10px 20px;
         color: $clr-generic-form;
         background-color: transparent;
@@ -967,6 +969,7 @@ body {
         appearance: none;
         border: 0;
         outline: 0;
+        margin-bottom: 10px;
         font: inherit;
         
         padding: 1em 4em 1em 1em;

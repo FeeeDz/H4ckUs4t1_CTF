@@ -34,6 +34,10 @@ require "inc/head.php";
                     <h3>Score: </h3>
                     <h4><?php echo get_user_score($conn, $user_id); ?></h4>
                 </div>
+                <div class="info-box">
+                    <h3>Last login: </h3>
+                    <h4><?php echo date('Y-m-d', strtotime(get_user_last_login($conn, $user_id))); ?></h4>
+                </div>
                 <?php if ($solves = get_user_solves($conn, $user_id)) : ?> 
                     <div class="solves-container">
                         <h3 style="display: inline-block;">Solves: </h3><br>

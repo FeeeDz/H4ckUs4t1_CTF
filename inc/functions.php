@@ -4,6 +4,10 @@ $hash_options = [
     'cost' => 10,
 ];
 
+function is_ascii($str) {
+    return 0 == preg_match('/[^\x00-\x7F]/', $str);
+}
+
 function db_connect() {
     global $private_dir;
     require $private_dir."/config/db-config.php";
@@ -13,10 +17,10 @@ function db_connect() {
     return false;
 }
 
-function check_credentials($conn, $email, $password) {
-    $query = "SELECT user_id, password_hash FROM CTF_user WHERE email = ?";
+function check_credentials($conn, $username_email, $password) {
+    $query = "SELECT user_id, password_hash FROM CTF_user WHERE username = ? OR email = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $email);
+    $stmt->bind_param("ss", $username_email, $username_email);
 
     if(!$stmt->execute()) return false;
     
@@ -41,12 +45,97 @@ function is_account_active($conn, $user_id) {
     return $row["active"];
 }
 
-function login($conn, $email, $password) {
-    $user_id = check_credentials($conn, $email, $password);
+function login($conn, $username_email, $password) {
+    $user_id = check_credentials($conn, $username_email, $password);
     if (!$user_id) return -1;
     if (!is_account_active($conn, $user_id)) return -2;
 
+    set_last_login($conn, $user_id);
+
     $_SESSION['user_id'] = $user_id;
+    return 1;
+}
+
+function set_last_login($conn, $user_id) {
+    $query = "UPDATE CTF_user SET last_login = NOW() WHERE user_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $user_id);
+
+    if(!$stmt->execute()) return false;
+    return true;
+}
+
+function send_reset_password_email($conn, $email) {
+    $user_id = get_user_id_from_email($conn, $email);
+    if (!$user_id) return -1;
+
+    $username = get_username_from_id($conn, $user_id);
+
+    do {
+        $reset_password_code = bin2hex(random_bytes(32));
+        
+        $query = "SELECT 1 FROM CTF_user WHERE reset_password_code = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $reset_password_code);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+    } while($row);
+
+    $reset_password_expiry = date('y-m-d h:i:s', strtotime("+1 day"));
+    
+    $query = "UPDATE CTF_user SET password_hash = NULL, reset_password_code = ?, reset_password_expiry = ? WHERE user_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ssi", $reset_password_code, $reset_password_expiry, $user_id);
+    if (!$stmt->execute()) return false;
+
+    $link = $_SERVER['SERVER_NAME']."/forgot-password.php?reset_password_code=$reset_password_code";
+    global $mail;
+    $mail->IsHTML(true);
+    $mail->AddAddress($email);
+    $mail->Subject = "H4ckUs4t1 CTF password reset";
+    $content = "<pre>Hello $username,
+Here is your link to reset your password: <a href=\"" . $link . "\">" . $link . "</a>
+The link will expire in 1 day</pre>";
+
+    $mail->MsgHTML($content); 
+    if(!$mail->Send()) return -2;
+
+    return 1;
+}
+
+function get_user_id_from_reset_password_code($conn, $reset_password_code) {
+    $query = "SELECT user_id FROM CTF_user WHERE reset_password_code = ? AND reset_password_expiry > NOW()";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $reset_password_code);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    if ($row) return $row["user_id"];
+
+    //if reset password code is expired we delete it
+    $query = "UPDATE CTF_user SET reset_password_code = NULL, reset_password_expiry = NULL WHERE reset_password_code = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $reset_password_code);
+    $stmt->execute();
+    return false;
+}
+
+function reset_password($conn, $reset_password_code, $new_password) {
+    if(!is_ascii($new_password)) return -1;
+    if(strlen($new_password) < 8 || strlen($new_password) > 128) return -2;
+
+    $user_id = get_user_id_from_reset_password_code($conn, $reset_password_code);
+    if (!$user_id) return -3;
+
+    global $hash_options;
+    $password_hash = password_hash($new_password, PASSWORD_DEFAULT, $hash_options);
+
+    $query = "UPDATE CTF_user SET password_hash = ? WHERE user_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("si", $password_hash, $user_id);
+    if(!$stmt->execute()) return false;
+
     return 1;
 }
 
@@ -90,9 +179,9 @@ function register_user($conn, $username, $email, $password) {
     if(strlen($password) < 8 || strlen($password) > 128) return -6;
 
     global $hash_options;
+    $password_hash = password_hash($password, PASSWORD_DEFAULT, $hash_options);
 
     $role = 'U';
-    $password_hash = password_hash($password, PASSWORD_DEFAULT, $hash_options);
 
     do {
         $activation_code = bin2hex(random_bytes(32));
@@ -129,7 +218,7 @@ The link will expire in 1 day</pre>";
 }
 
 function activate_user($conn, $activation_code) {
-    $query = "SELECT username FROM CTF_user WHERE activation_code = ? AND active = 0";
+    $query = "SELECT username FROM CTF_user WHERE activation_code = ? AND activation_expiry > NOW() AND active = 0";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $activation_code);
     $stmt->execute();
@@ -145,7 +234,7 @@ function activate_user($conn, $activation_code) {
 }
 
 function delete_unverified_accounts($conn) {
-    $query = "DELETE FROM CTF_user WHERE active = 0 AND activation_expiry IS NOT NULL AND activation_expiry < NOW()";
+    $query = "DELETE FROM CTF_user WHERE active = 0 AND activation_expiry IS NOT NULL AND activation_expiry <= NOW()";
     if (!$conn->query($query)) return false;
     return true;
 }
@@ -184,6 +273,30 @@ function get_username_from_id($conn, $user_id) {
     
     if (!$row) return false;
     return $row["username"];
+}
+
+function get_username_from_email($conn, $email) {
+    $query = "SELECT username FROM CTF_user WHERE email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if (!$row) return false;
+    return $row["username"];
+}
+
+function get_user_id_from_email($conn, $email) {
+    $query = "SELECT user_id FROM CTF_user WHERE email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if (!$row) return false;
+    return $row["user_id"];
 }
 
 function get_user_id_from_username($conn, $username) {
@@ -874,6 +987,18 @@ function get_user_score($conn, $user_id) {
 
     if(!$row) return false;
     return $row["score"];
+}
+
+function get_user_last_login($conn, $user_id) {
+    $query = "SELECT last_login
+        FROM CTF_user
+        WHERE user_id = '$user_id'";
+
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    if(!$row) return false;
+    return $row["last_login"];
 }
 
 function unlock_hint($conn, $hint_id, $user_id) {

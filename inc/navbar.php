@@ -52,7 +52,7 @@
             <span>Logout</span>
         </a>
     <?php } else { ?>
-        <a id="login-button" href="login.php?redirect=<?php echo basename($_SERVER['PHP_SELF']);?>">
+        <a id="login-button" href="login.php">
             <span class="material-icons">login</span>
             <span>Login</span>
         </a>
