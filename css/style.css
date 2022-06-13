@@ -309,11 +309,11 @@ body.popup-body {
   border: white solid 1px;
   padding: 1rem;
   border-radius: 0.4rem;
+  cursor: pointer;
 }
 .leaderboard__buttons a:hover, .leaderboard__buttons a.selected {
   color: #161d34;
   background-color: #e1e5ee;
-  cursor: pointer;
 }
 .leaderboard table {
   margin: 4rem 0 0 0;

@@ -361,11 +361,11 @@ body {
             border: white solid 1px;
             padding: 1rem;
             border-radius: 0.4rem;
+            cursor: pointer;
 
             &:hover, &.selected {
                 color: $clr-gray700;
                 background-color: $clr-gray300;
-                cursor: pointer;
             }
         }
     }
