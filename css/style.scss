@@ -365,19 +365,7 @@ body {
             &:hover, &.selected {
                 color: $clr-gray700;
                 background-color: $clr-gray300;
-            }
-        }
-
-        button {
-            color: $clr-gray300;
-            background-color: black;
-            border: white solid 1px;
-            padding: 1rem;
-            border-radius: 0.4rem;
-
-            &:hover, &.selected {
-                color: $clr-gray700;
-                background-color: $clr-gray300;
+                cursor: pointer;
             }
         }
     }

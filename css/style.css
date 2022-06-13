@@ -313,17 +313,7 @@ body.popup-body {
 .leaderboard__buttons a:hover, .leaderboard__buttons a.selected {
   color: #161d34;
   background-color: #e1e5ee;
-}
-.leaderboard__buttons button {
-  color: #e1e5ee;
-  background-color: black;
-  border: white solid 1px;
-  padding: 1rem;
-  border-radius: 0.4rem;
-}
-.leaderboard__buttons button:hover, .leaderboard__buttons button.selected {
-  color: #161d34;
-  background-color: #e1e5ee;
+  cursor: pointer;
 }
 .leaderboard table {
   margin: 4rem 0 0 0;
