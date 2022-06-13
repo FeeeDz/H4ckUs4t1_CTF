@@ -17,7 +17,7 @@
 
     <link rel="manifest" href="favicon/site.webmanifest">
     <script>
-        // var web_server_url = window.location.origin + "/~quintaa2122/informatica/CTF_h4ckus4t1";
+        // var web_server_url = window.location.origin + "/~quintaa2122/informatica/H4ckUs4t1_CTF";
         var web_server_url = window.location.origin + "<?php echo $site_directory; ?>";
     </script>
 </head>

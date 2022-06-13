@@ -6,12 +6,12 @@
 
 
 // Server scuola
-// $site_directory = "~quintaa2122/informatica/CTF_h4ckus4t1";
-// $private_dir = "/home/quintaa2122/informatica/CTF_h4ckus4t1_private";
+// $site_directory = "~quintaa2122/informatica/H4ckUs4t1_CTF";
+// $private_dir = "/home/quintaa2122/informatica/H4ckUs4t1_CTF_private";
 
 // Server privato
 $site_directory = "";
-$private_dir = "/var/www/CTF_h4ckus4t1_private";
+$private_dir = "/var/www/H4ckUs4t1_CTF_private";
 
 session_start();
 

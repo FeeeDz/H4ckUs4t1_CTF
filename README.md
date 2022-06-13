@@ -2,7 +2,7 @@
 
 ## _Piattaforma CTF - Progetto fine anno Informatica_
 
-[http://178.22.248.46:8289/~quintaa2122/informatica/CTF_h4ckus4t1/](https://)
+[http://178.22.248.46:8289/~quintaa2122/informatica/H4ckUs4t1_CTF/](https://)
 
 ### Autori:
 
