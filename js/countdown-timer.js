@@ -10,7 +10,7 @@ setInterval(updateTime, 1000);
 function updateTime() {
     if (ctfDate) {
         time_elem.innerHTML = formatTime((ctfDate.getTime() - new Date().getTime()) / 1000);
-        if (parseInt(ctfDate.getTime() / 1000) == parseInt(new Date().getTime() / 1000)) time_label.innerHTML = "Ended";
+        if (parseInt(ctfDate.getTime() / 1000) <= parseInt(new Date().getTime() / 1000)) time_label.innerHTML = "Ended";
     }
 }
 
