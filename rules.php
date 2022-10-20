@@ -36,10 +36,10 @@ require "inc/head.php";
         <?php require "inc/footer.php"; ?>
     </div>
     <script src='https://cdn.jsdelivr.net/npm/@widgetbot/crate@3' async defer>
-    new Crate({
-        server: '979304888112664667', // Hackusati CTF
-        channel: '979307370868002866' // #rules
-    })
+        new Crate({
+            server: '979304888112664667', // Hackusati CTF
+            channel: '979307370868002866' // #rules
+        })
     </script>
 </body>
 </html>

@@ -8,6 +8,7 @@
     <title><?php echo $title; ?></title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/font?family=Roboto" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">

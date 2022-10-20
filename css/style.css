@@ -193,7 +193,6 @@ body.popup-body {
 
 #main {
   color: #e1e5ee;
-  background-color: black;
   flex: 1;
 }
 #main__logo {
@@ -219,9 +218,17 @@ body.popup-body {
   color: #f9fbff;
 }
 
+body:has(.rules) #footer {
+  background-color: #243b55;
+}
+
 .rules {
   color: #e1e5ee;
   text-align: center;
+  background-color: #243b55;
+}
+.rules #footer {
+  background-color: #243b55;
 }
 .rules .rules-container {
   display: inline-block;
@@ -294,7 +301,16 @@ body.popup-body {
   color: #f76f00;
 }
 
+.stick-right {
+  text-align: right !important;
+}
+
+body:has(.leaderboard) #footer {
+  background-color: #243b55;
+}
+
 .leaderboard {
+  background-color: #243b55;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -316,23 +332,21 @@ body.popup-body {
   background-color: #e1e5ee;
 }
 .leaderboard table {
-  margin: 4rem 0 0 0;
   width: 50%;
   margin: 2rem;
-  border-collapse: separate;
-  text-align: center;
+  padding: 15px;
+  background-color: #161d34;
 }
 .leaderboard th, .leaderboard td {
-  border: 1px solid rgb(255, 255, 255);
-  border-radius: 3px;
-  padding-left: 7px;
-  padding-right: 7px;
+  padding: 7px;
 }
 .leaderboard th {
   font-size: 22px;
+  text-align: left;
 }
 .leaderboard td {
   font-size: 20px;
+  border-top: 1px solid rgb(54, 54, 54);
 }
 .leaderboard #choose_event {
   display: flex;
@@ -383,15 +397,19 @@ body.popup-body {
   cursor: pointer;
 }
 
+body:has(.challenges) #footer {
+  background-color: #243b55;
+}
+
 .challenges {
-  background: linear-gradient(#141e30, #243b55);
+  background-color: #243b55;
   display: flex;
   flex-direction: column;
   padding-top: 1rem;
 }
 .challenges .challenges__category {
   margin: 0.5rem 2.5rem 0 2.5rem;
-  font-size: 22px;
+  font-size: 25px;
 }
 .challenges .challenges__grid {
   margin: 0rem 2.5rem 1rem 2.5rem;
@@ -401,9 +419,9 @@ body.popup-body {
   display: inline-block;
   vertical-align: top;
   color: #2a324b;
-  border: 5px solid rgb(167, 0, 158);
-  background-color: rgb(173, 173, 173);
-  border-radius: 1rem;
+  border: 3px solid rgb(204, 204, 204);
+  background-color: rgb(204, 204, 204);
+  border-radius: 0.5rem;
   padding: 0.8rem 1.3rem 1.5rem 1.3rem;
   width: 19rem;
   cursor: pointer;
@@ -421,7 +439,8 @@ body.popup-body {
 }
 .challenges .challenge .flexbox-info {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 10px;
   text-align: center;
   align-items: center;
   color: #f9fbff;
@@ -455,7 +474,7 @@ body.popup-body {
   font-size: 24px;
   color: #4c38ff;
   font-weight: bold;
-  margin-top: 0.5rem;
+  margin: 0.5rem 0 0.7rem 0;
 }
 .challenges .challenge .description {
   display: block;
@@ -512,7 +531,7 @@ body.popup-body {
   white-space: nowrap;
   transform: translate(0, 0);
   transform-origin: 0 0;
-  background-color: rgb(173, 173, 173);
+  background-color: rgb(204, 204, 204);
   transition: transform 120ms ease-in;
   font-weight: bold;
   line-height: 1.2;

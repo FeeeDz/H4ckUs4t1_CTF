@@ -29,7 +29,7 @@ $events = get_events($conn);
                 <?php endforeach; ?>
             </select>
         </div>
-        <table>
+        <table cellspacing="0" cellpadding="0">
         </table>
     </div>
     <div id="footer">

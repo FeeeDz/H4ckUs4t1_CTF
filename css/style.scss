@@ -11,6 +11,8 @@ $clr-clock:  yellow;
 $clr-cross:  rgb(219, 0, 0);
 $clr-arrow:  rgb(0, 253, 0);
 $clr-generic-form: #03e9f4;
+$challenge-box-color: rgb(204, 204, 204);
+$generic-background-color: #243b55;
 
 $clr-gray100: #f9fbff;
 $clr-gray150: #f4f6fb;
@@ -81,7 +83,9 @@ body {
     &.popup-body {
         overflow: hidden;
     }
+
 }
+
 
 #nav {
     position: sticky;
@@ -230,7 +234,7 @@ body {
 
 #main {
     color: $clr-gray300;
-    background-color: black;
+    // background-color: black;
     flex: 1;
 
     &__logo {
@@ -261,9 +265,15 @@ body {
     }
 }
 
+body:has(.rules) { #footer{ background-color: $generic-background-color; } }
 .rules {
     color: $clr-gray300;
     text-align: center;
+    background-color: $generic-background-color;
+
+    #footer{
+        background-color: $generic-background-color;
+    }
 
     .rules-container {
         display: inline-block;
@@ -346,8 +356,13 @@ body {
     }
 }
 
+.stick-right{
+    text-align: right !important;
+}
+
+body:has(.leaderboard) { #footer{ background-color: $generic-background-color; } }
 .leaderboard {
-    // background: linear-gradient(#141e30, #243b55);
+    background-color: $generic-background-color;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -371,27 +386,34 @@ body {
     }
 
     table {
-        margin: 4rem 0 0 0;
         width: 50%;
         margin: 2rem;
-        border-collapse: separate;
-        text-align: center;
+        // border-collapse: separate;
+        padding: 15px;
+        // text-align: center;
+        background-color: #161d34;
     }
     
     th, td {
         // padding: 0.2rem 1rem;
-        border: 1px solid rgb(255, 255, 255);
-        border-radius: 3px;
-        padding-left: 7px;
-        padding-right: 7px;
+        // border: 1px solid transparent;
+        // border-radius: 3px;
+        // padding-left: 7px;
+        // padding-right: 7px;
+        padding: 7px;
     }
 
     th {
         font-size: 22px;
+        text-align: left;
     }
 
     td {
         font-size: 20px;
+        border-top: 1px solid rgb(54, 54, 54);
+    }
+
+    tr {
     }
 
     #choose_event {
@@ -452,15 +474,19 @@ body {
     }
 }
 
+body:has(.challenges) { #footer{ background-color: $generic-background-color; } }
 .challenges {
-    background: linear-gradient(#141e30, #243b55);
+    background-color: $generic-background-color;
     display: flex;
     flex-direction: column;
     padding-top: 1rem;
 
     .challenges__category {
         margin: 0.5rem 2.5rem 0 2.5rem;
-        font-size: 22px;
+        font-size: 25px;
+        // font-family: 'Montserrat', sans-serif;
+        // font-weight: 500;
+        // color: #03e9f4;
     }
 
     .challenges__grid {
@@ -477,9 +503,9 @@ body {
         display: inline-block;
         vertical-align: top;
         color: $clr-gray600;
-        border: 5px solid rgb(167, 0, 158);
-        background-color: rgb(173, 173, 173);
-        border-radius: 1rem;
+        border: 3px solid $challenge-box-color;
+        background-color: $challenge-box-color;
+        border-radius: 0.5rem;
         padding: 0.8rem 1.3rem 1.5rem 1.3rem;
         // height: 5.5rem;
         width: 19rem;
@@ -497,7 +523,8 @@ body {
 
         .flexbox-info {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 10px;
             text-align: center;
             align-items: center;
             color: $clr-gray100;
@@ -533,7 +560,8 @@ body {
             font-size: 24px;
             color: #4c38ff;
             font-weight: bold;
-            margin-top: 0.5rem;
+            margin: 0.5rem 0 0.7rem 0;
+            // text-align: left;
         }
 
         .description {
@@ -595,7 +623,7 @@ body {
                     white-space: nowrap;
                     transform: translate(0, 0);
                     transform-origin: 0 0;
-                    background-color: rgb(173, 173, 173);
+                    background-color: $challenge-box-color;
                     transition: transform 120ms ease-in;
                     font-weight: bold;
                     line-height: 1.2;
@@ -791,6 +819,10 @@ body {
 
         &.solved {
             border-color: green;
+
+            // .flag {
+            //     display: none;
+            // }
         }
     }
 }

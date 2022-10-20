@@ -10,9 +10,9 @@ else $event_id = NULL;
 if ($leaderboard_type != "training" && $leaderboard_type != "official") exit(json_encode(false));
 ?>
 <tr>
-    <th>Position</th>
+    <th>#</th>
     <th><?php if ($leaderboard_type == "training") echo "Username"; else echo "Team Name"; ?></th>
-    <th>Score</th>
+    <th class="stick-right">Score</th>
 </tr>
 <?php $leaderboard_data = $leaderboard_type == "training" ? get_training_leaderboard($conn) : get_official_leaderboard($conn, $event_id);   
     foreach ($leaderboard_data as $index => $row): ?>
@@ -24,6 +24,6 @@ if ($leaderboard_type != "training" && $leaderboard_type != "official") exit(jso
             <?php else: ?>
                 <a class="link" href="team.php?team_name=<?php echo $row["team_name"]; ?>"><?php echo $row["team_name"]; ?></a>
             <?php endif; ?>
-        <td><?php echo $row["score"]; ?></td>
+        <td class="stick-right"><?php echo $row["score"]; ?></td>
     </tr>
 <?php endforeach; ?>

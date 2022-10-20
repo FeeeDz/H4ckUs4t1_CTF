@@ -22,11 +22,11 @@ require "inc/head.php";
                     $challenge_data = get_challenge_data($conn, $challenge_id);
                 ?>
                 <div class="challenge closed <?php if (is_challenge_solved($conn, $challenge_id, $_SESSION["user_id"])) echo "solved"; ?>" onclick="open_challenge(event, this)">
+                    <div class="challenge-name"><?php echo $challenge_data["challenge_name"]; ?></div>
                     <div class="flexbox-info">
                         <div class="solves"><?php echo get_challenge_solves($conn, $challenge_id) ?><span class="material-icons">flag</span></div>
                         <div class="points"><?php echo compute_challenge_points($conn, $challenge_id); ?><span class="material-icons">military_tech</span></div>
                     </div>
-                    <div class="challenge-name"><?php echo $challenge_data["challenge_name"]; ?></div>
                     <div class="description"><?php echo nl2br($challenge_data["description"]); ?></div>
                     <div class="service"><?php echo $challenge_data["service"]; ?></div>
                     <?php foreach (get_db_challenge_resources($conn, $challenge_id) as $resource) { ?>
@@ -38,7 +38,7 @@ require "inc/head.php";
                             <label>Flag ITT{...}</span>
                         </div>
                         <span class="flag__submit material-icons" onclick="submit_flag(event, this.parentElement)">done</span>
-                    </div>
+                    </div><br>
                     <?php foreach (get_hints($conn, $challenge_id) as $index=>$hint) { ?>
                         <div class="hint <?php if (is_hint_unlocked($conn, $hint["hint_id"], $_SESSION["user_id"])) echo "unlocked"; else echo "locked"; ?>" onclick="toggle_popup(event, this)">
                             <label class="hint__id-label">Hint <?php echo $index+1; ?></label>
@@ -101,6 +101,8 @@ require "inc/head.php";
             challenge_name = flag_elem.parentElement.querySelector('.challenge-name').innerHTML;
             challenge_elem = flag_elem.parentElement;
 
+            if (challenge_elem.classList.contains("solved")) return;
+
             fetch(web_server_url + "/api/submit-flag.php?challenge_name=" + challenge_name + "&flag=" + flag)
                 .then(response => response.json())
                 .then(data => {
@@ -113,9 +115,10 @@ require "inc/head.php";
                             flag_elem.classList.remove('right');
                         }, 3000);
                         refresh_solves_and_points();
-                    } else {
-                        challenge_elem.classList.remove("solved");
-                        flag_elem.classList.remove("right");
+                    } 
+                    else {
+                        // challenge_elem.classList.remove("solved");
+                        // flag_elem.classList.remove("right");
                         flag_elem.classList.add("wrong");
                         timeout_flag_box_color = setTimeout(function(){
                             flag_elem.classList.remove('wrong');
