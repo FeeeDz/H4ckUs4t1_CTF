@@ -1,9 +1,10 @@
 <?php 
 require_once "inc/init.php";
 
+$form_error = "";
+$registered = false;
 if(!isset($_SESSION["user_id"]) && isset($_POST["submit"])) {
     $error = register_user($conn, $_POST["username"], $_POST["email"], $_POST["password"]);
-    $registered = false;
     switch($error) {
         case -1:
             $form_error = "Username already used";

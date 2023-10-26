@@ -1,5 +1,4 @@
 <?php
-
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
@@ -11,7 +10,8 @@
 
 // Server privato
 $site_directory = "";
-$private_dir = "/var/www/H4ckUs4t1_CTF_private";
+//$private_dir = "/var/www/H4ckUs4t1_CTF_private";
+$private_dir = "/root/H4ckUs4t1_CTF_private";
 
 session_start();
 

@@ -63,7 +63,6 @@ body.popup-body {
 }
 
 #nav {
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 1;
@@ -90,13 +89,11 @@ body.popup-body {
 #nav__toggle__menu {
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
 }
 #nav__toggle__close {
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
   display: none;
 }
@@ -427,7 +424,6 @@ body:has(.challenges) #footer {
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
   word-wrap: break-word;
   text-align: center;
@@ -447,7 +443,6 @@ body:has(.challenges) #footer {
   font-size: 16px;
 }
 .challenges .challenge .flexbox-info .solves {
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
   background-color: blue;
@@ -456,7 +451,6 @@ body:has(.challenges) #footer {
   border-radius: 0.4rem;
 }
 .challenges .challenge .flexbox-info .points {
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
   background-color: rgb(224, 0, 0);
@@ -496,7 +490,6 @@ body:has(.challenges) #footer {
   background-color: rgb(55, 138, 233);
   text-decoration: none;
   color: #141e30;
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
   padding: 0.7rem;
@@ -547,9 +540,6 @@ body:has(.challenges) #footer {
   font-weight: 600;
 }
 .challenges .challenge .flag__input-box input:not(:-moz-placeholder-shown) + label {
-  transform: translate(0.25rem, -55%) scale(0.8);
-}
-.challenges .challenge .flag__input-box input:not(:-ms-input-placeholder) + label {
   transform: translate(0.25rem, -55%) scale(0.8);
 }
 .challenges .challenge .flag__input-box input:focus + label, .challenges .challenge .flag__input-box input:not(:placeholder-shown) + label {
@@ -666,7 +656,6 @@ body:has(.challenges) #footer {
 .challenges .challenge.open {
   -webkit-user-select: unset;
      -moz-user-select: unset;
-      -ms-user-select: unset;
           user-select: unset;
   cursor: unset;
 }
@@ -799,12 +788,6 @@ body:has(.challenges) #footer {
   color: #03e9f4;
   font-size: 12px;
 }
-.generic-form__input-box input:not(:-ms-input-placeholder) ~ label, .generic-form__input-box textarea:not(:-ms-input-placeholder) ~ label {
-  top: -20px;
-  left: 0;
-  color: #03e9f4;
-  font-size: 12px;
-}
 .generic-form__input-box input:focus ~ label,
 .generic-form__input-box input:not(:placeholder-shown) ~ label,
 .generic-form__input-box textarea:focus ~ label,
@@ -815,7 +798,6 @@ body:has(.challenges) #footer {
   font-size: 12px;
 }
 .generic-form__button {
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
   margin-top: 15px;

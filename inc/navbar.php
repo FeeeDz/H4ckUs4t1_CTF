@@ -65,7 +65,8 @@
 </ul>
 <script>
 
-    var role = "<?php echo get_user_role($conn, $_SESSION["user_id"]); ?>";
+    var role = "<?php if (isset($_SESSION["user_id"])) echo get_user_role($conn, $_SESSION["user_id"]);
+        else echo "G" ?>";  //se l'utente è loggato prendi il ruolo altrimenti usa il ruolo di default "G" ovvero Guest
 
     if (role == "A")
         document.querySelector("#nav").classList.add("admin");

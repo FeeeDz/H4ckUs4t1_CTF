@@ -1,7 +1,7 @@
 <?php 
 require_once "inc/init.php";
 
-
+$form_error = "";
 $team_id = isset($_GET["team_name"]) ? get_team_id_from_team_name($conn, $_GET["team_name"]) : (isset($_SESSION["user_id"]) ? get_user_team_id($conn, $_SESSION["user_id"]) : NULL);
 if (isset($_GET["team_name"]) && !check_if_team_exists($conn, $team_id)) exit(header("Location: ".basename($_SERVER['PHP_SELF'])));
 $team_name = get_team_name($conn, $team_id);

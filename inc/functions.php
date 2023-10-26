@@ -462,7 +462,7 @@ function join_team($conn, $user_id, $token) {
 function quit_team($conn, $user_id) {
     $team_id = get_user_team_id($conn, $user_id);
     
-    $query = "UPDATE CTF_user SET team_id IS NULL WHERE user_id = ?";
+    $query = "UPDATE CTF_user SET team_id = NULL WHERE user_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $user_id);
     $stmt->execute();
@@ -500,7 +500,7 @@ function get_challenge_list($conn) {
     $result = $stmt->get_result();
     $rows = $result->fetch_all(MYSQLI_ASSOC);
 
-    if(!$rows) return false;
+    if(!$rows) return [];
     return $rows;
 }
 
@@ -515,6 +515,8 @@ function get_db_missing_challenges($conn) {
 
     $challenges_on_server = array();
     foreach (array_diff(scandir($challenges_dir), array('.', '..')) as $category) {
+        if (!is_dir($challenges_dir."/".$category)) continue;
+
         $challenges = scandir($challenges_dir."/".$category);
         $challenges = array_diff($challenges, array('.', '..'));
         foreach ($challenges as $challenge) 
@@ -529,9 +531,11 @@ function get_local_challenge_category($challenge_name) {
     $challenges_dir = $private_dir."/challenges";
 
     foreach (array_diff(scandir($challenges_dir), array('.', '..')) as $category) {
-        $challenges = scandir($challenges_dir."/".$category);
-        foreach ($challenges as $challenge) 
+        if (is_dir($challenges_dir."/".$category)){
+            $challenges = scandir($challenges_dir."/".$category);
+            foreach ($challenges as $challenge) 
             if($challenge == $challenge_name) return $category; 
+        }
     }
 
     return false;
@@ -603,6 +607,59 @@ function get_event_data($conn, $event_id) {
     return $row;
 }
 
+function get_event_csv($conn, $event_id) {
+    
+      
+    // foreach ($rows as $team_points) {
+    //     echo $team_points[0];
+    //     $sumbits.array_push($team_points[0]);
+    // }
+    // // Open a file in write mode ('w') 
+    // $fp = fopen('persons.csv', 'w'); 
+    
+    // // Loop through file pointer and a line 
+    // foreach ($list as $fields) { 
+    //     fputcsv($fp, $fields); 
+    // }  
+
+    ob_start();
+    $df = fopen("php://output", 'w');
+    fputcsv($df, ["Event Name", "Start Date", "End Date"]);
+    fputcsv($df, array_slice(get_event_data($conn, $event_id), 1));
+    fputcsv($df, []);
+
+    $teams_leaderboard = get_official_leaderboard($conn, $event_id);
+    fputcsv($df, ["Team", "Points"]);
+    foreach ($teams_leaderboard as $team_data) {
+        fputcsv($df, $team_data);
+    }
+    fputcsv($df, []);
+
+    foreach ($teams_leaderboard as $team_data) {
+        fputcsv($df, ["Team ".$team_data["team_name"]]);
+        fputcsv($df, ["Challenge", "Points", "Submit date"]);
+        foreach (get_team_submits($conn, get_team_id_from_team_name($conn, $team_data["team_name"])) as $sumbit) {
+            fputcsv($df, $sumbit);
+        }
+        fputcsv($df, []);
+    }
+
+    fclose($df);
+    return ob_get_clean();
+}
+
+function get_event_id($conn, $event_name) {
+    $query = "SELECT event_id FROM CTF_event WHERE event_name = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $event_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    if(!$row) return false;
+    return $row["event_id"];
+}
+
 function get_challenge_data($conn, $challenge_id) {
     $query = "SELECT challenge_name, flag, description, service, type, category, initial_points, minimum_points, points_decay, author FROM CTF_challenge WHERE challenge_id = ?";
     $stmt = $conn->prepare($query);
@@ -623,7 +680,7 @@ function get_hints($conn, $challenge_id) {
     $result = $stmt->get_result();
     $rows = $result->fetch_all(MYSQLI_ASSOC);
     
-    if(!$rows) return false;
+    if(!$rows) return [];
     return $rows;
 }
 
@@ -655,7 +712,7 @@ function get_db_challenge_resources($conn, $challenge_id) {
     $result = $stmt->get_result();
     $rows = $result->fetch_all(MYSQLI_ASSOC);
     
-    if(!$rows) return false;
+    if(!$rows) return [];
     return $rows;
 }
 
@@ -677,7 +734,7 @@ function get_challenges_from_category($conn, $category, $type) {
     $result = $conn->query($query);
     $rows = $result->fetch_all();
 
-    if(!$rows) return false;
+    if(!$rows) return [];
 
     $challenges = array();
     foreach ($rows as $item) array_push($challenges, array_values($item)[0]);
@@ -1172,7 +1229,7 @@ function get_training_leaderboard($conn) {
     $result = $conn->query($query);
     $rows = $result->fetch_all(MYSQLI_ASSOC);
 
-    if(!$rows) return false;
+    if(!$rows) return [];
     return $rows;
 }
 
@@ -1182,8 +1239,7 @@ function get_official_leaderboard($conn, $event_id = NULL) {
             IFNULL( (SELECT SUM(points) 
             FROM CTF_submit 
             WHERE CTF_submit.team_id = CTF_team.team_id AND CTF_submit.event_id = ". $event_id ."), 0)
-            - 
-            IFNULL( (SELECT SUM(cost)
+            - IFNULL( (SELECT SUM(cost)
             FROM CTF_unlocked_hint
             INNER JOIN CTF_hint ON CTF_unlocked_hint.hint_id = CTF_hint.hint_id
             WHERE CTF_unlocked_hint.team_id = CTF_team.team_id AND event_id = ". $event_id ."), 0) AS score
@@ -1196,7 +1252,7 @@ function get_official_leaderboard($conn, $event_id = NULL) {
     $result = $conn->query($query);
     $rows = $result->fetch_all(MYSQLI_ASSOC);
 
-    if(!$rows) return false;
+    if(!$rows) return [];
     return $rows;
 }
 
@@ -1293,6 +1349,19 @@ function get_team_members($conn, $team_id) {
     $rows = $result->fetch_all(MYSQLI_ASSOC);
 
     if(!$rows) return false;
+    return $rows;
+}
+
+function get_team_submits($conn, $team_id, $event_id = NULL) {
+    if (!$event_id) $event_id = get_last_event_id($conn);
+    $query = "SELECT CTF_challenge.challenge_name, points, submit_date FROM CTF_submit RIGHT JOIN CTF_challenge
+        ON CTF_challenge.challenge_id = CTF_submit.challenge_id WHERE team_id = ? AND event_id = ? ORDER BY submit_date ASC";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ii", $team_id, $event_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+    
     return $rows;
 }
 

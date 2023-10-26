@@ -1,6 +1,7 @@
 <?php 
 require_once "inc/init.php";
 
+$form_error = "";
 if(!isset($_SESSION["user_id"]) && isset($_POST["submit"])) {
     $error = login($conn, $_POST["username_email"], $_POST["password"]);
     switch($error) {
@@ -21,6 +22,7 @@ if(isset($_SESSION["user_id"])) {
 
 $title = "Login - H4ckUs4t1 CTF";
 require "inc/head.php";
+
 ?>
 <body>
     <nav id="nav">

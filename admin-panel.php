@@ -92,7 +92,7 @@ require "inc/head.php";
     <nav id="nav">
         <?php require "inc/navbar.php"; ?>
     </nav>
-    <div id="main" class="<?php if (strpos($_GET["action"], "view") === false) echo "admin-panel"; else echo "leaderboard"; ?>">
+    <div id="main" class="<?php if (!isset($_GET["action"]) || (strpos($_GET["action"], "view") === false)) echo "admin-panel"; else echo "leaderboard"; ?>">
     <?php if (!isset($_GET["action"])) { ?>
         <form method="GET" class="generic-form">
             <button type="submit" name="action" value="add_challenge" class="generic-form__button no-margin">Add challenge</button><br>
@@ -101,6 +101,7 @@ require "inc/head.php";
             <button type="submit" name="action" value="add_event" class="generic-form__button">Add event</button><br>
             <button type="submit" name="action" value="edit_event" class="generic-form__button">Edit event</button><br>
             <button type="submit" name="action" value="delete_event" class="generic-form__button">Delete event</button><br>
+            <button type="submit" name="action" value="view_events" class="generic-form__button">View Events</button><br>
             <!-- <button type="submit" name="action" value="reset_solves_hints" class="generic-form__button">Reset CTF solves and hints</button><br> -->
             <button type="submit" name="action" value="view_users" class="generic-form__button">View Users</button><br>
             <button type="submit" name="action" value="view_teams" class="generic-form__button">View Teams</button>
@@ -371,7 +372,7 @@ require "inc/head.php";
         <?php } ?>
     <?php } elseif ($_GET["action"] == "delete_event") { ?>
         <form method="POST" class="generic-form">
-            <h2 class="title">Edit event</h2>
+            <h2 class="title">Delete event</h2>
             <select name="event_id">
             <?php
                 $rows = get_events($conn);
@@ -381,6 +382,24 @@ require "inc/head.php";
             </select>
             <button type="submit" name="submit" class="generic-form__button">Delete event</button>
         </form>
+    <?php } elseif ($_GET["action"] == "view_events") { ?>
+        <table>
+            <tr>
+                <th>Event Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Download</th>
+            </tr>
+            <?php $events = get_events($conn);   
+                foreach ($events as $key => $event): ?>
+                <tr>
+                    <td><?php echo $event["event_name"]; ?></td>
+                    <td><?php echo $event["start_date"]; ?></td>
+                    <td><?php echo $event["end_date"]; ?></td>
+                    <td><a href="<?php echo "api/get-event-csv.php?event_name=".$event["event_name"]; ?>">Download CSV</a></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
     <!-- <?php //} elseif ($_GET["action"] == "reset_solves_hints") { ?>
         <form method="POST" class="generic-form">
             <h2 class="title">Reset CTF solves and hints</h2>
